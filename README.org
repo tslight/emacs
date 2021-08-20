@@ -1196,7 +1196,7 @@ This block will byte compile ~early-init.el~ and ~init.el~ if an existing
     "Re-tangle my org mode configuration file."
     (interactive)
     (autoload 'org-babel-tangle-file "ob-tangle")
-    (org-babel-tangle-file "~/src/gitlab/tspub/lisp/emacs/README.org"))
+    (org-babel-tangle-file "~/src/gitlab/tslight/emacs/README.org"))
 #+end_src
 
 ** Googling
@@ -2965,7 +2965,7 @@ Get the source from [[https://gitlab.com/tspub/lisp/dired-peep][here]].
 
 #+begin_src emacs-lisp
   (use-package diranged :ensure nil :after dired
-    :load-path "~/src/gitlab/tspub/lisp/diranged"
+    :load-path "~/src/gitlab/tslight/diranged"
     :bind (:map dired-mode-map ("r" . diranged-mode)))
 #+end_src
 
@@ -3029,7 +3029,7 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 Clone some or all of my projects on GitLab or GitHub via the magic of APIs and
 Emacs' ~completing-read~.
 
-Get the source from [[https://gitlab.com/tspub/lisp/lazygit][here]].
+Get the source from [[https://gitlab.com/tslight/lazygit][here]].
 
 #+begin_src emacs-lisp
   (use-package lazygit :ensure nil
