@@ -3098,16 +3098,6 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
       (setq tab-width 2))
     :hook (go-mode . ts-go-indent))
 #+end_src
-** Highlight Indentation
-
-Especially useful for yaml..
-
-#+begin_src emacs-lisp
-  (use-package highlight-indentation
-    :hook
-    (prog-mode . highlight-indentation-mode))
-#+end_src
-
 ** Hungry delete
 
 #+begin_src emacs-lisp
@@ -3310,6 +3300,10 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 #+end_src
 
 ** YAML
+
+#+begin_src emacs-lisp
+  (use-package highlight-indentation)
+#+end_src
 
 #+begin_src emacs-lisp
   (use-package yaml-mode
