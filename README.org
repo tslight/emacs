@@ -7,7 +7,8 @@
 #+PROPERTY: header-args+ :tangle-mode (identity #o644)
 #+OPTIONS: broken-links:t toc:t num:nil
 #+STARTUP: overview
-#+EXPORT_FILE_NAME: docs/index
+#+EXPORT_FILE_NAME: index
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 
 A fairly standard [[https://en.wikipedia.org/wiki/Literate_programming][literate]] Emacs configuration using [[https://orgmode.org/][Org mode]]. Requires *Emacs
 > 25.1*.
@@ -3172,7 +3173,7 @@ Especially useful for yaml..
                 ("C-c C-z" . nodejs-repl-switch-to-repl)))
 #+end_src
 
-** COMMENT Org
+** Org
 *** htmlize
 
 #+begin_src emacs-lisp
