@@ -1,0 +1,4756 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Emacs Configuration</title>
+<!-- 2021-08-21 Sat 09:35 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Org-mode">
+<meta name="author" content="Toby Slight">
+
+<link  href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<style>
+/* org mode styles on top of twbs */
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    font-size: 18px;
+    margin-bottom: 105px;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 101px;
+    background-color: #f5f5f5;
+}
+
+footer > div {
+    padding: 10px;
+}
+
+footer p {
+    margin: 0 0 5px;
+    text-align: center;
+    font-size: 16px;
+}
+
+#table-of-contents {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+blockquote p {
+    font-size: 18px;
+}
+
+pre {
+    font-size: 16px;
+}
+
+.footpara {
+    display: inline-block;
+}
+
+figcaption {
+  font-size: 16px;
+  color: #666;
+  font-style: italic;
+  padding-bottom: 15px;
+}
+
+/* from twbs docs */
+
+.bs-docs-sidebar.affix {
+    position: static;
+}
+@media (min-width: 768px) {
+    .bs-docs-sidebar {
+        padding-left: 20px;
+    }
+}
+
+/* All levels of nav */
+.bs-docs-sidebar .nav > li > a {
+    display: block;
+    padding: 4px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #999;
+}
+.bs-docs-sidebar .nav > li > a:hover,
+.bs-docs-sidebar .nav > li > a:focus {
+    padding-left: 19px;
+    color: #A1283B;
+    text-decoration: none;
+    background-color: transparent;
+    border-left: 1px solid #A1283B;
+}
+.bs-docs-sidebar .nav > .active > a,
+.bs-docs-sidebar .nav > .active:hover > a,
+.bs-docs-sidebar .nav > .active:focus > a {
+    padding-left: 18px;
+    font-weight: bold;
+    color: #A1283B;
+    background-color: transparent;
+    border-left: 2px solid #A1283B;
+}
+
+/* Nav: second level (shown on .active) */
+.bs-docs-sidebar .nav .nav {
+    display: none; /* Hide by default, but at >768px, show it */
+    padding-bottom: 10px;
+}
+.bs-docs-sidebar .nav .nav > li > a {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 30px;
+    font-size: 12px;
+    font-weight: normal;
+}
+.bs-docs-sidebar .nav .nav > li > a:hover,
+.bs-docs-sidebar .nav .nav > li > a:focus {
+    padding-left: 29px;
+}
+.bs-docs-sidebar .nav .nav > .active > a,
+.bs-docs-sidebar .nav .nav > .active:hover > a,
+.bs-docs-sidebar .nav .nav > .active:focus > a {
+    padding-left: 28px;
+    font-weight: 500;
+}
+
+/* Nav: third level (shown on .active) */
+.bs-docs-sidebar .nav .nav .nav {
+    padding-bottom: 10px;
+}
+.bs-docs-sidebar .nav .nav .nav > li > a {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 40px;
+    font-size: 12px;
+    font-weight: normal;
+}
+.bs-docs-sidebar .nav .nav .nav > li > a:hover,
+.bs-docs-sidebar .nav .nav .nav > li > a:focus {
+    padding-left: 39px;
+}
+.bs-docs-sidebar .nav .nav .nav > .active > a,
+.bs-docs-sidebar .nav .nav .nav > .active:hover > a,
+.bs-docs-sidebar .nav .nav .nav > .active:focus > a {
+    padding-left: 38px;
+    font-weight: 500;
+}
+
+/* Show and affix the side nav when space allows it */
+@media (min-width: 992px) {
+    .bs-docs-sidebar .nav > .active > ul {
+        display: block;
+    }
+    /* Widen the fixed sidebar */
+    .bs-docs-sidebar.affix,
+    .bs-docs-sidebar.affix-bottom {
+        width: 213px;
+    }
+    .bs-docs-sidebar.affix {
+        position: fixed; /* Undo the static from mobile first approach */
+        top: 20px;
+    }
+    .bs-docs-sidebar.affix-bottom {
+        position: absolute; /* Undo the static from mobile first approach */
+    }
+    .bs-docs-sidebar.affix .bs-docs-sidenav,.bs-docs-sidebar.affix-bottom .bs-docs-sidenav {
+        margin-top: 0;
+        margin-bottom: 0
+    }
+}
+@media (min-width: 1200px) {
+    /* Widen the fixed sidebar again */
+    .bs-docs-sidebar.affix-bottom,
+    .bs-docs-sidebar.affix {
+        width: 263px;
+    }
+}
+</style>
+<script>
+$(function() {
+    'use strict';
+
+    $('.bs-docs-sidebar li').first().addClass('active');
+
+    $(document.body).scrollspy({target: '.bs-docs-sidebar'});
+
+    $('.bs-docs-sidebar').affix();
+});
+</script>
+</head>
+<body>
+<div id="content" class="container">
+<div class="row"><div class="col-md-3 col-md-push-9"><nav id="table-of-contents">
+<div id="text-table-of-contents" class="bs-docs-sidebar">
+<ul class="nav">
+<li><a href="#sec-">Lexical Binding</a></li>
+<li><a href="#sec-">Doom Speed Hacks</a>
+<ul class="nav">
+<li><a href="#sec-">Avoid garbage collection at startup</a></li>
+<li><a href="#sec-">Unset file-name-handler-alist temporarily</a></li>
+</ul>
+</li>
+<li><a href="#sec-">Settings</a>
+<ul class="nav">
+<li><a href="#sec-">Auto-save</a></li>
+<li><a href="#sec-">Backups</a></li>
+<li><a href="#sec-">Bell</a></li>
+<li><a href="#sec-">Bookmarks</a></li>
+<li><a href="#sec-">Clipboard</a></li>
+<li><a href="#sec-">Code Style</a></li>
+<li><a href="#sec-">Compilation Scroll Output</a></li>
+<li><a href="#sec-">Customize settings file</a></li>
+<li><a href="#sec-">Delete all on backspace</a></li>
+<li><a href="#sec-">Emacsclient executable</a></li>
+<li><a href="#sec-">Enable all advanced features</a></li>
+<li><a href="#sec-">Encoding</a></li>
+<li><a href="#sec-">Encryption</a></li>
+<li><a href="#sec-">Final newline</a></li>
+<li><a href="#sec-">History</a></li>
+<li><a href="#sec-">Initial startup</a></li>
+<li><a href="#sec-">Kill Ring Duplicates</a></li>
+<li><a href="#sec-">More extensive apropos</a></li>
+<li><a href="#sec-">More Messages</a></li>
+<li><a href="#sec-">Mouse yank at point</a></li>
+<li><a href="#sec-">No lockfiles</a></li>
+<li><a href="#sec-">Pop mark on repeat</a></li>
+<li><a href="#sec-">Prefer newer over compiled</a></li>
+<li><a href="#sec-">Repeat on final keystroke</a></li>
+<li><a href="#sec-">Safe Local Variables</a></li>
+<li><a href="#sec-">Scrolling</a></li>
+<li><a href="#sec-">Sentence End Spaces</a></li>
+<li><a href="#sec-">Sort Fold Case</a></li>
+<li><a href="#sec-">Truncate Lines</a></li>
+<li><a href="#sec-">Undo limits</a></li>
+<li><a href="#sec-">Undo save</a></li>
+<li><a href="#sec-">Uniquify</a></li>
+<li><a href="#sec-">User info</a></li>
+<li><a href="#sec-">Logging stuff</a></li>
+<li><a href="#sec-">Yes or no</a></li>
+</ul>
+</li>
+<li><a href="#sec-">Keybindings</a>
+<ul class="nav">
+<li><a href="#sec-">Buffers</a></li>
+<li><a href="#sec-">Calculator</a></li>
+<li><a href="#sec-">Editing</a></li>
+<li><a href="#sec-">Frames</a></li>
+<li><a href="#sec-">Menubar</a></li>
+<li><a href="#sec-">Registers</a></li>
+<li><a href="#sec-">Special mode</a></li>
+</ul>
+</li>
+<li><a href="#sec-">Theme/UI</a>
+<ul class="nav">
+<li><a href="#sec-">Disable themes</a></li>
+<li><a href="#sec-">Maximize on startup</a></li>
+<li><a href="#sec-">Setup Frame for Emacsclient</a></li>
+<li><a href="#sec-">Turn off UI elements</a></li>
+</ul>
+</li>
+<li><a href="#sec-">Buffer Functions</a>
+<ul class="nav">
+<li><a href="#sec-">Encoding</a></li>
+<li><a href="#sec-">Indent Buffer</a></li>
+<li><a href="#sec-">Kill this buffer</a></li>
+<li><a href="#sec-">Last buffer</a></li>
+<li><a href="#sec-">Narrow DWIM</a></li>
+<li><a href="#sec-">Nuke buffers</a></li>
+<li><a href="#sec-">Save buffers silently</a></li>
+</ul>
+</li>
+<li><a href="#sec-">Editing Functions</a>
+<ul class="nav">
+<li><a href="#sec-">Aligning symbols</a></li>
+<li><a href="#sec-">Beginning of line</a></li>
+<li><a href="#sec-">Change numbers</a></li>
+<li><a href="#sec-">Delete inside delimiters</a></li>
+<li><a href="#sec-">Generate a numbered list</a></li>
+<li><a href="#sec-">Kill Region</a></li>
+<li><a href="#sec-">Kill Ring Save</a></li>
+<li><a href="#sec-">Kill Ring Save Whole Buffer</a></li>
+<li><a href="#sec-">Moving lines</a></li>
+<li><a href="#sec-">Sort Words</a></li>
+<li><a href="#sec-">Surround stuff</a></li>
+<li><a href="#sec-">Untabify a buffer</a></li>
+<li><a href="#sec-">XML pretty print</a></li>
+<li><a href="#sec-">WSL Copy/Paste</a></li>
+</ul>
+</li>
+<li><a href="#sec-">File Functions</a>
+<ul class="nav">
+<li><a href="#sec-">Delete this file</a></li>
+<li><a href="#sec-">Insert other buffer file name</a></li>
+<li><a href="#sec-">Make backup of current file</a></li>
+<li><a href="#sec-">Open current file as root</a></li>
+<li><a href="#sec-">Rename file and buffer</a></li>
+<li><a href="#sec-">Yank current file contents to kill ring</a></li>
+<li><a href="#sec-">Yank current file name to kill ring</a></li>
+</ul>
+</li>
+<li><a href="#sec-">Miscellaneous</a>
+<ul class="nav">
+<li><a href="#sec-">Byte compile and load on save</a></li>
+<li><a href="#sec-">Ensure init files are byte compiled</a></li>
+<li><a href="#sec-">Recompile config</a></li>
+<li><a href="#sec-">Tangle config</a></li>
+<li><a href="#sec-">Googling</a></li>
+<li><a href="#sec-">Default Text Scale</a></li>
+</ul>
+</li>
+<li><a href="#sec-">Window Functions</a>
+<ul class="nav">
+<li><a href="#sec-">Better scrolling of other windows</a></li>
+<li><a href="#sec-">Kill buffer other window</a></li>
+<li><a href="#sec-">Open a buffer in another window</a></li>
+<li><a href="#sec-">Split window right to last buffer</a></li>
+<li><a href="#sec-">Split window below to last buffer</a></li>
+<li><a href="#sec-">Switch to the previous window</a></li>
+<li><a href="#sec-">Toggle focus to last window</a></li>
+<li><a href="#sec-">Toggle maximize window</a></li>
+<li><a href="#sec-">Toggle vertical -&gt; horizontal splits</a></li>
+</ul>
+</li>
+<li><a href="#sec-">Emacs Packages</a>
+<ul class="nav">
+<li><a href="#sec-">Ansi Color</a></li>
+<li><a href="#sec-">Auto-fill</a></li>
+<li><a href="#sec-">Auto-revert</a></li>
+<li><a href="#sec-">Battery</a></li>
+<li><a href="#sec-">Column Number</a></li>
+<li><a href="#sec-">Dabbrev</a></li>
+<li><a href="#sec-">Dired</a>
+<ul class="nav">
+<li><a href="#sec-">Dired Extras</a></li>
+<li><a href="#sec-">Dired Omit</a></li>
+<li><a href="#sec-">Dired Listing Switches</a></li>
+<li><a href="#sec-">Dired Settings</a></li>
+<li><a href="#sec-">Dired Keybindings</a></li>
+<li><a href="#sec-">Dired AUX</a></li>
+<li><a href="#sec-">Find Dired</a></li>
+<li><a href="#sec-">Writeable Dired</a></li>
+</ul>
+</li>
+<li><a href="#sec-">Doc View</a></li>
+<li><a href="#sec-">Ediff</a></li>
+<li><a href="#sec-">Eldoc</a></li>
+<li><a href="#sec-">Electric</a></li>
+<li><a href="#sec-">ERC</a></li>
+<li><a href="#sec-">Eshell</a></li>
+<li><a href="#sec-">Flymake</a></li>
+<li><a href="#sec-">Flyspell</a></li>
+<li><a href="#sec-">Gnus</a></li>
+<li><a href="#sec-">Hide/Show</a></li>
+<li><a href="#sec-">Highlight changes</a></li>
+<li><a href="#sec-">Highlight line</a></li>
+<li><a href="#sec-">Hippie Expand</a></li>
+<li><a href="#sec-">Icomplete</a>
+<ul class="nav">
+<li><a href="#sec-">Change completion styles</a></li>
+<li><a href="#sec-">Icomplete keybindings</a></li>
+<li><a href="#sec-">Icomplete settings</a></li>
+</ul>
+</li>
+<li><a href="#sec-">Imenu</a></li>
+<li><a href="#sec-">Isearch</a>
+<ul class="nav">
+<li><a href="#sec-">Isearch exit</a></li>
+<li><a href="#sec-">Copy to isearch</a></li>
+<li><a href="#sec-">Kill to isearch</a></li>
+<li><a href="#sec-">Isearch Abort DWIM</a></li>
+<li><a href="#sec-">Keybindings</a></li>
+<li><a href="#sec-">Settings</a></li>
+</ul>
+</li>
+<li><a href="#sec-">Line Numbers</a></li>
+<li><a href="#sec-">Minibuffer</a>
+<ul class="nav">
+<li><a href="#sec-">Completion framework settings</a></li>
+<li><a href="#sec-">Misc Minibuffer settings</a></li>
+<li><a href="#sec-">Save history mode</a></li>
+</ul>
+</li>
+<li><a href="#sec-">Occur</a></li>
+<li><a href="#sec-">Org</a>
+<ul class="nav">
+<li><a href="#sec-">Org Babel Load Languages</a></li>
+<li><a href="#sec-">Org Capture Templates</a></li>
+<li><a href="#sec-">Org Global Keybindings</a></li>
+<li><a href="#sec-">Org Latex</a></li>
+<li><a href="#sec-">Org Misc Settings</a></li>
+<li><a href="#sec-">Org Outline/Goto</a></li>
+<li><a href="#sec-">Org Recompile Post Tangle</a></li>
+<li><a href="#sec-">Org Recursive Sort</a></li>
+<li><a href="#sec-">Org Refile</a></li>
+<li><a href="#sec-">Org Special Keys</a></li>
+<li><a href="#sec-">Org Speed Commands</a></li>
+<li><a href="#sec-">Org Src</a></li>
+<li><a href="#sec-">Org Structure Templates</a></li>
+<li><a href="#sec-">Org Todo Keywords</a></li>
+</ul>
+</li>
+<li><a href="#sec-">Pending delete</a></li>
+<li><a href="#sec-">Prettify Symbols</a></li>
+<li><a href="#sec-">Project (Emacs 28+)</a></li>
+<li><a href="#sec-">Pulse</a></li>
+<li><a href="#sec-">Python</a></li>
+<li><a href="#sec-">Recentf</a></li>
+<li><a href="#sec-">Saveplace</a></li>
+<li><a href="#sec-">Selective Display</a></li>
+<li><a href="#sec-">Semantic</a></li>
+<li><a href="#sec-">Shell</a></li>
+<li><a href="#sec-">Shell Script</a></li>
+<li><a href="#sec-">Show paren</a></li>
+<li><a href="#sec-">Size Indication</a></li>
+<li><a href="#sec-">Subword</a></li>
+<li><a href="#sec-">Tab-bar (Emacs 27+)</a></li>
+<li><a href="#sec-">Term</a>
+<ul class="nav">
+<li><a href="#sec-">ANSI Term launcher</a></li>
+<li><a href="#sec-">Set term coding system to UTF-8</a></li>
+<li><a href="#sec-">Switch to ANSI Term</a></li>
+<li><a href="#sec-">Term Advise</a></li>
+</ul>
+</li>
+<li><a href="#sec-">Time</a></li>
+<li><a href="#sec-">Tramp</a></li>
+<li><a href="#sec-">Version Control</a></li>
+<li><a href="#sec-">View mode</a></li>
+<li><a href="#sec-">Whitespace</a></li>
+<li><a href="#sec-">Windmove</a></li>
+<li><a href="#sec-">Window Divider</a></li>
+<li><a href="#sec-">Winner mode</a></li>
+</ul>
+</li>
+<li><a href="#sec-">MELPA Packages</a>
+<ul class="nav">
+<li><a href="#sec-">Setup package.el</a></li>
+<li><a href="#sec-">use-package bootstrap</a></li>
+<li><a href="#sec-">Ansible</a></li>
+<li><a href="#sec-">Async</a></li>
+<li><a href="#sec-">Blacken</a></li>
+<li><a href="#sec-">Diranged</a></li>
+<li><a href="#sec-">Docker</a></li>
+<li><a href="#sec-">Exec path from shell</a></li>
+<li><a href="#sec-">Flycheck</a></li>
+<li><a href="#sec-">Git</a>
+<ul class="nav">
+<li><a href="#sec-">Gitlab CI</a></li>
+<li><a href="#sec-">Git Timemachine</a></li>
+<li><a href="#sec-">Lazygit</a></li>
+<li><a href="#sec-">Magit</a></li>
+</ul>
+</li>
+<li><a href="#sec-">Go mode</a></li>
+<li><a href="#sec-">Highlight Indentation</a></li>
+<li><a href="#sec-">Hungry delete</a></li>
+<li><a href="#sec-">JS2 mode</a></li>
+<li><a href="#sec-">JSON</a></li>
+<li><a href="#sec-">Markdown</a></li>
+<li><a href="#sec-">Powershell</a></li>
+<li><a href="#sec-">Restclient</a></li>
+<li><a href="#sec-">systemd</a></li>
+<li><a href="#sec-">Terraform</a></li>
+<li><a href="#sec-">Trashed</a></li>
+<li><a href="#sec-">Web Mode</a></li>
+<li><a href="#sec-">Which Key</a></li>
+<li><a href="#sec-">Writeable Grep</a></li>
+<li><a href="#sec-">YAML</a></li>
+<li><a href="#sec-">Yasnippet</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</nav>
+</div><div class="col-md-9 col-md-pull-3"><h1 class="title">Emacs Configuration</h1>
+<p>
+A fairly standard <a href="https://en.wikipedia.org/wiki/Literate_programming">literate</a> Emacs configuration using <a href="https://orgmode.org/">Org mode</a>. Requires <b>Emacs
+&gt; 25.1</b>.
+</p>
+
+<p>
+To install, evaluate the code block below with <code>C-c C-c</code> in an Emacs buffer:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(org-babel-tangle)
+(load early-init)
+(load init-file)
+(ts-ensure-byte-compiled-init)
+</pre>
+</div>
+
+<p>
+This will tangle all the code blocks below into <code>~/.emacs.d/init.el</code>, compile
+that file and load it, installing a <a href="#sec-">plethora of packages</a> along the way.
+</p>
+
+<p>
+Be sure to back up your current <code>~/.emacs.d</code> with something like <code>mv
+~/.emacs.d{,.bak}</code>.
+</p>
+
+<div id="outline-container-sec-" class="outline-2">
+<h2 id="sec-">Lexical Binding</h2>
+<div class="outline-text-2" id="text-">
+<p>
+This must come at the beginning of the file
+</p>
+
+<p>
+<a href="https://nullprogram.com/blog/2016/12/22/">Some Performance Advantages of Lexical Scope</a>
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp" id="lexical-binding">;; -*- lexical-binding: t; -*-
+</pre>
+</div>
+
+<p>
+And one for <code>~/.emacs.d/early-init.el</code> if it exists&#x2026;
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">;; -*- lexical-binding: t; -*-
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-2">
+<h2 id="sec-"><a href="https://github.com/hlissner/doom-emacs/blob/develop/docs/faq.org#how-does-doom-start-up-so-quickly">Doom Speed Hacks</a></h2>
+<div class="outline-text-2" id="text-">
+</div><div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Avoid garbage collection at startup</h3>
+<div class="outline-text-3" id="text-">
+<p>
+The GC can easily double startup time, so we suppress it at startup by
+turning up gc-cons-threshold (and perhaps gc-cons-percentage) temporarily:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
+      gc-cons-percentage 0.6)
+</pre>
+</div>
+
+<p>
+It is important to reset the garbage collection settings eventually. Not
+doing so will cause garbage collection freezes during long-term interactive
+use. Conversely, a gc-cons-threshold that is too small will cause
+stuttering. We use 16mb as our default.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-default-gc-cons-settings ()
+  (setq gc-cons-threshold 16777216 ; 16mb
+        gc-cons-percentage 0.1))
+(add-hook 'emacs-startup-hook 'ts-default-gc-cons-settings)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Unset file-name-handler-alist temporarily</h3>
+<div class="outline-text-3" id="text-">
+<p>
+Emacs consults this variable every time a file is read or library loaded, or
+when certain functions in the file API are used (like expand-file-name or
+file-truename).
+</p>
+
+<p>
+Emacs does this to check if a special handler is needed to read that file, but
+none of them are (typically) necessary at startup, so we disable them
+(temporarily!):
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defvar ts-default-file-name-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
+</pre>
+</div>
+
+<p>
+Don’t forget to restore file-name-handler-alist, otherwise TRAMP won’t work and
+compressed/encrypted files won’t open.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-restore-default-file-name-handler-alist ()
+  (setq file-name-handler-alist ts-default-file-name-handler-alist))
+(add-hook 'emacs-startup-hook 'ts-restore-default-file-name-handler-alist)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-2">
+<h2 id="sec-">Settings</h2>
+<div class="outline-text-2" id="text-">
+</div><div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Auto-save</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+(setq auto-save-timeout 5)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Backups</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+(setq backup-by-copying t) ;; copy files, don't rename them.
+(setq delete-old-versions t)
+(setq kept-new-versions 12)
+(setq kept-old-versions 12)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Bell</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq ring-bell-function 'ignore)
+(setq visible-bell 1)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Bookmarks</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq bookmark-save-flag 1) ;; always save bookmarks to file
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Clipboard</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq select-enable-clipboard t)
+(setq select-enable-primary t)
+(setq x-select-enable-clipboard-manager nil)
+(setq save-interprogram-paste-before-kill t)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Code Style</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq c-default-style "bsd")
+(setq c-basic-offset 4)
+(setq css-indent-offset 2)
+(setq js-indent-level 2)
+
+;; If indent-tabs-mode is t, it may use tab, resulting in mixed spaces and tabs
+(setq-default indent-tabs-mode nil)
+
+;; make tab key do indent first then completion.
+(setq-default tab-always-indent 'complete)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Compilation Scroll Output</h3>
+<div class="outline-text-3" id="text-">
+<p>
+Place point after complilation error
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq compilation-scroll-output 'first-error)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Customize settings file</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Delete all on backspace</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq backward-delete-char-untabify-method 'all)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Emacsclient executable</h3>
+<div class="outline-text-3" id="text-">
+<p>
+Only tangled on Windows.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">;; https://emacs.stackexchange.com/a/31061
+(when (equal system-type 'windows-nt)
+  (if (file-readable-p "C:/Program Files/Emacs/x86_64/bin/emacsclient.exe")
+      (setq-default with-editor-emacsclient-executable "C:/Program Files/Emacs/x86_64/bin/emacsclient.exe")
+    (setq-default with-editor-emacsclient-executable nil)))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Enable all advanced features</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq disabled-command-function nil) ;; enable all "advanced" features
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Encoding</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq-default buffer-file-coding-system 'utf-8-unix)
+(setq-default default-buffer-file-coding-system 'utf-8-unix)
+(setq coding-system-for-read 'utf-8-unix)
+(setq coding-system-for-write 'utf-8-unix)
+(set-language-environment "UTF-8")
+(set-default-coding-systems 'utf-8-unix)
+(prefer-coding-system 'utf-8-unix)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Encryption</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq epa-file-cache-passphrase-for-symmetric-encryption t)
+(setf epg-pinentry-mode 'loopback)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Final newline</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq require-final-newline t) ;; useful for crontab
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">History</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq history-length t)
+(setq history-delete-duplicates t)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Initial startup</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun display-startup-echo-area-message ()
+  "Redefine this function to be more useful."
+  (message "Started in %s. Hacks &amp; Glory await! :-)" (emacs-init-time)))
+(setq inhibit-startup-screen t)
+(setq initial-scratch-message nil)
+(setq initial-major-mode 'fundamental-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Kill Ring Duplicates</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq kill-do-not-save-duplicates t)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">More extensive apropos</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq apropos-do-all t) ;; doesn't seem to be documented anywhere..
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">More Messages</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq message-log-max 10000)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Mouse yank at point</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq mouse-yank-at-point t)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">No lockfiles</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq create-lockfiles nil) ;; prevent creation of .#myfile.ext
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Pop mark on repeat</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq set-mark-command-repeat-pop t) ;; repeating C-SPC after popping, pops it
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Prefer newer over compiled</h3>
+<div class="outline-text-3" id="text-">
+<p>
+If init.elc is older, use newer <code>init.el</code>.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq load-prefer-newer t) ;; if init.elc is older, use newer init.el
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Repeat on final keystroke</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq repeat-on-final-keystroke t)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Safe Local Variables</h3>
+<div class="outline-text-3" id="text-">
+<p>
+This variables are added to the end of this file.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq safe-local-variable-values
+      '((eval setq early-init (expand-file-name "early-init.el" user-emacs-directory))
+        (eval setq init-file (expand-file-name "init.el" user-emacs-directory))
+        (eval add-hook 'after-save-hook 'org-html-export-to-html nil t)
+        (eval add-hook 'after-save-hook 'org-latex-export-to-pdf nil t)
+        (eval add-hook 'after-save-hook 'org-twbs-export-to-pdf nil t)
+        (eval add-hook 'after-save-hook 'org-babel-tangle nil t)))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Scrolling</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq scroll-step 4)
+(setq scroll-margin 2)
+(setq scroll-conservatively 4)
+(setq scroll-preserve-screen-position t)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Sentence End Spaces</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq sentence-end-double-space nil)
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Sort Fold Case</h3>
+<div class="outline-text-3" id="text-">
+<p>
+When do I ever want to sort case sensitively?!
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq sort-fold-case t)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Truncate Lines</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(set-default 'truncate-lines t)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Undo limits</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">;; http://www.dr-qubit.org/Lost_undo-tree_history.html
+(setq undo-limit 80000000)
+(setq undo-strong-limit 90000000)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Undo save</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(add-to-list 'desktop-locals-to-save 'buffer-undo-list)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Uniquify</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq uniquify-buffer-name-style 'forward)
+(setq uniquify-strip-common-suffix t)
+(setq uniquify-after-kill-buffer-p t)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">User info</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq user-full-name "Toby Slight")
+(setq user-mail-address "tslight@pm.me")
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Logging stuff</h3>
+<div class="outline-text-3" id="text-">
+<p>
+<a href="https://www.reddit.com/r/emacs/comments/l42oep/suppress_nativecomp_warnings_buffer/">https://www.reddit.com/r/emacs/comments/l42oep/suppress_nativecomp_warnings_buffer/</a>
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">;; (setq comp-async-report-warnings-errors 'nil)
+(setq warning-minimum-level :error)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Yes or no</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(fset 'yes-or-no-p 'y-or-n-p) ;; never have to type full word
+(setq confirm-kill-emacs 'y-or-n-p)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-2">
+<h2 id="sec-">Keybindings</h2>
+<div class="outline-text-2" id="text-">
+</div><div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Buffers</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(global-set-key (kbd "C-x M-e") (lambda () (interactive) (eval-buffer) (message "Evaluated buffer")))
+(global-set-key (kbd "C-c M-l") 'lisp-interaction-mode)
+(global-set-key (kbd "C-x c") 'save-buffers-kill-emacs)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "C-x M-k") 'kill-buffer)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Calculator</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(global-set-key (kbd "C-c c") 'calculator)
+(global-set-key (kbd "C-c M-c") 'calc)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Editing</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(global-set-key (kbd "C-c C-e") 'pp-eval-last-sexp)
+(global-set-key (kbd "C-z") 'zap-up-to-char) ; suspend is still bound to C-x C-z
+(global-set-key (kbd "M-z") 'zap-to-char)
+(global-set-key (kbd "C-x M-t") 'transpose-regions)
+(global-set-key (kbd "C-x M-p") 'transpose-paragraphs)
+</pre>
+</div>
+
+<p>
+Remap some default to saner options
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(global-set-key (kbd "M-%") 'query-replace-regexp) ; regex all the things!
+(global-set-key (kbd "M-;") 'comment-line)         ; comment-dwim by default
+(global-set-key (kbd "C-M-;") 'comment-dwim)       ; unbound by default
+(global-set-key (kbd "C-x C-;") 'comment-box)      ; comment-line by default
+(global-set-key (kbd "M-o") 'delete-blank-lines)   ; this is on C-x C-o by default
+(global-set-key (kbd "M-SPC") 'cycle-spacing)      ; just-one-space by default
+</pre>
+</div>
+
+<p>
+Always do what I mean!
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(global-set-key [remap capitalize-word] 'capitalize-dwim)
+(global-set-key [remap downcase-word] 'downcase-dwim)
+(global-set-key [remap upcase-word] 'upcase-dwim)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Frames</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(global-set-key (kbd "C-&lt;f10&gt;") 'toggle-frame-maximized)
+(global-set-key (kbd "C-&lt;f11&gt;") 'toggle-frame-fullscreen)
+(global-set-key (kbd "C-s-f") 'toggle-frame-fullscreen)
+(global-set-key (kbd "C-s-m") 'toggle-frame-maximized)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Menubar</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(global-set-key (kbd "S-&lt;f10&gt;") 'menu-bar-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Registers</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(global-set-key (kbd "C-x j") 'jump-to-register)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Special mode</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">;; for help modes, and simple/special modes
+(define-key special-mode-map "n" #'forward-button)
+(define-key special-mode-map "p" #'backward-button)
+(define-key special-mode-map "f" #'forward-button)
+(define-key special-mode-map "b" #'backward-button)
+(define-key special-mode-map "n" #'widget-forward)
+(define-key special-mode-map "p" #'widget-backward)
+(define-key special-mode-map "f" #'widget-forward)
+(define-key special-mode-map "b" #'widget-backward)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-2">
+<h2 id="sec-">Theme/UI</h2>
+<div class="outline-text-2" id="text-">
+</div><div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Disable themes</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defadvice load-theme (before theme-dont-propagate activate)
+  "Disable theme before loading new one."
+  (mapc #'disable-theme custom-enabled-themes))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Maximize on startup</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq default-frame-alist '((fullscreen . maximized) (vertical-scroll-bars . nil)))
+(setq frame-resize-pixelwise t) ;; jwm resize fix
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Setup Frame for Emacsclient</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-setup-emacs-nw ()
+  "Change some settings to make Emacs more terminal friendly."
+  (xterm-mouse-mode 1)
+  (mouse-avoidance-mode 'banish)
+  (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+  (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+  (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+  (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
+  (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1))))
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-setup-emacs-gui ()
+  "Change some settings that are only applicable to graphical Emacs."
+  (cond ((eq system-type 'windows-nt) (set-frame-font "Cascadia Mono 11" nil t))
+        ((eq system-type 'darwin) (set-frame-font "Monaco 11" nil t))
+        ((eq system-type 'gnu/linux) (set-frame-font "Monospace 11" nil t))
+        (t (set-frame-font "Monospace 11" nil t))))
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-after-make-frame (frame)
+  "Add custom settings after making the FRAME."
+  (select-frame frame)
+  (if (version&lt; emacs-version "28")
+      (load-theme 'wombat)
+    (load-theme 'modus-vivendi))
+  (if (display-graphic-p)
+      (ts-setup-emacs-gui)
+    (ts-setup-emacs-nw)))
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(if (daemonp)
+    (add-hook 'after-make-frame-functions #'ts-after-make-frame(selected-frame))
+  (ts-after-make-frame(selected-frame)))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Turn off UI elements</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(if (fboundp 'tooltip-mode) (tooltip-mode -1))
+(if (fboundp 'set-horizontal-scroll-bar-mode)
+    (set-horizontal-scroll-bar-mode nil))
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-2">
+<h2 id="sec-">Buffer Functions</h2>
+<div class="outline-text-2" id="text-">
+</div><div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Encoding</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-convert-to-unix-coding-system ()
+  "Change the current buffer's file encoding to unix."
+  (interactive)
+  (let ((coding-str (symbol-name buffer-file-coding-system)))
+    (when (string-match "-\\(?:dos\\|mac\\)$" coding-str)
+      (set-buffer-file-coding-system 'unix))))
+
+(global-set-key (kbd "C-x RET u") 'ts-convert-to-unix-coding-system)
+
+(defun ts-hide-dos-eol ()
+  "Do not show ^M in files containing mixed UNIX and DOS line endings."
+  (interactive)
+  (setq buffer-display-table (make-display-table))
+  (aset buffer-display-table ?\^M []))
+
+(add-hook 'find-file-hook 'ts-hide-dos-eol)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Indent Buffer</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-indent-buffer ()
+  "Indent the contents of a buffer."
+  (interactive)
+  (indent-region (point-min) (point-max)))
+
+(global-set-key (kbd "M-i") 'ts-indent-buffer)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Kill this buffer</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-kill-this-buffer ()
+  "Kill the current buffer - `kill-this-buffer' is unreliable."
+  (interactive)
+  (kill-buffer (current-buffer)))
+
+(global-set-key (kbd "C-x k") 'ts-kill-this-buffer)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Last buffer</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-last-buffer ()
+  "Switch back and forth between two buffers easily."
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) 1)))
+
+(global-set-key (kbd "C-c b") 'ts-last-buffer)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Narrow DWIM</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-narrow-or-widen-dwim (p)
+  "If the buffer is narrowed, it widens, otherwise, it narrows intelligently.
+
+Intelligently means: region, org-src-block, org-subtree, or
+defun, whichever applies first.
+
+Narrowing to org-src-block actually calls `org-edit-src-code'.
+With prefix P, don't widen, just narrow even if buffer is already
+narrowed."
+  (interactive "P")
+  (declare (interactive-only))
+  (cond ((and (buffer-narrowed-p) (not p)) (widen))
+        ((region-active-p)
+         (narrow-to-region (region-beginning) (region-end)))
+        ((derived-mode-p 'org-mode)
+         ;; `org-edit-src-code' is not a real narrowing command.
+         ;; Remove this first conditional if you don't want it.
+         (cond ((ignore-errors (org-edit-src-code))
+                (delete-other-windows))
+               ((org-at-block-p)
+                (org-narrow-to-block))
+               (t (org-narrow-to-subtree))))
+        (t (narrow-to-defun))))
+
+(define-key ctl-x-map "n" 'ts-narrow-or-widen-dwim)
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-x n") 'ts-narrow-or-widen-dwim))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Nuke buffers</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-nuke-buffers ()
+  "Kill all buffers, leaving *scratch* only."
+  (interactive)
+  (mapc
+   (lambda (buffer)
+     (kill-buffer buffer))
+   (buffer-list))
+  (if current-prefix-arg
+      (delete-other-windows)))
+
+(global-set-key (kbd "C-c M-n") 'ts-nuke-buffers)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Save buffers silently</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-save-buffers-silently ()
+  "Save all open buffers without prompting."
+  (interactive)
+  (save-some-buffers t)
+  (message "Saved all buffers :-)"))
+
+(global-set-key (kbd "C-c s") 'ts-save-buffers-silently)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-2">
+<h2 id="sec-">Editing Functions</h2>
+<div class="outline-text-2" id="text-">
+</div><div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Aligning symbols</h3>
+<div class="outline-text-3" id="text-">
+<p>
+Some handy functions to make aligning symbols less painful.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-align-symbol (begin end symbol)
+  "Align any SYMBOL in region (between BEGIN and END)."
+  (interactive "r\nsEnter align symbol: ")
+  (align-regexp begin end (concat "\\(\\s-*\\)" symbol) 1 1))
+
+(global-set-key (kbd "C-c a") 'ts-align-symbol)
+
+(defun ts-align-numbers (begin end)
+  "Align numbers in region (between BEGIN and END)."
+  (interactive "r")
+  (ts-align-symbol begin end "[0-9]+"))
+
+(global-set-key (kbd "C-c #") 'ts-align-numbers)
+
+(defadvice align-regexp (around align-regexp-with-spaces activate)
+  "Force alignment commands to use spaces, not tabs."
+  (let ((indent-tabs-mode nil))
+    ad-do-it))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Beginning of line</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-move-beginning-of-line ()
+  "Move point back to indentation.
+
+If there is any non blank characters to the left of the cursor.
+Otherwise point moves to beginning of line."
+  (interactive)
+  (if (= (point) (save-excursion (back-to-indentation) (point)))
+      (beginning-of-line)
+    (back-to-indentation)))
+
+(global-set-key [remap move-beginning-of-line] 'ts-move-beginning-of-line)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Change numbers</h3>
+<div class="outline-text-3" id="text-">
+<p>
+Increment or decrement numbers at the point.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts--change-number (&amp;optional arg)
+  "Increment the number forward from point by 'arg'."
+  (interactive "p*")
+  (save-excursion
+    (save-match-data
+      (let (inc-by field-width answer)
+        (setq inc-by (if arg arg 1))
+        (skip-chars-backward "0123456789")
+        (when (re-search-forward "[0-9]+" nil t)
+          (setq field-width (- (match-end 0) (match-beginning 0)))
+          (setq answer (+ (string-to-number (match-string 0) 10) inc-by))
+          (when (&lt; answer 0)
+            (setq answer (+ (expt 10 field-width) answer)))
+          (replace-match (format (concat "%0" (int-to-string field-width) "d")
+                                 answer)))))))
+
+(defun ts-change-number (inc)
+  "Adjust the height of the default face by INC.
+
+INC may be passed as a numeric prefix argument."
+  (interactive "p")
+  (let ((ev last-command-event)
+        (echo-keystrokes nil))
+    (let* ((base (event-basic-type ev))
+           (step
+            (pcase base
+              ((or ?+ ?=) inc)
+              (?- (- inc))
+              (?0 0)
+              (_ inc))))
+      (ts--change-number step)
+      ;; (unless (zerop step)
+      (message "Use +,-,0 for further adjustment")
+      (set-transient-map
+       (let ((map (make-sparse-keymap)))
+         (dolist (mods '(() (control)))
+           (dolist (key '(?- ?+ ?= ?0)) ;; = is often unshifted +.
+             (define-key map (vector (append mods (list key)))
+               (lambda () (interactive) (ts-change-number (abs inc))))))
+         map)))))
+
+(global-set-key (kbd "C-c +") 'ts-change-number)
+(global-set-key (kbd "C-c -") 'ts-change-number)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Delete inside delimiters</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-delete-inside-delimiters (arg)
+  "Deletes the text within parentheses, brackets or quotes.
+With prefix ARG, delete delimiters too."
+  (interactive "P")
+  ;; Search for a match on the same line, don't delete across lines
+  (search-backward-regexp "[[{(&lt;\"\']" (line-beginning-position))
+  (forward-char)
+  (let ((lstart (point)))
+    (search-forward-regexp "[]})&gt;\"\']" (line-end-position))
+    (backward-char)
+    (if arg
+        (kill-region (- lstart 1) (+ (point) 1))
+      (kill-region lstart (point)))))
+
+(global-set-key (kbd "C-c d") 'ts-delete-inside-delimiters)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Generate a numbered list</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-generate-numbered-list (start end char)
+  "Create a numbered list from START to END.  Using CHAR as punctuation."
+  (interactive "nStart number:\nnEnd number:\nsCharacter:")
+  (let ((x start))
+    (while (&lt;= x end)
+      (insert (concat (number-to-string x) char))
+      (newline)
+      (setq x (+ x 1)))))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Kill Region</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-kill-region (arg)
+  "Cut region or current ARG lines to kill ring."
+  (interactive "p")
+  (let (p1 p2)
+    (if (use-region-p)
+        (progn (setq p1 (region-beginning))
+               (setq p2 (region-end)))
+      (progn (setq p1 (line-beginning-position))
+             (setq p2 (line-beginning-position (+ arg 1)))))
+    (kill-region p1 p2)))
+
+(global-set-key [remap kill-region] 'ts-kill-region)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Kill Ring Save</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-kill-ring-save (arg)
+  "Copy region or current ARG lines to kill ring."
+  (interactive "p")
+  (let (p1 p2)
+    (if (use-region-p)
+        (progn (setq p1 (region-beginning))
+               (setq p2 (region-end)))
+      (progn (setq p1 (line-beginning-position))
+             (setq p2 (line-beginning-position (+ arg 1)))))
+    (kill-ring-save p1 p2)
+    (goto-char p2)))
+
+(global-set-key [remap kill-ring-save] 'ts-kill-ring-save)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Kill Ring Save Whole Buffer</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-kill-ring-save-whole-buffer ()
+  "Save the entire contents of the buffer to the kill ring."
+  (interactive)
+  (kill-ring-save (point-min) (point-max))
+  (message "Saved whole buffer to kill ring :-)"))
+
+(global-set-key (kbd "C-c h") 'ts-kill-ring-save-whole-buffer)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Moving lines</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defmacro save-column (&amp;rest body)
+  `(let ((column (current-column)))
+     (unwind-protect (progn ,@body) (move-to-column column))))
+(put 'save-column 'lisp-indent-function 0)
+
+(defun move-line-up ()
+  (interactive)
+  (save-column (transpose-lines 1) (forward-line -2)))
+
+(defun move-line-down ()
+  (interactive)
+  (save-column (forward-line 1) (transpose-lines 1) (forward-line -1)))
+
+(global-set-key (kbd "M-p") 'move-line-up)
+(global-set-key (kbd "M-n") 'move-line-down)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Sort Words</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-sort-words (reverse beg end)
+  "Sort words in region alphabetically, in REVERSE if negative.
+
+Prefixed with negative \\[universal-argument], sorts in reverse.
+
+The variable `sort-fold-case' determines whether alphabetic case
+affects the sort order.
+
+See `sort-regexp-fields'."
+  (interactive "*P\nr")
+  (sort-regexp-fields reverse "\\w+" "\\&amp;" beg end))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Surround stuff</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-surround (begin end open close)
+  "Put OPEN at BEGIN and CLOSE at END of the region.
+If you omit CLOSE, it will reuse OPEN, unless OPEN is a (,{,&lt;,[,
+in which case CLOSE will be the matching pair."
+  (interactive  "r\nsStart: \nsEnd: ")
+  (save-excursion
+    (goto-char end)
+    (cond ((string= open "(") (insert ")"))
+          ((string= open "[") (insert "]"))
+          ((string= open "&lt;") (insert "&gt;"))
+          ((string= open "{") (insert "}"))
+          ((string= open "") (insert open))
+          (t (insert close)))
+    (goto-char begin)
+    (insert open)))
+
+(global-set-key (kbd "M-s M-s") 'ts-surround)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Untabify a buffer</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-untabify-buffer ()
+  "Convert all tabs to spaces in the buffer."
+  (interactive)
+  (untabify (point-min) (point-max)))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">XML pretty print</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-xml-pretty-print ()
+  "Reformat and indent XML."
+  (interactive)
+  (save-excursion
+    (sgml-pretty-print (point-min) (point-max))
+    (indent-region (point-min) (point-max))))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">WSL Copy/Paste</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-copy-to-windows-clipboard (start end)
+  "Copy region to Window’s clipboard."
+  (interactive "r")
+  (shell-command-on-region start end "clip.exe")
+  (deactivate-mark))
+
+(defalias 'ts-copy-to-windows-clipboard 'wsl-copy)
+(global-set-key (kbd "C-c C-w") 'ts-copy-to-windows-clipboard)
+
+(defun ts-paste-from-windows-clipboard ()
+  "Paste from Window’s clipboard."
+  (interactive)
+  (let ((wslbuffername "wsl-temp-buffer"))
+    (get-buffer-create wslbuffername)
+    (with-current-buffer wslbuffername
+      (insert (let ((coding-system-for-read 'dos))
+                ;; TODO: put stderr somewhere else
+                (shell-command
+                 "powershell.exe -command ’Get-Clipboard’ 2&gt; /dev/null"
+                 wslbuffername nil))))
+    (insert-buffer wslbuffername)
+    (kill-buffer wslbuffername)))
+
+(defalias 'ts-paste-from-windows-clipboard 'wsl-paste)
+(global-set-key (kbd "C-c y") 'ts-paste-from-windows-clipboard)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-2">
+<h2 id="sec-">File Functions</h2>
+<div class="outline-text-2" id="text-">
+</div><div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Delete this file</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-delete-this-file ()
+  "Delete the current file, and kill the buffer."
+  (interactive)
+  (or (buffer-file-name) (error "No file is currently being edited"))
+  (when (yes-or-no-p (format "Really delete '%s'?"
+                             (file-name-nondirectory buffer-file-name)))
+    (delete-file (buffer-file-name) t)
+    (kill-this-buffer)))
+
+(global-set-key (kbd "C-c f d") 'ts-delete-this-file)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Insert other buffer file name</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-insert-other-buffer-file-name (arg)
+  "Does what it say on the the tin!
+With prefix ARG, omit path."
+  (interactive "P")
+  (insert (completing-read
+           "Select Buffer Filename: "
+           (delete nil
+                   (mapcar (lambda (buffer)
+                             (if (buffer-file-name buffer)
+                                 (if arg
+                                     (file-name-nondirectory
+                                      (buffer-file-name buffer))
+                                   (buffer-file-name buffer))))
+                           (buffer-list))))))
+
+(global-set-key (kbd "C-c f i") 'ts-insert-other-buffer-file-name)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Make backup of current file</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-make-backup ()
+  "Make a backup copy of current file or dired marked files.
+
+If in dired, backup current file or marked files."
+  (interactive)
+  (let (($fname (buffer-file-name)))
+    (if $fname
+        (let (($backup-name
+               (concat $fname "." (format-time-string "%y%m%d%H%M") ".bak")))
+          (copy-file $fname $backup-name t)
+          (message (concat "Backup saved at: " $backup-name)))
+      (if (string-equal major-mode "dired-mode")
+          (progn
+            (mapc (lambda ($x)
+                    (let (($backup-name
+                           (concat $x "." (format-time-string "%y%m%d%H%M") ".bak")))
+                      (copy-file $x $backup-name t)))
+                  (dired-get-marked-files))
+            (message "marked files backed up"))
+        (user-error "Buffer not file nor dired")))))
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-make-backup-and-save ()
+  "Backup of current file and save, or backup dired marked files.
+For detail, see `ts-make-backup'."
+  (interactive)
+  (if (buffer-file-name)
+      (progn
+        (ts-make-backup)
+        (when (buffer-modified-p)
+          (save-buffer)))
+    (progn
+      (ts-make-backup))))
+
+(global-set-key (kbd "C-c f b") 'ts-make-backup-and-save)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Open current file as root</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-sudoedit (&amp;optional arg)
+  "Open current or ARG file as root."
+  (interactive "P")
+  (if (or arg (not buffer-file-name))
+      (find-file (concat "/sudo:root@localhost:"
+                         (read-file-name "Find file (as root): ")))
+    (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+
+(global-set-key (kbd "C-c f s") 'ts-sudoedit)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Rename file and buffer</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-rename-this-file-and-buffer (new-name)
+  "Renames both current buffer and file it's visiting to NEW-NAME."
+  (interactive "FNew name: ")
+  (let ((name (buffer-name))
+        (filename (buffer-file-name)))
+    (unless filename
+      (error "Buffer '%s' is not visiting a file!" name))
+    (if (get-buffer new-name)
+        (message "A buffer named '%s' already exists!" new-name)
+      (progn
+        (when (file-exists-p filename)
+          (rename-file filename new-name 1))
+        (rename-buffer new-name)
+        (set-visited-file-name new-name)))))
+
+(global-set-key (kbd "C-c f r") 'ts-rename-this-file-and-buffer)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Yank current file contents to kill ring</h3>
+<div class="outline-text-3" id="text-">
+<p>
+Very useful for copying ssh public keys&#x2026;
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-copy-file-contents-to-clipboard (file)
+  "Copy a file's contents to the clipboard."
+  (interactive "f")
+  (with-current-buffer (find-file-noselect file)
+    (kill-new (buffer-substring-no-properties (point-min) (point-max))))
+  (message "Copied contents of %s to the clipboard" file))
+
+(global-set-key (kbd "C-c f h") 'ts-copy-file-contents-to-clipboard)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Yank current file name to kill ring</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-copy-file-name-to-clipboard (arg)
+  "Copy the current buffer file name to the clipboard.
+With prefix ARG, omit path."
+  (interactive "P")
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      (if arg
+                          (file-name-nondirectory
+                           (directory-file-name
+                            (file-name-directory default-directory)))
+                        default-directory)
+                    (if arg
+                        (file-name-nondirectory buffer-file-name)
+                      (buffer-file-name)))))
+    (when filename
+      (kill-new filename)
+      (message "Copied '%s' to the clipboard." filename))))
+
+(global-set-key (kbd "C-c f w") 'ts-copy-file-name-to-clipboard)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-2">
+<h2 id="sec-">Miscellaneous</h2>
+<div class="outline-text-2" id="text-">
+</div><div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Byte compile and load on save</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-byte-compile-and-load ()
+  "Byte compile Emacs Lisp files and load if ARG."
+  (when (and buffer-file-name
+             (equal (file-name-extension buffer-file-name) "el")
+             (equal major-mode 'emacs-lisp-mode))
+    (byte-compile-file buffer-file-name)
+    (message "Compiled %s :-)" buffer-file-name)
+    (load (file-name-sans-extension buffer-file-name))
+    (message "Loaded %s :-)" buffer-file-name)))
+
+(add-hook 'after-save-hook 'ts-byte-compile-and-load)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Ensure init files are byte compiled</h3>
+<div class="outline-text-3" id="text-">
+<p>
+This block will byte compile <code>early-init.el</code> and <code>init.el</code> if an existing
+<code>.elc</code> file is not up to date with their contents.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-ensure-byte-compiled-init ()
+  "Run `byte-recompile-file' on config files with 'nil' FORCE and ARG 0.
+This means we don't compile if .elc is up to date but we always
+create a new .elc file if it doesn't already exist."
+  (autoload 'byte-recompile-file "bytecomp")
+  (if (file-readable-p (expand-file-name "early-init.el" user-emacs-directory))
+      (byte-recompile-file (expand-file-name "early-init.el" user-emacs-directory) 'nil 0))
+  (byte-recompile-file (expand-file-name "init.el" user-emacs-directory) 'nil 0))
+
+(add-hook 'after-init-hook 'ts-ensure-byte-compiled-init)
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Recompile config</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defvar ts-files-to-recompile '("early-init.el" "init.el")
+  "Files under `user-emacs-directory' that we use for configuration.")
+
+(defun ts-recompile-config ()
+  "Recompile everything in Emacs configuration."
+  (interactive)
+  (mapc (lambda (file)
+          (let ((path (expand-file-name file user-emacs-directory)))
+            (when (file-readable-p path)
+              (byte-recompile-file path t 0)
+              (load (file-name-sans-extension path))
+              (message "Re-compiled &amp; loaded %s :-)" path))))
+        ts-files-to-recompile))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Tangle config</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-tangle-config ()
+  "Re-tangle my org mode configuration file."
+  (interactive)
+  (autoload 'org-babel-tangle-file "ob-tangle")
+  (org-babel-tangle-file "~/src/gitlab/tslight/emacs/README.org"))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Googling</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-google (arg)
+  "Googles a query or region.  With prefix ARG, wrap in quotes."
+  (interactive "P")
+  (let ((query
+         (if (region-active-p)
+             (buffer-substring (region-beginning) (region-end))
+           (read-string "Query: "))))
+    (when arg (setq query (concat "\"" query "\"")))
+    (browse-url
+     (concat "http://www.google.com/search?ie=utf-8&amp;oe=utf-8&amp;q=" query))))
+
+(global-set-key (kbd "C-c M-s") 'ts-google)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Default Text Scale</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defadvice text-scale-increase (around all-buffers (arg) activate)
+  (dolist (buffer (buffer-list))
+    (with-current-buffer buffer
+      ad-do-it)))
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-2">
+<h2 id="sec-">Window Functions</h2>
+<div class="outline-text-2" id="text-">
+</div><div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Better scrolling of other windows</h3>
+<div class="outline-text-3" id="text-">
+<p>
+This is better, since I don't need to send prefix to <code>scroll-other-window</code>.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-scroll-other-window (arg)
+  "Scroll up other window when called with prefix."
+  (interactive "P")
+  (if arg (scroll-other-window-down) (scroll-other-window)))
+
+(global-set-key [remap scroll-other-window] 'ts-scroll-other-window)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Kill buffer other window</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-kill-buffer-other-window ()
+  "Kill the buffer in the last used window."
+  (interactive)
+  ;; Window selection is used because point goes to a different window if more
+  ;; than 2 windows are present
+  (let ((current-window (selected-window))
+        (other-window (get-mru-window t t t)))
+    (select-window other-window)
+    (kill-this-buffer)
+    (select-window current-window)))
+
+(global-set-key (kbd "C-c w k") 'ts-kill-buffer-other-window)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Open a buffer in another window</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-display-buffer-in-previous-window (buffer)
+  "Display BUFFER in other window without switching to it."
+  (interactive "BDisplay buffer in other window: ")
+  (display-buffer buffer 'display-buffer-in-previous-window))
+
+(global-set-key (kbd "C-c w o") 'ts-display-buffer-in-previous-window)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Split window right to last buffer</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-split-window-right (prefix)
+  "Split the window vertically and display the previous buffer.
+With PREFIX stay in current buffer."
+  (interactive "p")
+  (split-window-right)
+  (other-window 1)
+  (if (= prefix 1)
+      (switch-to-next-buffer)))
+
+(global-set-key (kbd "C-c 3") 'ts-split-window-right)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Split window below to last buffer</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-split-window-below (prefix)
+  "Split the window horizontally and display the previous buffer.
+With PREFIX stay in current buffer."
+  (interactive "p")
+  (split-window-below)
+  (other-window 1)
+  (if (= prefix 1)
+      (switch-to-next-buffer)))
+
+(global-set-key (kbd "C-c 2") 'ts-split-window-below)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Switch to the previous window</h3>
+<div class="outline-text-3" id="text-">
+<p>
+This is basically <code>other-window</code> backwards.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-prev-window ()
+  "Go the previously used window, excluding other frames."
+  (interactive)
+  (other-window -1))
+
+(global-set-key (kbd "C-x O") 'ts-prev-window)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Toggle focus to last window</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-last-window ()
+  "Switch back and forth between two windows easily."
+  (interactive)
+  (let ((win (get-mru-window t t t)))
+    (unless win (error "Last window not found"))
+    (let ((frame (window-frame win)))
+      (raise-frame frame)
+      (select-frame frame)
+      (select-window win))))
+
+(global-set-key (kbd "C-c w w") 'ts-last-window)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Toggle maximize window</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-toggle-maximize-window ()
+  "Temporarily maximize a window."
+  (interactive)
+  (if (= 1 (length (window-list)))
+      (jump-to-register '_)
+    (progn
+      (window-configuration-to-register '_)
+      (delete-other-windows))))
+
+(global-set-key (kbd "C-c z") 'ts-toggle-maximize-window)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Toggle vertical -&gt; horizontal splits</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-toggle-split ()
+  "Switch window split from horizontally to vertically.
+Or vice versa. Change right window to bottom, or change bottom
+window to right."
+  (interactive)
+  (autoload 'windmove-find-other-window "windmove" nil t)
+  (let ((done))
+    (dolist (dirs '((right . down) (down . right)))
+      (unless done
+        (let* ((win (selected-window))
+               (nextdir (car dirs))
+               (neighbour-dir (cdr dirs))
+               (next-win (windmove-find-other-window nextdir win))
+               (neighbour1 (windmove-find-other-window neighbour-dir win))
+               (neighbour2 (if next-win
+                               (with-selected-window next-win
+                                 (windmove-find-other-window
+                                  neighbour-dir next-win)))))
+          (setq done (and (eq neighbour1 neighbour2)
+                          (not (eq (minibuffer-window) next-win))))
+          (if done
+              (let* ((other-buf (window-buffer next-win)))
+                (delete-window next-win)
+                (if (eq nextdir 'right)
+                    (split-window-vertically)
+                  (split-window-horizontally))
+                (set-window-buffer
+                 (windmove-find-other-window neighbour-dir)
+                 other-buf))))))))
+
+(global-set-key (kbd "C-c w s") 'ts-toggle-split)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-2">
+<h2 id="sec-">Emacs Packages</h2>
+<div class="outline-text-2" id="text-">
+</div><div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Ansi Color</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
+(defun colorize-compilation-buffer ()
+  "ANSI color in compilation buffer."
+  (ansi-color-apply-on-region compilation-filter-start (point)))
+(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Auto-fill</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-fill-or-unfill ()
+  "Like `fill-paragraph', but unfill if used twice."
+  (interactive)
+  (let ((fill-column
+         (if (eq last-command 'ts-fill-or-unfill)
+             (progn (setq this-command nil)
+                    (point-max))
+           fill-column)))
+    (call-interactively #'fill-paragraph)))
+
+(global-set-key [remap fill-paragraph] 'ts-fill-or-unfill)
+
+(setq-default fill-column 79)
+(add-hook 'org-mode-hook 'auto-fill-mode)
+(add-hook 'text-mode-hook 'auto-fill-mode)
+
+(global-set-key (kbd "C-c M-t a") 'toggle-text-mode-autofill)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Auto-revert</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(add-hook 'after-init-hook 'global-auto-revert-mode) ;; reload if file changed on disk
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Battery</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'battery
+  (setq battery-mode-line-format " [%b%p%%]")
+  (setq battery-mode-line-limit 95)
+  (setq battery-update-interval 180)
+  (setq battery-load-low 20)
+  (setq battery-load-critical 10))
+
+(add-hook 'after-init-hook 'display-battery-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Column Number</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(add-hook 'after-init-hook 'column-number-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Dabbrev</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'dabbrev
+  (setq abbrev-file-name (concat user-emacs-directory "abbrevs"))
+  (setq save-abbrevs 'silently)
+  (unless (version&lt; emacs-version "28")
+    (setq abbrev-suggest t))
+  (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
+  (setq dabbrev-abbrev-skip-leading-regexp "[$*/=']")
+  (setq dabbrev-backward-only nil)
+  (setq dabbrev-case-distinction 'case-replace)
+  (setq dabbrev-case-fold-search t)
+  (setq dabbrev-case-replace 'case-replace)
+  (setq dabbrev-check-other-buffers t)
+  (setq dabbrev-eliminate-newlines t)
+  (setq dabbrev-upcase-means-case-search t)
+  (message "Lazy loaded dabbrev :-)"))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Dired</h3>
+<div class="outline-text-3" id="text-">
+</div><div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Dired Extras</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'dired
+  (defun ts-dired-get-size ()
+    "Get cumlative size of marked or current item."
+    (interactive)
+    (let ((files (dired-get-marked-files)))
+      (with-temp-buffer
+        (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
+        (message "Size of all marked files: %s"
+                 (progn
+                   (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
+                   (match-string 1))))))
+
+  (define-key dired-mode-map "?" 'ts-dired-get-size)
+
+  (defun ts-dired-beginning-of-buffer ()
+    "Go to first file in directory."
+    (interactive)
+    (goto-char (point-min))
+    (dired-next-line 2))
+
+  (define-key dired-mode-map [remap beginning-of-buffer] 'ts-dired-beginning-of-buffer)
+
+  (defun ts-dired-end-of-buffer ()
+    "Go to last file in directory."
+    (interactive)
+    (goto-char (point-max))
+    (dired-next-line -1))
+
+  (define-key dired-mode-map [remap end-of-buffer] 'ts-dired-end-of-buffer)
+
+  (defun ts-dired-up-directory ()
+    (interactive)
+    (find-alternate-file ".."))
+
+  (define-key dired-mode-map "b" 'ts-dired-up-directory))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Dired Omit</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'dired
+  (autoload 'dired-omit-mode "dired-x" nil t)
+  (autoload 'dired-omit-files "dired-x" nil t)
+  (setq dired-omit-files "\\`[.]?#\\|\\`[.][.]?\\'\\|^\\..+$"))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Dired Listing Switches</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'dired
+  (when (eq system-type 'berkeley-unix) (setq dired-listing-switches "-alhpL"))
+
+  (when (eq system-type 'gnu/linux)
+    (setq dired-listing-switches
+          "-AGFhlv --group-directories-first --time-style=long-iso")))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Dired Settings</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'dired
+  (setq dired-dwim-target t
+        delete-by-moving-to-trash t
+        dired-use-ls-dired nil
+        dired-recursive-copies 'always
+        dired-recursive-deletes 'always))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Dired Keybindings</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'dired
+  (define-key dired-mode-map "f" 'dired-find-alternate-file)
+  (define-key dired-mode-map "c" 'dired-do-compress-to)
+  (define-key dired-mode-map ")" 'dired-omit-mode))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Dired AUX</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'dired-aux
+  (setq dired-isearch-filenames 'dwim)
+  ;; The following variables were introduced in Emacs 27.1
+  (unless (version&lt; emacs-version "27.1")
+    (setq dired-create-destination-dirs 'ask)
+    (setq dired-vc-rename-file t))
+  (message "Lazy loaded dired-aux :-)"))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Find Dired</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'find-dired
+  ;; (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
+  (setq find-ls-option
+        '("-ls" . "-AGFhlv --group-directories-first --time-style=long-iso"))
+  (setq find-name-arg "-iname")
+  (message "Lazy loaded find-dired :-)"))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Writeable Dired</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'wdired
+  (setq wdired-allow-to-change-permissions t)
+  (setq wdired-create-parent-directories t)
+  (message "Lazy loaded wdired :-)"))
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Doc View</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'doc-view-mode
+  (setq doc-view-continuous t)
+  (setq doc-view-resolution 300)
+  (message "Lazy loaded doc-view-mode :-)"))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Ediff</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'ediff
+  (setq ediff-diff-options "-w")
+  (setq ediff-keep-variants nil)
+  (setq ediff-make-buffers-readonly-at-startup nil)
+  (setq ediff-merge-revisions-with-ancestor t)
+  (setq ediff-show-clashes-only t)
+  (setq ediff-split-window-function 'split-window-horizontally)
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+  (add-hook 'ediff-after-quit-hook-internal 'winner-undo)
+
+  ;; https://emacs.stackexchange.com/a/24602
+  (defun disable-y-or-n-p (orig-fun &amp;rest args)
+    "Advise ORIG-FUN with ARGS so it dynamically rebinds `y-or-n-p'."
+    (cl-letf (((symbol-function 'y-or-n-p) (lambda () t)))
+      (apply orig-fun args)))
+
+  (advice-add 'ediff-quit :around #'disable-y-or-n-p)
+  (message "Lazy loaded ediff :-)"))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Eldoc</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
+(add-hook 'lisp-interaction-mode-hook 'eldoc-mode)
+(add-hook 'lisp-mode-hook 'eldoc-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Electric</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(add-hook 'after-init-hook 'electric-indent-mode)
+;; (add-hook 'text-mode-hook 'electric-quote-mode)
+(add-hook 'after-init-hook 'electric-pair-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">ERC</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'erc
+  (setq erc-autojoin-channels-alist '(("freenode.net" "#emacs")))
+  (setq erc-fill-column 80)
+  (setq erc-hide-list '("JOIN" "PART" "QUIT"))
+  (setq erc-input-line-position -2)
+  (setq erc-keywords '("knowayback"))
+  (setq erc-nick "knowayback")
+  (setq erc-prompt-for-password t)
+  (setq erc-track-enable-keybindings t)
+  (message "Lazy loaded erc :-)"))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Eshell</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'eshell
+  (defun ts-eshell-complete-recent-dir (&amp;optional arg)
+    "Switch to a recent `eshell' directory using completion.
+With \\[universal-argument] also open the directory in a `dired'
+buffer."
+    (interactive "P")
+    (let* ((dirs (ring-elements eshell-last-dir-ring))
+           (dir (completing-read "Switch to recent dir: " dirs nil t)))
+      (insert dir)
+      (eshell-send-input)
+      (when arg
+        (dired dir))))
+
+  (defun ts-eshell-complete-history ()
+    "Insert element from `eshell' history using completion."
+    (interactive)
+    (let ((hist (ring-elements eshell-history-ring)))
+      (insert
+       (completing-read "Input history: " hist nil t))))
+
+  (defun ts-eshell-prompt ()
+    "Custom eshell prompt."
+    (concat
+     (propertize (user-login-name) 'face `(:foreground "green" ))
+     (propertize "@" 'face `(:foreground "yellow"))
+     (propertize (system-name) `face `(:foreground "green"))
+     (propertize ":" 'face `(:foreground "yellow"))
+     (if (string= (eshell/pwd) (getenv "HOME"))
+         (propertize "~" 'face `(:foreground "magenta"))
+       (propertize (eshell/basename (eshell/pwd)) 'face `(:foreground "magenta")))
+     "\n"
+     (if (= (user-uid) 0)
+         (propertize "#" 'face `(:foreground "red"))
+       (propertize "$" 'face `(:foreground "yellow")))
+     (propertize " " 'face `(:foreground "white"))))
+
+  ;; https://www.emacswiki.org/emacs/EshellPrompt
+  (setq eshell-cd-on-directory t
+        eshell-destroy-buffer-when-process-dies t
+        eshell-highlight-prompt nil
+        eshell-hist-ignoredups t
+        eshell-history-size 4096
+        eshell-ls-use-colors t
+        eshell-prefer-lisp-functions t
+        eshell-prefer-lisp-variables t
+        eshell-prompt-regexp "^[^#$\n]*[#$] "
+        eshell-prompt-function 'ts-eshell-prompt
+        eshell-review-quick-commands nil
+        eshell-save-history-on-exit t
+        eshell-smart-space-goes-to-end t
+        eshell-where-to-jump 'begin)
+
+  (add-to-list 'eshell-modules-list 'eshell-tramp) ;; no sudo password with ~/.authinfo
+  (add-hook 'eshell-preoutput-filter-functions 'ansi-color-apply)
+
+  (defun ts-eshell-keys()
+    (define-key eshell-mode-map (kbd "M-r") 'ts-eshell-complete-history)
+    (define-key eshell-mode-map (kbd "C-=") 'ts-eshell-complete-recent-dir))
+
+  (add-hook 'eshell-mode-hook 'ts-eshell-keys)
+  (message "Lazy loaded eshell :-)"))
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-eshell-other-window ()
+  "Open an `eshell' in another window."
+  (interactive)
+  (split-window-sensibly)
+  (other-window 1)
+  (eshell))
+
+(autoload 'eshell "eshell" nil t)
+(global-set-key (kbd "C-c e") 'eshell)
+(global-set-key (kbd "C-c 4 e") 'ts-eshell-other-window)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Flymake</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(add-hook 'prog-mode-hook 'flymake-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Flyspell</h3>
+<div class="outline-text-3" id="text-">
+<p>
+Don't bother using this on Windows as I can rather be bothered to install
+<a href="http://aspell.net/win32/">Aspell</a> for Windows.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(unless (eq system-type 'windows-nt)
+  (add-hook 'text-mode-hook 'flyspell-mode)
+  (add-hook 'org-mode-hook 'flyspell-mode)
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Gnus</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'gnus
+  (setq gnus-init-file "~/.emacs.d/init.el")
+  (setq gnus-home-directory "~/.emacs.d/")
+  (setq message-directory "~/.emacs.d/mail")
+  (setq gnus-directory "~/.emacs.d/news")
+  (setq nnfolder-directory "~/.emacs.d/mail/archive")
+  (setq gnus-use-full-window nil)
+  (setq gnus-select-method '(nntp "news.gwene.org"))
+  ;; (setq gnus-secondary-select-methods '((nntp "news.gnus.org")))
+  (setq gnus-summary-thread-gathering-function 'gnus-gather-threads-by-subject)
+  (setq gnus-thread-hide-subtree t)
+  (setq gnus-thread-ignore-subject t)
+  (message "Lazy loaded gnus :-)"))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Hide/Show</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(add-hook 'shell-script-mode-hook 'hs-minor-mode)
+(add-hook 'prog-mode-hook 'hs-minor-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Highlight changes</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq highlight-changes-visibility-initial-state nil)
+(global-set-key (kbd "C-c n") 'highlight-changes-next-change)
+(global-set-key (kbd "C-c p") 'highlight-changes-previous-change)
+(add-hook 'emacs-startup-hook 'global-highlight-changes-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Highlight line</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(add-hook 'dired-mode-hook 'hl-line-mode)
+(add-hook 'org-mode-hook 'hl-line-mode)
+(add-hook 'prog-mode-hook 'hl-line-mode)
+(add-hook 'shell-script-mode-hook 'hl-line-mode)
+(add-hook 'text-mode-hook 'hl-line-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Hippie Expand</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-hippie-expand-completions (&amp;optional hippie-expand-function)
+  "Return the full list of completions generated by HIPPIE-EXPAND-FUNCTION.
+The optional argument can be generated with `make-hippie-expand-function'."
+  (let ((this-command 'ts-hippie-expand-completions)
+        (last-command last-command)
+        (buffer-modified (buffer-modified-p))
+        (hippie-expand-function (or hippie-expand-function 'hippie-expand)))
+    (cl-flet ((ding)) ; avoid the (ding) when hippie-expand exhausts its options.
+      (while (progn
+               (funcall hippie-expand-function nil)
+               (setq last-command 'ts-hippie-expand-completions)
+               (not (equal he-num -1)))))
+    ;; Evaluating the completions modifies the buffer, however we will finish
+    ;; up in the same state that we began.
+    (set-buffer-modified-p buffer-modified)
+    ;; Provide the options in the order in which they are normally generated.
+    (delete he-search-string (reverse he-tried-table))))
+
+(defun ts-hippie-complete-with (hippie-expand-function)
+  "Offer `completing-read' using the specified HIPPIE-EXPAND-FUNCTION."
+  (let* ((options (ts-hippie-expand-completions hippie-expand-function))
+         (selection (and options (completing-read "Completions: " options))))
+    (if selection
+        (he-substitute-string selection t)
+      (message "No expansion found"))))
+
+(defun ts-hippie-expand-completing-read ()
+  "Offer `completing-read' for the word at point."
+  (interactive)
+  (ts-hippie-complete-with 'hippie-expand))
+
+(global-set-key (kbd "M-/") 'hippie-expand)
+(global-set-key (kbd "C-M-/") 'ts-hippie-expand-completing-read)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Icomplete</h3>
+<div class="outline-text-3" id="text-">
+<p>
+Turn on <code>fido-mode</code> if we are on Emacs 27+
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(if (version&lt; emacs-version "27")
+    (add-hook 'after-init-hook 'icomplete-mode)
+  (add-hook 'after-init-hook 'fido-mode))
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Change completion styles</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-icomplete-styles ()
+  "Set icomplete styles based on Emacs version."
+  (if (version&lt; emacs-version "27")
+      (setq-local completion-styles '(initials partial-completion substring basic))
+    (setq-local completion-styles '(initials partial-completion flex substring basic))))
+(add-hook 'icomplete-minibuffer-setup-hook 'ts-icomplete-styles)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Icomplete keybindings</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'icomplete
+  (unless (version&lt; emacs-version "27")
+    (define-key icomplete-minibuffer-map (kbd "C-j") 'icomplete-fido-exit))
+  (define-key icomplete-minibuffer-map (kbd "M-j") 'exit-minibuffer)
+  (define-key icomplete-minibuffer-map (kbd "C-n") 'icomplete-forward-completions)
+  (define-key icomplete-minibuffer-map (kbd "C-p") 'icomplete-backward-completions)
+  (define-key icomplete-minibuffer-map (kbd "&lt;up&gt;") 'icomplete-backward-completions)
+  (define-key icomplete-minibuffer-map (kbd "&lt;down&gt;") 'icomplete-forward-completions)
+  (define-key icomplete-minibuffer-map (kbd "&lt;left&gt;") 'icomplete-backward-completions)
+  (define-key icomplete-minibuffer-map (kbd "&lt;right&gt;") 'icomplete-forward-completions))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Icomplete settings</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'icomplete
+  (unless (version&lt; emacs-version "27")
+    (icomplete-vertical-mode))
+  (setq icomplete-delay-completions-threshold 100)
+  (setq icomplete-max-delay-chars 2)
+  (setq icomplete-compute-delay 0.2)
+  (setq icomplete-show-matches-on-no-input t)
+  (setq icomplete-hide-common-prefix nil)
+  (setq icomplete-prospects-height 1)
+  ;; (setq icomplete-separator "\n")
+  (setq icomplete-separator (propertize " · " 'face 'shadow))
+  (setq icomplete-with-completion-tables t)
+  (setq icomplete-tidy-shadowed-file-names t)
+  (setq icomplete-in-buffer t))
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Imenu</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'imenu
+  (setq imenu-auto-rescan t)
+  (setq imenu-auto-rescan-maxout 600000)
+  (setq imenu-eager-completion-buffer t)
+  (setq imenu-level-separator "/")
+  (setq imenu-max-item-length 100)
+  (setq imenu-space-replacement " ")
+  (setq imenu-use-markers t)
+  (setq imenu-use-popup-menu nil)
+  (message "Lazy loaded imenu :-)"))
+
+(autoload 'imenu "imenu" nil t)
+(global-set-key (kbd "C-c i") 'imenu)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Isearch</h3>
+<div class="outline-text-3" id="text-">
+</div><div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Isearch exit</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-isearch-exit ()
+  "Move point to the start of the matched string."
+  (interactive)
+  (when (eq isearch-forward t)
+    (goto-char isearch-other-end))
+  (isearch-exit))
+
+(define-key isearch-mode-map (kbd "RET") 'ts-isearch-exit)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Copy to isearch</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-copy-to-isearch ()
+  "Copy up to the search match when searching forward.
+
+When searching backward, copy to the start of the search match."
+  (interactive)
+  (ts-isearch-exit)
+  (call-interactively 'kill-ring-save)
+  (exchange-point-and-mark))
+
+(define-key isearch-mode-map (kbd "M-w") 'ts-copy-to-isearch)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Kill to isearch</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-kill-to-isearch ()
+  "Kill up to the search match when searching forward.
+
+When searching backward, kill to the beginning of the match."
+  (interactive)
+  (ts-isearch-exit)
+  (call-interactively 'kill-region))
+
+(define-key isearch-mode-map (kbd "C-k") 'ts-kill-to-isearch)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Isearch Abort DWIM</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-isearch-abort-dwim ()
+  "Delete failed `isearch' input, single char, or cancel search.
+
+This is a modified variant of `isearch-abort' that allows us to
+perform the following, based on the specifics of the case: (i)
+delete the entirety of a non-matching part, when present; (ii)
+delete a single character, when possible; (iii) exit current
+search if no character is present and go back to point where the
+search started."
+  (interactive)
+  (if (eq (length isearch-string) 0)
+      (isearch-cancel)
+    (isearch-del-char)
+    (while (or (not isearch-success) isearch-error)
+      (isearch-pop-state)))
+  (isearch-update))
+
+(define-key isearch-mode-map (kbd "&lt;backspace&gt;") 'ts-isearch-abort-dwim)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Keybindings</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(define-key isearch-mode-map (kbd "M-/") 'isearch-complete)
+(define-key minibuffer-local-isearch-map (kbd "M-/") 'isearch-complete-edit)
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "M-s b") 'multi-isearch-buffers-regexp)
+(global-set-key (kbd "M-s f") 'multi-isearch-files-regexp)
+(global-set-key (kbd "M-s M-o") 'multi-occur)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Settings</h4>
+<div class="outline-text-4" id="text-">
+<p>
+Don't tangle this on <code>emacs-version</code> &lt; 27
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(unless (version&lt; emacs-version "27.1")
+  (setq isearch-allow-scroll 'unlimited)
+  (setq isearch-yank-on-move 'shift)
+  (setq isearch-lazy-count t)
+  (setq lazy-count-suffix-format " (%s/%s)"))
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Line Numbers</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq display-line-numbers 'relative)
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(add-hook 'sh-script-hook 'display-line-numbers-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Minibuffer</h3>
+<div class="outline-text-3" id="text-">
+</div><div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Completion framework settings</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq completion-category-defaults nil)
+(setq completion-cycle-threshold 3)
+(setq completion-flex-nospace nil)
+(setq completion-ignore-case t)
+(setq completion-pcm-complete-word-inserts-delimiters t)
+(setq completion-pcm-word-delimiters "-_./:| ")
+(setq completion-show-help nil)
+(setq completions-detailed t)
+(setq completions-format 'one-column)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Misc Minibuffer settings</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq enable-recursive-minibuffers t)
+(setq file-name-shadow-mode 1)
+(setq minibuffer-depth-indicate-mode 1)
+(setq minibuffer-eldef-shorten-default t)
+(setq minibuffer-electric-default-mode 1)
+(setq read-answer-short t)
+(setq read-buffer-completion-ignore-case t)
+(setq read-file-name-completion-ignore-case t)
+(setq resize-mini-windows t)
+</pre>
+</div>
+
+<p>
+It may also be wise to raise gc-cons-threshold while the minibuffer is active,
+so the GC doesn’t slow down expensive commands (or completion frameworks, like
+helm and ivy). Stolen from <a href="https://github.com/hlissner/doom-emacs/blob/develop/docs/faq.org#how-does-doom-start-up-so-quickly">Doom Emacs FAQ</a>.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(add-hook 'minibuffer-setup-hook (lambda () (setq gc-cons-threshold most-positive-fixnum)))
+(add-hook 'minibuffer-exit-hook (lambda () (setq gc-cons-threshold 16777216))) ; 16mb
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Save history mode</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'savehist
+  (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
+  (setq savehist-save-minibuffer-history 1)
+  (message "Lazy loaded savehist :-)"))
+(add-hook 'emacs-startup-hook 'savehist-mode)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Occur</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(add-hook 'occur-mode-hook 'hl-line-mode)
+(define-key occur-mode-map "t" 'toggle-truncate-lines)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Org</h3>
+<div class="outline-text-3" id="text-">
+</div><div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Org Babel Load Languages</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'org
+  (defadvice org-babel-execute-src-block (around load-language nil activate)
+    "Load language if needed"
+    (let ((language (org-element-property :language (org-element-at-point))))
+      (unless (cdr (assoc (intern language) org-babel-load-languages))
+        (add-to-list 'org-babel-load-languages (cons (intern language) t))
+        (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages))
+      ad-do-it)))
+</pre>
+</div>
+
+<p>
+No need to tangle, when using the advice above, leaving here for reference.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'org
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((awk . t)
+     (C . t)
+     (clojure . t)
+     (css . t)
+     (dot . t) ;; graphviz language
+     (emacs-lisp . t)
+     (gnuplot . t)
+     (haskell . t)
+     ;; (http . t)
+     (java . t)
+     (js . t)
+     (latex . t)
+     (lisp . t)
+     (makefile . t)
+     (ocaml . t)
+     (perl . t)
+     (python . t)
+     (plantuml . t)
+     (ruby . t)
+     (scheme . t)
+     (sed . t)
+     (shell . t)
+     (sql . t)
+     (sqlite . t))))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Org Capture Templates</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'org
+  (setq org-capture-templates
+        '(("t" "TODO Entry" entry (file+headline "~/org/todo.org" "Captured")
+           "* TODO %?\n  %i\n  %a")
+          ("j" "Journal Entry" entry (file+datetree "~/org/journal.org" "Captured")
+           "* %?\nEntered on %U\n %i\n  %a")
+          ("n" "Notes Entry" entry (file+datetree "~/org/notes.org" "Captured")
+           "* %?\nEntered on %U\n %i\n  %a"))))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Org Global Keybindings</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(autoload 'org-mode "org" nil t)
+(autoload 'org-agenda "org" nil t)
+(global-set-key (kbd "C-c o a") 'org-agenda)
+(autoload 'org-capture "org" nil t)
+(global-set-key (kbd "C-c o c") 'org-capture)
+(autoload 'org-store-link "org" nil t)
+(global-set-key (kbd "C-c o l") 'org-store-link)
+(autoload 'org-time-stamp "org" nil t)
+(global-set-key (kbd "C-c o t") 'org-time-stamp)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Org Latex</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'org-latex
+  (setq org-latex-listings 'minted)
+  (setq org-latex-pdf-process
+        '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+  (add-to-list 'org-latex-packages-alist '("" "minted")))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Org Misc Settings</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'org
+  (setq org-startup-folded t) ;; start in overview mode
+  (setq org-directory "~/org")
+  (setq org-agenda-files (file-expand-wildcards "~/org/*.org"))
+  (setq org-default-notes-file "~/org/notes.org")
+  (setq org-image-actual-width nil) ; try to get width from #+ATTR.* keyword
+  (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+  (setq org-emphasis-regexp-components '(" \t('\"{" "- \t.,:!?;'\")}\\" " \t\r\n,\"'" "." 300))
+  (setq org-confirm-babel-evaluate t)
+  (setq org-export-with-toc t)
+  (setq org-indent-indentation-per-level 1)
+  (setq org-list-allow-alphabetical t)
+  (setq org-list-indent-offset 1)
+  (setq org-return-follows-link t)
+  (setq org-startup-indented t)
+  (setq org-use-fast-todo-selection t))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Org Outline/Goto</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'org
+  (setq org-goto-interface 'outline-path-completionp)
+  (setq org-outline-path-complete-in-steps nil)
+  ;; org-goto is basically imenu on steroids for org-mode
+  (define-key org-mode-map (kbd "C-c i") 'org-goto))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Org Recompile Post Tangle</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'org
+  (if (version&lt; emacs-version "28")
+      (progn
+        (add-hook 'org-babel-post-tangle-hook (lambda () (byte-recompile-file early-init nil 0 t)))
+        (add-hook 'org-babel-post-tangle-hook (lambda () (byte-recompile-file init-file nil 0 t))))
+    (progn
+      (add-hook 'org-babel-post-tangle-hook (lambda () (byte-recompile-file early-init nil 0)))
+      (add-hook 'org-babel-post-tangle-hook 'emacs-lisp-byte-compile-and-load))))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Org Recursive Sort</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-org-recursive-sort ()
+  "Sort all entries in the current buffer, recursively."
+  (interactive)
+  (org-map-entries (lambda ()
+                     (condition-case x
+                         (org-sort-entries nil ?a) (user-error)))))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Org Refile</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'org
+  (setq org-refile-use-outline-path 'file)
+  (setq org-refile-allow-creating-parent-nodes 'confirm)
+  (setq org-refile-targets '((nil :maxlevel . 9))))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Org Special Keys</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'org
+  (setq org-special-ctrl-a/e 'reversed)
+  (setq org-special-ctrl-k t)
+  (setq org-special-ctrl-o t))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Org Speed Commands</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'org
+  (setq org-use-speed-commands t)
+  (setq org-speed-commands-user
+        '(("N" . org-down-element)
+          ("P" . org-up-element))))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Org Src</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'org
+  (setq org-src-fontify-natively t)
+  (setq org-src-tab-acts-natively t)
+  (setq org-src-window-setup 'current-window))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Org Structure Templates</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'org
+  (require 'org-tempo)
+  (setq org-structure-template-alist (append org-structure-template-alist
+                                             '(("cl" . "src common-lisp")
+                                               ("el" . "src emacs-lisp")
+                                               ("go" . "src go")
+                                               ("ja" . "src java")
+                                               ("js" . "src javascript")
+                                               ("kr" . "src c")
+                                               ("py" . "src python")
+                                               ("sh" . "src shell")
+                                               ("sq" . "src sql")
+                                               ("tx" . "src text")))))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Org Todo Keywords</h4>
+<div class="outline-text-4" id="text-">
+<p>
+Add <code>!</code> in the sequence parens to insert timestamps and add <code>@</code> to require a
+message.
+</p>
+
+<blockquote>
+<p>
+Since it is normally too much to record a note for every state, Org mode
+expects configuration on a per-keyword basis for this. This is achieved by
+adding special markers ‘!’ (for a timestamp) or ‘@’ (for a note with timestamp)
+in parentheses after each keyword.
+</p>
+</blockquote>
+
+<p>
+<a href="https://orgmode.org/manual/Tracking-TODO-state-changes.html">https://orgmode.org/manual/Tracking-TODO-state-changes.html</a>
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'org
+  (setq org-todo-keywords '((sequence
+                             "TODO(t)"
+                             "IN-PROGRESS(i)"
+                             "BLOCKED(b)"
+                             "DONE(d)"
+                             ))))
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Pending delete</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(add-hook 'after-init-hook 'pending-delete-mode 1) ;; remove selected region if typing
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Prettify Symbols</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'prettify-symbols
+  (setq prettify-symbols-unprettify-at-point 'right-edge)
+  (message "Lazy loaded prettify-symbols :-)"))
+(add-hook 'emacs-startup-hook 'global-prettify-symbols-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Project (Emacs 28+)</h3>
+<div class="outline-text-3" id="text-">
+<p>
+We only tangle this when <code>emacs-version</code> &gt; 28, since it's not very useful prior
+to that.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq ts-project-roots '("~" "~/src/gitlab"))
+
+(defun ts-project--git-repo-p (directory)
+  "Return non-nil if there is a git repository in DIRECTORY."
+  (and
+   (file-directory-p (concat directory "/.git"))
+   (file-directory-p (concat directory "/.git/info"))
+   (file-directory-p (concat directory "/.git/objects"))
+   (file-directory-p (concat directory "/.git/refs"))
+   (file-regular-p (concat directory "/.git/HEAD"))))
+
+(defun ts-project--git-repos-recursive (directory maxdepth)
+  "List git repos in under DIRECTORY recursively to MAXDEPTH."
+  (let* ((git-repos '())
+         (current-directory-list
+          (directory-files directory t directory-files-no-dot-files-regexp)))
+    ;; while we are in the current directory
+    (if (ts-project--git-repo-p directory)
+        (setq git-repos (cons (file-truename (expand-file-name directory)) git-repos)))
+    (while current-directory-list
+      (let ((f (car current-directory-list)))
+        (cond ((and (file-directory-p f)
+                    (file-readable-p f)
+                    (&gt; maxdepth 0)
+                    (not (ts-project--git-repo-p f)))
+               (setq git-repos
+                     (append git-repos
+                             (ts-project--git-repos-recursive f (- maxdepth 1)))))
+              ((ts-project--git-repo-p f)
+               (setq git-repos (cons
+                                (file-truename (expand-file-name f)) git-repos))))
+        (setq current-directory-list (cdr current-directory-list))))
+    (delete-dups git-repos)))
+
+(defun ts-project--list-projects ()
+  "Produce list of projects in `ts-project-roots'."
+  (let ((cands (delete-dups (mapcan (lambda (directory)
+                                      (ts-project--git-repos-recursive
+                                       (expand-file-name directory)
+                                       10))
+                                    ts-project-roots))))
+    ;; needs to be a list of lists
+    (mapcar (lambda (d)
+              (list (abbreviate-file-name d)))
+            cands)))
+
+(defun ts-project-update-projects ()
+  "Overwrite `project--list' using `ts-project--list-projects'.
+    WARNING: This will destroy &amp; replace the contents of `project-list-file'."
+  (interactive)
+  (autoload 'project--ensure-read-project-list "project" nil t)
+  (project--ensure-read-project-list)
+  (setq project--list (ts-project--list-projects))
+  (project--write-project-list)
+  (message "Updated project list in %s" project-list-file))
+
+;; (add-hook 'emacs-startup-hook 'ts-project-update-projects)
+(global-set-key (kbd "C-x p u") 'ts-project-update-projects)
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'project
+  (setq project-switch-commands
+        '((?b "Buffer" project-switch-to-buffer)
+          (?c "Compile" project-compile)
+          (?d "Dired" project-dired)
+          (?e "Eshell" project-eshell)
+          (?f "File" project-find-file)
+          (?g "Grep" project-find-regexp)
+          (?q "Query replace" project-query-replace-regexp)
+          (?r "Run command" project-async-shell-command)
+          (?s "Search" project-search)
+          (?v "VC dir" project-vc-dir)))
+  (message "Lazy loaded project :-)"))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Pulse</h3>
+<div class="outline-text-3" id="text-">
+<p>
+<a href="https://karthinks.com/software/batteries-included-with-emacs/">https://karthinks.com/software/batteries-included-with-emacs/</a>
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun pulse-line (&amp;rest _)
+  "Pulse the current line."
+  (pulse-momentary-highlight-one-line (point)))
+
+(dolist (command '(scroll-up-command scroll-down-command
+                                     recenter-top-bottom other-window))
+  (advice-add command :after #'pulse-line))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Python</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'python
+  (setq python-fill-docstring-style 'django)
+  (message "Lazy loaded python :-)"))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Recentf</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'recentf
+  (setq recentf-exclude '(".gz"
+                          ".xz"
+                          ".zip"
+                          "/elpa/"
+                          "/ssh:"
+                          "/sudo:"
+                          "^/var/folders\\.*"
+                          "COMMIT_EDITMSG\\'"
+                          ".*-autoloads\\.el\\'"
+                          "[/\\]\\.elpa/"))
+  (setq recentf-max-menu-items 128)
+  (setq recentf-max-saved-items 256)
+
+  (defun ts--recentf-get-paths ()
+    "Return de-duplicated and abbreviated `recentf-list'."
+    (delete-dups (mapcar 'abbreviate-file-name recentf-list)))
+
+  (defun ts-recentf-find-file ()
+    "`find-file' using `recentf-list'."
+    (interactive)
+    (find-file (completing-read "Find file: " (ts--recentf-get-paths))))
+  (global-set-key (kbd "C-c r") 'ts-recentf-find-file)
+
+  (defun ts-recentf-find-file-other-window ()
+    "`find-file' using `recentf-list'."
+    (interactive)
+    (find-file-other-window
+     (completing-read "Find file in other window: " (ts--recentf-get-paths))))
+  (global-set-key (kbd "C-c 4 r") 'ts-recentf-find-file-other-window)
+
+  (defun ts-recentf-find-file-other-frame ()
+    "`find-file' using `recentf-list'."
+    (interactive)
+    (find-file-other-frame
+     (completing-read "Find file in other frame: " (ts--recentf-get-paths))))
+  (global-set-key (kbd "C-c 5 r") 'ts-recentf-find-file-other-frame)
+
+  (message "Lazy loaded recentf :-)"))
+
+(global-set-key (kbd "C-c C-r") 'recentf-open-files)
+(add-hook 'emacs-startup-hook 'recentf-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Saveplace</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'save-place
+  (setq save-place-file (concat user-emacs-directory "saveplace.el"))
+  (message "Lazy loaded save-place-mode :-)"))
+(add-hook 'emacs-startup-hook 'save-place-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Selective Display</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-toggle-selective-display ()
+  "Toggle `selective-display'."
+  (interactive)
+  (if selective-display
+      (setq-local selective-display nil)
+    (setq-local selective-display 1)))
+
+(global-set-key (kbd "C-x $") 'ts-toggle-selective-display)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Semantic</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(add-hook 'prog-mode-hook 'semantic-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Shell</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'shell
+  (setq ansi-color-for-comint-mode t)
+  (unless (version&lt; emacs-version "27")
+    ;; show current directory when prompting for a shell command.
+    (setq shell-command-prompt-show-cwd t)))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Shell Script</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq auto-mode-alist (append auto-mode-alist
+                              '(("\\.sh\\'" . shell-script-mode)
+                                ("\\.bash.*\\'" . shell-script-mode)
+                                ("\\.zsh.*\\'" . shell-script-mode)
+                                ("\\.aliases\\'" . shell-script-mode)
+                                ("\\.functions\\'" . shell-script-mode)
+                                ("\\bashrc\\'" . shell-script-mode)
+                                ("\\kshrc\\'" . shell-script-mode)
+                                ("\\profile\\'" . shell-script-mode)
+                                ("\\zshenv\\'" . shell-script-mode)
+                                ("\\zprompt\\'" . shell-script-mode)
+                                ("\\zshrc\\'" . shell-script-mode)
+                                ("\\prompt_.*_setup\\'" . shell-script-mode))))
+
+(setq interpreter-mode-alist (append interpreter-mode-alist
+                                     '(("bash" . shell-script-mode)
+                                       ("ksh" . shell-script-mode)
+                                       ("sh" . shell-script-mode)
+                                       ("zsh" . shell-script-mode))))
+
+(with-eval-after-load 'sh-script
+  (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+  (message "Lazy loaded shell-script-mode :-)"))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Show paren</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'paren
+  (setq show-paren-when-point-in-periphery t)
+  (setq show-paren-when-point-inside-paren t))
+(add-hook 'after-init-hook 'show-paren-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Size Indication</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(add-hook 'after-init-hook 'size-indication-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Subword</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(add-hook 'after-init-hook 'global-subword-mode) ;; move by camel case, etc
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Tab-bar (Emacs 27+)</h3>
+<div class="outline-text-3" id="text-">
+<p>
+Don't tangle this block on <code>emacs-version</code> &lt; 27.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-tab-bar-select-dwim ()
+  "Do-What-I-Mean function for getting to a `tab-bar-mode' tab.
+If no other tab exists, create one and switch to it. If there is
+one other tab (so two in total) switch to it without further
+questions. Else use completion to select the tab to switch to."
+  (interactive)
+  (let ((tabs (mapcar (lambda (tab)
+                        (alist-get 'name tab))
+                      (tab-bar--tabs-recent))))
+    (cond ((eq tabs nil)
+           (tab-new))
+          ((eq (length tabs) 1)
+           (tab-next))
+          (t
+           (tab-bar-switch-to-tab
+            (completing-read "Select tab: " tabs nil t))))))
+
+(global-set-key (kbd "C-x t t") 'ts-tab-bar-select-dwim)
+
+(with-eval-after-load 'tab-bar-mode
+  (setq tab-bar-close-button-show nil)
+  (setq tab-bar-close-last-tab-choice 'tab-bar-mode-disable)
+  ;; (setq tab-bar-show nil)
+  ;; (setq tab-bar-tab-hints t)
+  ;; (setq tab-bar-tab-name-function 'tab-bar-tab-name-all)
+  (tab-bar-history-mode 1))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Term</h3>
+<div class="outline-text-3" id="text-">
+</div><div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">ANSI Term launcher</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-ansi-term ()
+  "Opens shell from $SHELL environmental variable in `ansi-term'."
+  (interactive)
+  ;; https://emacs.stackexchange.com/a/48481
+  (let ((switch-to-buffer-obey-display-actions))
+    (ansi-term (getenv "SHELL"))))
+
+(global-set-key (kbd "C-c tt") 'ts-ansi-term)
+
+(defun ts-ansi-term-other-window ()
+  "Opens default $SHELL `ansi-term' in another window."
+  (interactive)
+  (split-window-sensibly)
+  (other-window 1)
+  (ts-ansi-term))
+
+(global-set-key (kbd "C-c 4 tt") 'ts-ansi-term-other-window)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Set term coding system to UTF-8</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(add-hook 'term-exec (lambda () (set-process-coding-system 'utf-8-unix 'utf-8-unix)))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Switch to ANSI Term</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun ts-switch-to-ansi-term ()
+  "Open an `ansi-term' if it doesn't already exist.
+Otherwise switch to current one."
+  (interactive)
+  (if (get-buffer "*ansi-term*")
+      (switch-to-buffer "*ansi-term*")
+    (ansi-term (getenv "SHELL"))))
+
+(global-set-key (kbd "C-c ts") 'ts-switch-to-ansi-term)
+
+(defun ts-switch-to-ansi-term-other-window()
+  "Does what it states on the tin!"
+  (interactive)
+  (split-window-sensibly)
+  (other-window 1)
+  (ts-switch-to-ansi-term))
+
+(global-set-key (kbd "C-c 4 ts") 'ts-switch-to-ansi-term-other-window)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Term Advise</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'term
+  (defadvice term-handle-exit (after term-kill-buffer-on-exit activate)
+    "Kill term when shell exits."
+    (kill-buffer))
+  (setq term-buffer-maximum-size 200000)
+  (message "Lazy loaded term :-)"))
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Time</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'time
+  (setq display-time-format "%H:%M %d/%m")
+  (setq display-time-default-load-average 'nil))
+
+(add-hook 'after-init-hook 'display-time-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Tramp</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'tramp
+  (setq tramp-backup-directory-alist backup-directory-alist)
+  (setq tramp-default-method "ssh")
+  (setf tramp-persistency-file-name (concat temporary-file-directory "tramp-" (user-login-name)))
+  (message "Lazy loaded tramp :-)"))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Version Control</h3>
+<div class="outline-text-3" id="text-">
+<p>
+<a href="https://protesilaos.com/dotemacs/#h:31deeff4-dfae-48d9-a906-1f3272f29bc9">Protesilaos Stavrou's VC reference</a>
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'vc
+  (setq vc-follow-symlinks t)
+  (setq vc-make-backup-files t)
+  (setq version-control t)
+  (message "Lazy loaded vc :-)"))
+
+(defun ts-vc-dir (&amp;optional arg)
+  "Run `vc-dir' for the current project or directory.
+With optional ARG (\\[universal-argument]), use the present
+working directory, else default to the root of the current
+project, as defined by `vc-root-dir'."
+  (interactive "P")
+  (let ((dir (if arg default-directory (vc-root-dir))))
+    (vc-dir dir)))
+
+(if (version&lt; emacs-version "28")
+    (global-set-key (kbd "C-x v d") 'ts-vc-dir)
+  (global-set-key (kbd "C-x v d") 'vc-dir-root))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">View mode</h3>
+<div class="outline-text-3" id="text-">
+<p>
+Provide pager-like keybindings. Makes navigating read-only buffers a breeze.
+Move down and up with SPC and delete (backspace) or S-SPC, half a page down and
+up with d and u, and isearch with s.
+</p>
+
+<p>
+Prolific emacser Omar Antolin Camarena points out a built-in way to use
+view-mode in all read-only buffers, including ones you set read-only with C-x
+C-q.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq view-read-only t)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Whitespace</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(with-eval-after-load 'whitespace
+  (setq whitespace-line-column 120)
+  (setq whitespace-style '(face
+                           tabs
+                           spaces
+                           trailing
+                           lines
+                           space-before-tab::space
+                           newline
+                           indentation::space
+                           empty
+                           space-after-tab::space
+                           space-mark
+                           tab-mark
+                           newline-mark)
+        whitespace-face 'whitespace-trailing)
+  (global-set-key (kbd "C-c M-w") 'whitespace-mode)
+  (message "Lazy loaded whitespace :-)"))
+</pre>
+</div>
+
+<p>
+Cleanup whitespace on save
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(add-hook 'before-save-hook 'whitespace-cleanup)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Windmove</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(global-set-key (kbd "C-c w b") 'windmove-left)
+(global-set-key (kbd "C-c w f") 'windmove-right)
+(global-set-key (kbd "C-c w p") 'windmove-up)
+(global-set-key (kbd "C-c w n") 'windmove-down)
+
+(global-set-key (kbd "C-c w C-b") 'windmove-swap-states-left)
+(global-set-key (kbd "C-c w C-f") 'windmove-swap-states-right)
+(global-set-key (kbd "C-c w C-p") 'windmove-swap-states-up)
+(global-set-key (kbd "C-c w C-n") 'windmove-swap-states-down)
+
+(with-eval-after-load 'windmove
+  (setq windmove-wrap-around t)
+  (message "Lazy loaded windmove :-)"))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Window Divider</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(setq window-divider-default-right-width 1)
+(setq window-divider-default-bottom-width 1)
+(setq window-divider-default-places 'right-only)
+(add-hook 'window-setup-hook 'window-divider-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Winner mode</h3>
+<div class="outline-text-3" id="text-">
+<p>
+<a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Startup-Summary.html#Startup-Summary">Startup Summary</a>
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(add-hook 'window-setup-hook 'winner-mode)
+(global-set-key (kbd "C-c w u") 'winner-undo)
+(global-set-key (kbd "C-c w r") 'winner-redo)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-2">
+<h2 id="sec-">MELPA Packages</h2>
+<div class="outline-text-2" id="text-">
+<p>
+I like to split up my "vanilla" Emacs configuration and custom functions from
+the customisations provided by third party libraries that have been installed
+using <code>package.el</code> and <code>use-package</code>.
+</p>
+
+<p>
+If you want to go for a more vanilla setup, just prefix the <code>COMMENT</code> keyword
+to the tile above, and re-tangle the file.
+</p>
+
+<p>
+This way it makes it very easy to run a semi-stock Emacs without <code>package.el</code>
+or any third party libraries, but still have some saner defaults and some extra
+functionality.
+</p>
+
+<p>
+I'm using John Wiegley's awesome <a href="https://github.com/jwiegley/use-package">use-package</a> to pull in and configure any third
+party packages from <a href="https://melpa.org/">MELPA</a>.
+</p>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Setup package.el</h3>
+<div class="outline-text-3" id="text-">
+<p>
+If we are on an Emacs version lower than "27" this will go in <code>init.el</code>,
+otherwise it goes in <a href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html">early-init.el</a> for faster starup.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">;; This must be true otherwise use-package won't load!
+(setq package-enable-at-startup t)
+;; Allow loading from the package cache.
+(setq package-quickstart t)
+;; Don't write (package-initialize) to my init file!
+(setq package--init-file-ensured t)
+;; Turn on ahead-of-time native compilation when installing a package.
+(setq package-native-compile t)
+;; Setup up archives
+(setq package-archives
+      '(("melpa" . "https://melpa.org/packages/")
+        ("gnu" . "https://elpa.gnu.org/packages/")))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">use-package bootstrap</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(require 'package)
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(setq use-package-enable-imenu-support t
+      ;; use-package-hook-name-suffix nil
+      use-package-always-defer t
+      use-package-always-ensure t
+      use-package-verbose t)
+(require 'use-package)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Ansible</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package ansible :hook (yaml-mode . ansible))
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package ansible-doc :hook (yaml-mode . ansible-doc-mode))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Async</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package async :defer 5
+  :commands (async-byte-compile-file
+             async-bytecomp-package-mode)
+  :init
+  (unless (equal system-type 'windows-nt)
+    (setq async-bytecomp-allowed-packages '(all)))
+  :config
+  (if (equal system-type 'windows-nt)
+      (async-bytecomp-package-mode -1)
+    (async-bytecomp-package-mode 1))
+  :hook (dired-mode-hook . dired-async-mode))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Blacken</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package blacken :hook (python-mode . blacken-mode))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Diranged</h3>
+<div class="outline-text-3" id="text-">
+<p>
+Preview the file or directory at point when in <code>dired</code>, a bit like <a href="https://github.com/ranger/ranger">ranger</a>.
+</p>
+
+<p>
+Get the source from <a href="https://gitlab.com/tslight/diranged">here</a>.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package diranged :ensure nil :after dired
+  :load-path "~/src/gitlab/tslight/diranged"
+  :bind (:map dired-mode-map ("r" . diranged-mode)))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Docker</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package docker :bind ("C-c C-d" . docker))
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package dockerfile-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Exec path from shell</h3>
+<div class="outline-text-3" id="text-">
+<p>
+Don't tangle this block if <code>system-type</code> is <code>windows-nt</code>.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package exec-path-from-shell :defer 10
+  :unless (eq system-type 'windows-nt)
+  :commands exec-path-from-shell-initialize
+  :init
+  (setq exec-path-from-shell-check-startup-files 'nil)
+  :config
+  (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-env "PYTHONPATH"))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Flycheck</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package flycheck
+  :diminish flycheck-mode
+  :config
+  (flycheck-add-mode 'javascript-eslint 'web-mode)
+  :hook
+  (prog-mode . flycheck-mode)
+  (shell-script-mode . flycheck-mode))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Git</h3>
+<div class="outline-text-3" id="text-">
+</div><div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Gitlab CI</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package gitlab-ci-mode
+  :mode
+  "\\.gitlab-ci.yaml\\'"
+  "\\.gitlab-ci.yml\\'"
+  :hook
+  (yaml-mode . hs-minor-mode))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Git Timemachine</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package git-timemachine)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Lazygit</h4>
+<div class="outline-text-4" id="text-">
+<p>
+Clone some or all of my projects on GitLab or GitHub via the magic of APIs and
+Emacs' <code>completing-read</code>.
+</p>
+
+<p>
+Get the source from <a href="https://gitlab.com/tslight/lazygit">here</a>.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package lazygit :ensure nil
+  :load-path "~/src/gitlab/tslight/lazygit.el"
+  :bind-keymap
+  ("C-c g" . lazygit-map))
+
+(use-package lazygitlab :ensure nil
+  :load-path "~/src/gitlab/tslight/lazygit.el"
+  :bind-keymap
+  ("C-c L" . lazygitlab-map))
+
+(use-package lazygithub :ensure nil
+  :load-path "~/src/gitlab/tslight/lazygit.el"
+  :bind-keymap
+  ("C-c H" . lazygithub-map))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-4">
+<h4 id="sec-">Magit</h4>
+<div class="outline-text-4" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package magit
+  :bind*
+  ("C-x g" . magit-status)
+  :config
+  (when (eq system-type 'windows-nt)
+    (if (file-readable-p "C:/Program Files/Git/bin/git.exe")
+        (setq magit-git-executable "C:/Program Files/Git/bin/git.exe"))
+    (when (file-directory-p "C:/Program Files/Git/bin")
+      (setq exec-path (add-to-list 'exec-path "C:/Program Files/Git/bin"))
+      (setenv "PATH" (concat "C:\\Program Files\\Git\\bin;" (getenv "PATH")))))
+  (setq magit-clone-set-remote.pushDefault t)
+  (setq magit-completing-read-function 'magit-builtin-completing-read))
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package magit-repos :ensure nil
+  :bind* ("C-x C-g" . magit-list-repositories)
+  :config
+  (setq magit-repository-directories `(("~/" . 0)
+                                       ("~/src/gitlab" . 10)))
+  (setq magit-repolist-columns
+        '(("Name" 25 magit-repolist-column-ident)
+          ;; ("Version" 25 magit-repolist-column-version)
+          ("Pull" 5 magit-repolist-column-unpulled-from-upstream)
+          ("Push" 5 magit-repolist-column-unpushed-to-upstream)
+          ("Commit" 8 magit-repolist-column-flag t)
+          ("Path" 99 magit-repolist-column-path))))
+</pre>
+</div>
+
+<p>
+Don't tangle this block if <code>system-type</code> is <code>windows-nt</code>.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package forge :unless (equal system-type 'windows-nt) :after magit)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Go mode</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package go-mode
+  :config
+  (defun ts-go-indent ()
+    (setq indent-tabs-mode 1)
+    (setq tab-width 2))
+  :hook (go-mode . ts-go-indent))
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Highlight Indentation</h3>
+<div class="outline-text-3" id="text-">
+<p>
+Especially useful for yaml..
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package highlight-indentation
+  :hook
+  (prog-mode . highlight-indentation-mode))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Hungry delete</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package hungry-delete :defer 6 :config (global-hungry-delete-mode))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">JS2 mode</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package js2-mode
+  :hook
+  (js-mode . js2-minor-mode)
+  (js2-mode . js2-imenu-extras-mode)
+  :mode
+  "\\.js\\'")
+
+(use-package js2-refactor
+  :hook (js2-mode . js2-refactor-mode)
+  :bind (:map js2-mode-map
+              ("C-k" . js2r-kill))
+  :config (js2r-add-keybindings-with-prefix "C-c C-j"))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">JSON</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package json-mode
+  :config
+  (defun ts-json-mode-setup ()
+    (json-mode)
+    (json-pretty-print (point-min) (point-max))
+    (goto-char (point-min))
+    (set-buffer-modified-p nil))
+  (add-to-list 'auto-mode-alist
+               '("\\.json\\'" . 'ts-json-mode-setup)))
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package json-navigator)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Markdown</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package markdown-mode
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . gfm-mode)
+         ("\\.markdown\\'" . gfm-mode))
+  :init (setq markdown-command "multimarkdown"))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Powershell</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package powershell :mode (("\\.ps1\\'" . powershell-mode)))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Restclient</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package restclient)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">systemd</h3>
+<div class="outline-text-3" id="text-">
+<p>
+Don't tangle this block if <code>system-type</code> is <code>windows-nt</code>.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package systemd :unless (equal system-type 'windows-nt))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Terraform</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package terraform-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Trashed</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package trashed :bind ("C-c f t" . trashed))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Web Mode</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package web-mode
+  :mode
+  "\\.phtml\\'"
+  "\\.tpl\\.php\\'"
+  "\\.[agj]sp\\'"
+  "\\.as[cp]x\\'"
+  "\\.erb\\'"
+  "\\.mustache\\'"
+  "\\.djhtml\\'"
+  "\\.html\\.twig\\'"
+  "\\.html?\\'"
+  "\\.php?\\'"
+  "\\.css?\\'"
+  :hook
+  (web-mode . js2-minor-mode)
+  :config
+  (setq web-mode-content-type "jsx"
+        web-mode-enable-auto-quoting nil
+        web-mode-code-indent-offset 2
+        web-mode-markup-indent-offset 2
+        web-mode-attr-indent-offset 2
+        web-mode-css-indent-offset 2
+        web-mode-code-indent-offset 2
+        web-mode-enable-auto-pairing t
+        web-mode-enable-css-colorization t
+        web-mode-enable-block-face t
+        web-mode-enable-part-face t
+        web-mode-enable-comment-keywords t)
+  (add-to-list 'web-mode-indentation-params '("lineup-args" . nil))
+  (add-to-list 'web-mode-indentation-params '("lineup-calls" . nil))
+  (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
+  (add-to-list 'web-mode-indentation-params '("lineup-ternary" . nil)))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Which Key</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package which-key :defer 5 :config (which-key-mode))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Writeable Grep</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package wgrep :commands wgrep
+  :bind (:map grep-mode-map
+              ("e" . wgrep-change-to-wgrep-mode)
+              ("C-x C-q" . wgrep-change-to-wgrep-mode)))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">YAML</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package yaml-mode
+  :hook
+  (yaml-mode . highlight-indentation-mode)
+  (yaml-mode . hs-minor-mode)
+  (yaml-mode . display-line-numbers-mode))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-" class="outline-3">
+<h3 id="sec-">Yasnippet</h3>
+<div class="outline-text-3" id="text-">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package yasnippet :hook (prog-mode . yas-minor-mode))
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package yasnippet-classic-snippets)
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(use-package yasnippet-snippets)
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div></div></div>
+<footer id="postamble" class="">
+<div><p class="author">Author: Toby Slight</p>
+<p class="date">Created: 2021-08-21 Sat 09:35</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 28.0.50 (<a href="http://orgmode.org">Org-mode</a> 9.4.4)</p>
+</div>
+</footer>
+</body>
+</html>
