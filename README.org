@@ -7,6 +7,7 @@
 #+PROPERTY: header-args+ :tangle-mode (identity #o644)
 #+OPTIONS: broken-links:t toc:t num:nil
 #+STARTUP: overview
+#+EXPORT_FILE_NAME: docs/index
 
 A fairly standard [[https://en.wikipedia.org/wiki/Literate_programming][literate]] Emacs configuration using [[https://orgmode.org/][Org mode]]. Requires *Emacs
 > 25.1*.
