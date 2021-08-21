@@ -3180,13 +3180,13 @@ Especially useful for yaml..
   (use-package htmlize)
 #+end_src
 
-*** Org Bullets
+*** COMMENT Org Bullets
 
 #+begin_src emacs-lisp
   (use-package org-bullets :hook (org-mode . org-bullets-mode))
 #+end_src
 
-*** PDF Tools
+*** COMMENT PDF Tools
 
 Don't tangle this block if ~system-type~ is ~windows-nt~.
 
@@ -3194,13 +3194,13 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
   (use-package pdf-tools :unless (eq system-type 'windows-nt))
 #+end_src
 
-*** Toc Org
+*** COMMENT Toc Org
 
 #+begin_src emacs-lisp
   (use-package toc-org :hook (org-mode . toc-org-enable))
 #+end_src
 
-*** Ox TWBS
+*** COMMENT Ox TWBS
 
 #+begin_src emacs-lisp
   (use-package ox-twbs)
