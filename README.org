@@ -296,7 +296,8 @@ This variables are added to the end of this file.
           (eval add-hook 'after-save-hook 'org-html-export-to-html nil t)
           (eval add-hook 'after-save-hook 'org-latex-export-to-pdf nil t)
           (eval add-hook 'after-save-hook 'org-twbs-export-to-pdf nil t)
-          (eval add-hook 'after-save-hook 'org-babel-tangle nil t)))
+          (eval add-hook 'after-save-hook 'org-babel-tangle nil t)
+          (org-html-validation-link)))
 #+end_src
 
 ** Scrolling
@@ -2231,7 +2232,7 @@ No need to tangle, when using the advice above, leaving here for reference.
 
 #+begin_src emacs-lisp
   (with-eval-after-load 'org
-    (setq org-startup-folded t) ;; start in overview mode
+    (setq org-startup-folded t) ; start in overview mode
     (setq org-directory "~/org")
     (setq org-agenda-files (file-expand-wildcards "~/org/*.org"))
     (setq org-default-notes-file "~/org/notes.org")
@@ -2245,6 +2246,7 @@ No need to tangle, when using the advice above, leaving here for reference.
     (setq org-list-indent-offset 1)
     (setq org-return-follows-link t)
     (setq org-startup-indented t)
+    (setq org-html-validation-link nil) ; don't add "validate" postamble
     (setq org-use-fast-todo-selection t))
 #+end_src
 
