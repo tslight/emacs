@@ -1477,7 +1477,16 @@ This is basically ~other-window~ backwards.
              fill-column)))
       (call-interactively #'fill-paragraph)))
 
+  (defun ts-unfill-region (beg end)
+    "Unfill the region from BEG to END.
+  Joining text paragraphs into a single logical line. This is
+  useful, e.g., for use with function `visual-line-mode'."
+    (interactive "*r")
+    (let ((fill-column (point-max)))
+      (fill-region beg end)))
+
   (global-set-key [remap fill-paragraph] 'ts-fill-or-unfill)
+  (global-set-key (kbd "C-M-q") 'ts-unfill-region)
 
   (setq-default fill-column 79)
   (add-hook 'org-mode-hook 'auto-fill-mode)
