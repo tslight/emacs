@@ -3149,6 +3149,11 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 #+begin_src emacs-lisp
   (use-package json-navigator)
 #+end_src
+** Kubel
+
+#+begin_src emacs-lisp
+  (use-package kubel)
+#+end_src
 
 ** Markdown
 
