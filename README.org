@@ -2946,7 +2946,7 @@ otherwise it goes in [[https://www.gnu.org/software/emacs/manual/html_node/emacs
     :hook (dired-mode-hook . dired-async-mode))
 #+end_src
 
-** Blacken
+** COMMENT Blacken
 
 #+begin_src emacs-lisp
   (use-package blacken :hook (python-mode . blacken-mode))
