@@ -385,11 +385,16 @@ https://www.reddit.com/r/emacs/comments/l42oep/suppress_nativecomp_warnings_buff
 ** Buffers
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "C-x M-e") (lambda () (interactive) (eval-buffer) (message "Evaluated buffer")))
   (global-set-key (kbd "C-c M-l") 'lisp-interaction-mode)
   (global-set-key (kbd "C-x c") 'save-buffers-kill-emacs)
   (global-set-key (kbd "C-x C-b") 'ibuffer)
   (global-set-key (kbd "C-x M-k") 'kill-buffer)
+#+end_src
+
+** Browse Url
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-x M-b") 'browse-url-of-file)
 #+end_src
 
 ** Calculator
@@ -426,6 +431,14 @@ Always do what I mean!
   (global-set-key [remap capitalize-word] 'capitalize-dwim)
   (global-set-key [remap downcase-word] 'downcase-dwim)
   (global-set-key [remap upcase-word] 'upcase-dwim)
+#+end_src
+
+** Eval
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-x M-e b") (lambda () (interactive) (eval-buffer) (message "Evaluated buffer")))
+  (global-set-key (kbd "C-x M-e d") (lambda () (interactive) (eval-defun) (message "Evaluated function")))
+  (global-set-key (kbd "C-x M-e r") (lambda () (interactive) (eval-region) (message "Evaluated region")))
 #+end_src
 
 ** Frames
@@ -2197,7 +2210,6 @@ No need to tangle, when using the advice above, leaving here for reference.
        (sql . t)
        (sqlite . t))))
 #+end_src
-
 *** Org Capture Templates
 
 #+begin_src emacs-lisp
@@ -2209,6 +2221,17 @@ No need to tangle, when using the advice above, leaving here for reference.
              "* %?\nEntered on %U\n %i\n  %a")
             ("n" "Notes Entry" entry (file+datetree "~/org/notes.org" "Captured")
              "* %?\nEntered on %U\n %i\n  %a"))))
+#+end_src
+
+*** Org Export & View HTML
+
+#+begin_src emacs-lisp
+  (with-eval-after-load 'org
+    (defun ts-org-export-to-html-and-browse ()
+      "Export org file to html and browse-url-of-file"
+      (interactive)
+      (browse-url-of-file (org-html-export-to-html)))
+    (define-key org-mode-map (kbd "C-x M-b") 'ts-org-export-to-html-and-browse))
 #+end_src
 
 *** Org Global Keybindings
