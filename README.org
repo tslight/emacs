@@ -391,6 +391,12 @@ https://www.reddit.com/r/emacs/comments/l42oep/suppress_nativecomp_warnings_buff
   (global-set-key (kbd "C-x M-k") 'kill-buffer)
 #+end_src
 
+#+begin_src emacs-lisp
+  (unless (version< emacs-version "28") ; Emacs 28
+    (let ((map ctl-x-x-map))
+      (define-key map "e" #'eval-buffer)))
+#+end_src
+
 ** Browse Url
 
 #+begin_src emacs-lisp
@@ -3172,6 +3178,7 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 #+begin_src emacs-lisp
   (use-package json-navigator)
 #+end_src
+
 ** Kubel
 
 #+begin_src emacs-lisp
