@@ -370,8 +370,10 @@ When do I ever want to sort case sensitively?!
 https://www.reddit.com/r/emacs/comments/l42oep/suppress_nativecomp_warnings_buffer/
 
 #+begin_src emacs-lisp
-  ;; (setq comp-async-report-warnings-errors 'nil)
   (setq warning-minimum-level :error)
+  (setq warning-suppress-types '((comp) (comp) (comp)))
+  (setq comp-async-report-warnings-errors 'nil)
+  (setq native-comp-async-report-warnings-errors 'nil)
 #+end_src
 
 ** Yes or no
@@ -1218,7 +1220,7 @@ This block will byte compile ~early-init.el~ and ~init.el~ if an existing
     "Re-tangle my org mode configuration file."
     (interactive)
     (autoload 'org-babel-tangle-file "ob-tangle")
-    (org-babel-tangle-file "~/src/gitlab/tslight/emacs/README.org"))
+    (org-babel-tangle-file "~/src/github/tslight/emacs/README.org"))
 #+end_src
 
 ** Googling
@@ -2444,7 +2446,7 @@ We only tangle this when ~emacs-version~ > 28, since it's not very useful prior
 to that.
 
 #+begin_src emacs-lisp :tangle (if (version< emacs-version "28") "no" init-file)
-  (setq ts-project-roots '("~" "~/src/gitlab"))
+  (setq ts-project-roots '("~" "~/src/github"))
 
   (defun ts-project--git-repo-p (directory)
     "Return non-nil if there is a git repository in DIRECTORY."
@@ -3003,11 +3005,11 @@ otherwise it goes in [[https://www.gnu.org/software/emacs/manual/html_node/emacs
 
 Preview the file or directory at point when in ~dired~, a bit like [[https://github.com/ranger/ranger][ranger]].
 
-Get the source from [[https://gitlab.com/tslight/diranged][here]].
+Get the source from [[https://github.com/tslight/diranged][here]].
 
 #+begin_src emacs-lisp
   (use-package diranged :ensure nil :after dired
-    :load-path "~/src/gitlab/tslight/diranged"
+    :load-path "~/src/github/tslight/diranged"
     :bind (:map dired-mode-map ("r" . diranged-mode)))
 #+end_src
 
@@ -3075,17 +3077,17 @@ Get the source from [[https://gitlab.com/tslight/lazygit][here]].
 
 #+begin_src emacs-lisp
   (use-package lazygit :ensure nil
-    :load-path "~/src/gitlab/tslight/lazygit.el"
+    :load-path "~/src/github/tslight/lazygit.el"
     :bind-keymap
     ("C-c g" . lazygit-map))
 
   (use-package lazygitlab :ensure nil
-    :load-path "~/src/gitlab/tslight/lazygit.el"
+    :load-path "~/src/github/tslight/lazygit.el"
     :bind-keymap
     ("C-c L" . lazygitlab-map))
 
   (use-package lazygithub :ensure nil
-    :load-path "~/src/gitlab/tslight/lazygit.el"
+    :load-path "~/src/github/tslight/lazygit.el"
     :bind-keymap
     ("C-c H" . lazygithub-map))
 #+end_src
@@ -3112,7 +3114,7 @@ Get the source from [[https://gitlab.com/tslight/lazygit][here]].
     :bind* ("C-x C-g" . magit-list-repositories)
     :config
     (setq magit-repository-directories `(("~/" . 0)
-                                         ("~/src/gitlab" . 10)))
+                                         ("~/src/github" . 10)))
     (setq magit-repolist-columns
           '(("Name" 25 magit-repolist-column-ident)
             ;; ("Version" 25 magit-repolist-column-version)
