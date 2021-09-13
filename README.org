@@ -252,6 +252,25 @@ Only tangled on Windows.
   (setq mouse-yank-at-point t)
 #+end_src
 
+** Native Compilation
+
+Compile ~elc~ files as needed, in a deferred/async manner.
+
+#+begin_src emacs-lisp
+  (when (fboundp 'native-compile-async)
+    (setq comp-deferred-compilation t
+          comp-deferred-compilation-black-list '("/mu4e.*\\.el$")))
+#+end_src
+
+Dealing with system-wide packages:
+
+Some packages like for example mu4e are located in /usr and need root
+permissions to be compiled, for them you can run
+
+#+begin_src shell :tangle no
+  sudo emacs -Q -batch -L . -f batch-native-compile *.el
+#+end_src
+
 ** No lockfiles
 
 #+begin_src emacs-lisp
