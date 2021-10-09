@@ -517,7 +517,17 @@ Always do what I mean!
 
 ** Maximize on startup
 
-#+begin_src emacs-lisp
+If in WSL land...
+
+#+begin_src emacs-lisp :tangle (if (string-match "-[Mm]icrosoft" operating-system-release) init-file "no")
+  (setq default-frame-alist '((undecorated . t)
+                              (fullscreen . maximized)
+                              (vertical-scroll-bars . nil)))
+#+end_src
+
+If anything else..
+
+#+begin_src emacs-lisp :tangle (if (not (string-match "-[Mm]icrosoft" operating-system-release)) init-file "no")
   (setq default-frame-alist '((fullscreen . maximized) (vertical-scroll-bars . nil)))
   (setq frame-resize-pixelwise t) ;; jwm resize fix
 #+end_src
@@ -3199,7 +3209,7 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
                  '("\\.json\\'" . 'ts-json-mode-setup)))
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package json-navigator)
 #+end_src
 
