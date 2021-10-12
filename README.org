@@ -576,7 +576,8 @@ If anything else..
 ** Turn off UI elements
 
 #+begin_src emacs-lisp
-  (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+  (if (not (eq system-type 'darwin))
+      (if (fboundp 'menu-bar-mode) (menu-bar-mode -1)))
   (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
   (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
   (if (fboundp 'tooltip-mode) (tooltip-mode -1))
