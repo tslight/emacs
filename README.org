@@ -17,7 +17,7 @@ To install, evaluate the code block below with ~C-c C-c~ in an Emacs buffer:
 
 #+begin_src emacs-lisp :tangle no
   (org-babel-tangle)
-  (load early-init)
+  (if (not (version< emacs-version "27")) (load early-init))
   (load init-file)
   (ts-ensure-byte-compiled-init)
 #+end_src
@@ -520,7 +520,7 @@ Always do what I mean!
 If in WSL land...
 
 #+begin_src emacs-lisp :tangle (if (string-match "-[Mm]icrosoft" operating-system-release) init-file "no")
-  (setq default-frame-alist '((undecorated . t)
+  (setq default-frame-alist '(;(undecorated . t)
                               (fullscreen . maximized)
                               (vertical-scroll-bars . nil)))
 #+end_src
@@ -2007,6 +2007,8 @@ Turn on ~fido-mode~ if we are on Emacs 27+
     (define-key icomplete-minibuffer-map (kbd "M-j") 'exit-minibuffer)
     (define-key icomplete-minibuffer-map (kbd "C-n") 'icomplete-forward-completions)
     (define-key icomplete-minibuffer-map (kbd "C-p") 'icomplete-backward-completions)
+    (define-key icomplete-minibuffer-map (kbd "C-s") 'icomplete-forward-completions)
+    (define-key icomplete-minibuffer-map (kbd "C-r") 'icomplete-backward-completions)
     (define-key icomplete-minibuffer-map (kbd "<up>") 'icomplete-backward-completions)
     (define-key icomplete-minibuffer-map (kbd "<down>") 'icomplete-forward-completions)
     (define-key icomplete-minibuffer-map (kbd "<left>") 'icomplete-backward-completions)
@@ -2359,13 +2361,15 @@ No need to tangle, when using the advice above, leaving here for reference.
 
 #+begin_src emacs-lisp
   (with-eval-after-load 'org
-    (if (version< emacs-version "28")
-        (progn
-          (add-hook 'org-babel-post-tangle-hook (lambda () (byte-recompile-file early-init nil 0 t)))
-          (add-hook 'org-babel-post-tangle-hook (lambda () (byte-recompile-file init-file nil 0 t))))
-      (progn
-        (add-hook 'org-babel-post-tangle-hook (lambda () (byte-recompile-file early-init nil 0)))
-        (add-hook 'org-babel-post-tangle-hook 'emacs-lisp-byte-compile-and-load))))
+    (cond ((version= emacs-version "27")
+           (progn
+             (add-hook 'org-babel-post-tangle-hook (lambda () (byte-recompile-file early-init nil 0 t)))
+             (add-hook 'org-babel-post-tangle-hook (lambda () (byte-recompile-file init-file nil 0 t)))))
+          ((version= emacs-version "28")
+           (progn
+             (add-hook 'org-babel-post-tangle-hook (lambda () (byte-recompile-file early-init nil 0)))
+             (add-hook 'org-babel-post-tangle-hook 'emacs-lisp-byte-compile-and-load)))
+          (t (add-hook 'org-babel-post-tangle-hook 'emacs-lisp-byte-compile-and-load))))
 #+end_src
 
 *** Org Recursive Sort
@@ -2420,7 +2424,7 @@ No need to tangle, when using the advice above, leaving here for reference.
 
 #+begin_src emacs-lisp
   (with-eval-after-load 'org
-    (require 'org-tempo)
+    (if (not (version< emacs-version "27")) (require 'org-tempo))
     (setq org-structure-template-alist (append org-structure-template-alist
                                                '(("cl" . "src common-lisp")
                                                  ("el" . "src emacs-lisp")
@@ -2952,6 +2956,10 @@ party packages from [[https://melpa.org/][MELPA]].
 
 If we are on an Emacs version lower than "27" this will go in ~init.el~,
 otherwise it goes in [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html][early-init.el]] for faster starup.
+
+#+begin_src emacs-lisp :tangle (if (version< emacs-version "27") init-file "no")
+  (if (version< emacs-version "27") (package-initialize))
+#+end_src
 
 #+begin_src emacs-lisp :tangle (if (version< emacs-version "27") init-file early-init)
   ;; This must be true otherwise use-package won't load!
