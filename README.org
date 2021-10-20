@@ -1817,7 +1817,7 @@ Turn on ~ido-mode~ if we are on Emacs < 26.
     (message "Lazy loaded dired-aux :-)"))
 #+end_src
 
-*** COMMENT Dired-X Jump (Emacs<28)
+*** Dired-X Jump (Emacs<28)
 
 Has to come outside of with-eval-after-load otherwise we have no dired-jump.
 
