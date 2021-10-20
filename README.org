@@ -10,8 +10,7 @@
 #+EXPORT_FILE_NAME: index
 #+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 
-A fairly standard [[https://en.wikipedia.org/wiki/Literate_programming][literate]] Emacs configuration using [[https://orgmode.org/][Org mode]]. Requires *Emacs
-> 25.1*.
+A fairly standard [[https://en.wikipedia.org/wiki/Literate_programming][literate]] Emacs configuration using [[https://orgmode.org/][Org mode]]. *Emacs 26+ ONLY*.
 
 To install, evaluate the code block below with ~C-c C-c~ in an Emacs buffer:
 
