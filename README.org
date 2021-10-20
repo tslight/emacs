@@ -1574,6 +1574,136 @@ This is basically ~other-window~ backwards.
   (add-hook 'after-init-hook 'column-number-mode)
 #+end_src
 
+** Completion
+
+Use funky new ~fido~ functionality for everything if we are on Emacs 27+.
+Otherwise just use boring old ~ido~.
+
+*** Icomplete
+
+Turn on ~fido-mode~ at launch when we are Emacs 27+.
+
+#+begin_src emacs-lisp
+  (if (version< emacs-version "27")
+      (add-hook 'after-init-hook 'icomplete-mode)
+    (add-hook 'after-init-hook 'fido-mode))
+#+end_src
+
+**** Change completion styles
+
+#+begin_src emacs-lisp
+  (defun ts-icomplete-styles ()
+    "Set icomplete styles based on Emacs version."
+    (if (version< emacs-version "27")
+        (setq-local completion-styles '(initials partial-completion substring basic))
+      (setq-local completion-styles '(initials partial-completion flex substring basic))))
+  (add-hook 'icomplete-minibuffer-setup-hook 'ts-icomplete-styles)
+#+end_src
+
+**** Icomplete keybindings
+
+#+begin_src emacs-lisp
+  (with-eval-after-load 'icomplete
+    (unless (version< emacs-version "27")
+      (define-key icomplete-minibuffer-map (kbd "C-j") 'icomplete-fido-exit))
+    (define-key icomplete-minibuffer-map (kbd "M-j") 'exit-minibuffer)
+    (define-key icomplete-minibuffer-map (kbd "C-n") 'icomplete-forward-completions)
+    (define-key icomplete-minibuffer-map (kbd "C-p") 'icomplete-backward-completions)
+    (define-key icomplete-minibuffer-map (kbd "C-s") 'icomplete-forward-completions)
+    (define-key icomplete-minibuffer-map (kbd "C-r") 'icomplete-backward-completions)
+    (define-key icomplete-minibuffer-map (kbd "<up>") 'icomplete-backward-completions)
+    (define-key icomplete-minibuffer-map (kbd "<down>") 'icomplete-forward-completions)
+    (define-key icomplete-minibuffer-map (kbd "<left>") 'icomplete-backward-completions)
+    (define-key icomplete-minibuffer-map (kbd "<right>") 'icomplete-forward-completions))
+#+end_src
+
+**** Icomplete settings
+
+#+begin_src emacs-lisp
+  (with-eval-after-load 'icomplete
+    (unless (version< emacs-version "27")
+      (icomplete-vertical-mode))
+    (setq icomplete-delay-completions-threshold 100)
+    (setq icomplete-max-delay-chars 2)
+    (setq icomplete-compute-delay 0.2)
+    (setq icomplete-show-matches-on-no-input t)
+    (setq icomplete-hide-common-prefix nil)
+    (setq icomplete-prospects-height 1)
+    ;; (setq icomplete-separator "\n")
+    (setq icomplete-separator (propertize " · " 'face 'shadow))
+    (setq icomplete-with-completion-tables t)
+    (setq icomplete-tidy-shadowed-file-names t)
+    (setq icomplete-in-buffer t))
+#+end_src
+
+*** Ido
+
+Turn on ~ido-mode~ if we are on Emacs < 26.
+
+#+begin_src emacs-lisp
+  (when (version< emacs-version "27")
+    (add-hook 'after-init-hook 'ido-mode)
+    (add-hook 'after-init-hook 'ido-everywhere))
+#+end_src
+
+**** Ido settings
+
+#+begin_src emacs-lisp
+  (with-eval-after-load 'ido
+    (setq ido-use-virtual-buffers 't) ;; show recent files too
+    (setq ido-create-new-buffer 'always)
+    (setq ido-enable-prefix t)
+    (setq ido-enable-flex-matching 't)
+    (setq ido-auto-merge-work-directories-length -1)
+    (setq ido-use-filename-at-point 'nil)
+    ;; vertical display
+    (setq ido-decorations (quote ("\n--> "
+                                  " "
+                                  "\n    "
+                                  "\n    ..."
+                                  "["  "]"
+                                  "  [No match]"
+                                  "  [Matched]"
+                                  "  [Not readable]"
+                                  "  [Too big]"
+                                  "  [Confirm]"))))
+#+end_src
+
+**** Ido M-x
+
+Make ~M-x~ work as expected when ~ido-mode~ is enabled.
+
+#+begin_src emacs-lisp
+  (with-eval-after-load 'ido
+    (global-set-key
+     "\M-x"
+     (lambda ()
+       (interactive)
+       (call-interactively
+        (intern
+         (ido-completing-read
+          "M-x "
+          (all-completions "" obarray 'commandp)))))))
+#+end_src
+
+**** Ido keybindings
+
+Add some custom keybindings in ~ido-mode~.
+
+#+begin_src emacs-lisp
+  (with-eval-after-load 'ido
+    (defun my/ido-keys ()
+      "Custom ido keybindings."
+      (define-key ido-completion-map (kbd "C-n") 'ido-next-match)
+      (define-key ido-completion-map (kbd "C-p") 'ido-prev-match)
+      ;; stop ido suggestion when doing a save-as
+      (define-key (cdr ido-minor-mode-map-entry) [remap write-file] nil))
+
+    (add-hook 'ido-minibuffer-setup-hook (lambda () (set (make-local-variable 'truncate-lines) nil)))
+    (add-hook 'ido-setup-hook (lambda () (define-key ido-completion-map [tab] 'ido-complete)))
+    (add-hook 'ido-setup-hook 'my/ido-keys))
+#+end_src
+
 ** Dabbrev
 
 #+begin_src emacs-lisp
@@ -1975,63 +2105,6 @@ Don't bother using this on Windows as I can rather be bothered to install
 
   (global-set-key (kbd "M-/") 'hippie-expand)
   (global-set-key (kbd "C-M-/") 'ts-hippie-expand-completing-read)
-#+end_src
-
-** Icomplete
-
-Turn on ~fido-mode~ if we are on Emacs 27+
-
-#+begin_src emacs-lisp
-  (if (version< emacs-version "27")
-      (add-hook 'after-init-hook 'icomplete-mode)
-    (add-hook 'after-init-hook 'fido-mode))
-#+end_src
-
-*** Change completion styles
-
-#+begin_src emacs-lisp
-  (defun ts-icomplete-styles ()
-    "Set icomplete styles based on Emacs version."
-    (if (version< emacs-version "27")
-        (setq-local completion-styles '(initials partial-completion substring basic))
-      (setq-local completion-styles '(initials partial-completion flex substring basic))))
-  (add-hook 'icomplete-minibuffer-setup-hook 'ts-icomplete-styles)
-#+end_src
-
-*** Icomplete keybindings
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'icomplete
-    (unless (version< emacs-version "27")
-      (define-key icomplete-minibuffer-map (kbd "C-j") 'icomplete-fido-exit))
-    (define-key icomplete-minibuffer-map (kbd "M-j") 'exit-minibuffer)
-    (define-key icomplete-minibuffer-map (kbd "C-n") 'icomplete-forward-completions)
-    (define-key icomplete-minibuffer-map (kbd "C-p") 'icomplete-backward-completions)
-    (define-key icomplete-minibuffer-map (kbd "C-s") 'icomplete-forward-completions)
-    (define-key icomplete-minibuffer-map (kbd "C-r") 'icomplete-backward-completions)
-    (define-key icomplete-minibuffer-map (kbd "<up>") 'icomplete-backward-completions)
-    (define-key icomplete-minibuffer-map (kbd "<down>") 'icomplete-forward-completions)
-    (define-key icomplete-minibuffer-map (kbd "<left>") 'icomplete-backward-completions)
-    (define-key icomplete-minibuffer-map (kbd "<right>") 'icomplete-forward-completions))
-#+end_src
-
-*** Icomplete settings
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'icomplete
-    (unless (version< emacs-version "27")
-      (icomplete-vertical-mode))
-    (setq icomplete-delay-completions-threshold 100)
-    (setq icomplete-max-delay-chars 2)
-    (setq icomplete-compute-delay 0.2)
-    (setq icomplete-show-matches-on-no-input t)
-    (setq icomplete-hide-common-prefix nil)
-    (setq icomplete-prospects-height 1)
-    ;; (setq icomplete-separator "\n")
-    (setq icomplete-separator (propertize " · " 'face 'shadow))
-    (setq icomplete-with-completion-tables t)
-    (setq icomplete-tidy-shadowed-file-names t)
-    (setq icomplete-in-buffer t))
 #+end_src
 
 ** Imenu
