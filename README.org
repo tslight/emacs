@@ -1638,35 +1638,26 @@ Turn on ~fido-mode~ at launch when we are Emacs 27+.
 
 *** Ido
 
-Turn on ~ido-mode~ if we are on Emacs < 26.
-
-#+begin_src emacs-lisp
-  (when (version< emacs-version "27")
-    (add-hook 'after-init-hook 'ido-mode)
-    (add-hook 'after-init-hook 'ido-everywhere))
-#+end_src
-
 **** Ido settings
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'ido
-    (setq ido-use-virtual-buffers 't) ;; show recent files too
-    (setq ido-create-new-buffer 'always)
-    (setq ido-enable-prefix t)
-    (setq ido-enable-flex-matching 't)
-    (setq ido-auto-merge-work-directories-length -1)
-    (setq ido-use-filename-at-point 'nil)
-    ;; vertical display
-    (setq ido-decorations (quote ("\n--> "
-                                  " "
-                                  "\n    "
-                                  "\n    ..."
-                                  "["  "]"
-                                  "  [No match]"
-                                  "  [Matched]"
-                                  "  [Not readable]"
-                                  "  [Too big]"
-                                  "  [Confirm]"))))
+  (setq ido-use-virtual-buffers 't) ;; show recent files too
+  (setq ido-create-new-buffer 'always)
+  (setq ido-enable-prefix t)
+  (setq ido-enable-flex-matching 't)
+  (setq ido-auto-merge-work-directories-length -1)
+  (setq ido-use-filename-at-point 'nil)
+  ;; vertical display
+  (setq ido-decorations (quote ("\n--> "
+                                " "
+                                "\n    "
+                                "\n    ..."
+                                "["  "]"
+                                "  [No match]"
+                                "  [Matched]"
+                                "  [Not readable]"
+                                "  [Too big]"
+                                "  [Confirm]")))
 #+end_src
 
 **** Ido M-x
@@ -1674,16 +1665,17 @@ Turn on ~ido-mode~ if we are on Emacs < 26.
 Make ~M-x~ work as expected when ~ido-mode~ is enabled.
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'ido
-    (global-set-key
-     "\M-x"
-     (lambda ()
-       (interactive)
-       (call-interactively
-        (intern
-         (ido-completing-read
-          "M-x "
-          (all-completions "" obarray 'commandp)))))))
+  (when (version< emacs-version "27")
+    (with-eval-after-load 'ido
+      (global-set-key
+       "\M-x"
+       (lambda ()
+         (interactive)
+         (call-interactively
+          (intern
+           (ido-completing-read
+            "M-x "
+            (all-completions "" obarray 'commandp))))))))
 #+end_src
 
 **** Ido keybindings
@@ -1691,17 +1683,26 @@ Make ~M-x~ work as expected when ~ido-mode~ is enabled.
 Add some custom keybindings in ~ido-mode~.
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'ido
-    (defun my/ido-keys ()
-      "Custom ido keybindings."
-      (define-key ido-completion-map (kbd "C-n") 'ido-next-match)
-      (define-key ido-completion-map (kbd "C-p") 'ido-prev-match)
-      ;; stop ido suggestion when doing a save-as
-      (define-key (cdr ido-minor-mode-map-entry) [remap write-file] nil))
+  (defun my/ido-keys ()
+    "Custom ido keybindings."
+    (define-key ido-completion-map (kbd "C-n") 'ido-next-match)
+    (define-key ido-completion-map (kbd "C-p") 'ido-prev-match)
+    ;; stop ido suggestion when doing a save-as
+    (define-key (cdr ido-minor-mode-map-entry) [remap write-file] nil))
 
-    (add-hook 'ido-minibuffer-setup-hook (lambda () (set (make-local-variable 'truncate-lines) nil)))
-    (add-hook 'ido-setup-hook (lambda () (define-key ido-completion-map [tab] 'ido-complete)))
-    (add-hook 'ido-setup-hook 'my/ido-keys))
+  (add-hook 'ido-minibuffer-setup-hook (lambda () (set (make-local-variable 'truncate-lines) nil)))
+  (add-hook 'ido-setup-hook (lambda () (define-key ido-completion-map [tab] 'ido-complete)))
+  (add-hook 'ido-setup-hook 'my/ido-keys)
+#+end_src
+
+**** Turn on Ido and Ido Everywhere
+
+Turn on ~ido-mode~ if we are on Emacs < 26.
+
+#+begin_src emacs-lisp
+  (when (version< emacs-version "27")
+    (ido-mode t)
+    (ido-everywhere t))
 #+end_src
 
 ** Dabbrev
