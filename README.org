@@ -518,7 +518,8 @@ Always do what I mean!
 
 If in WSL land...
 
-#+begin_src emacs-lisp :tangle (if (string-match "-[Mm]icrosoft" operating-system-release) init-file "no")
+(string-match "hello" 'nil)
+#+begin_src emacs-lisp :tangle (if (and operating-system-release (string-match "-[Mm]icrosoft" operating-system-release)) init-file "no")
   (setq default-frame-alist '(;(undecorated . t)
                               (fullscreen . maximized)
                               (vertical-scroll-bars . nil)))
@@ -526,7 +527,7 @@ If in WSL land...
 
 If anything else..
 
-#+begin_src emacs-lisp :tangle (if (not (string-match "-[Mm]icrosoft" operating-system-release)) init-file "no")
+#+begin_src emacs-lisp :tangle (if (and operating-system-release (not (string-match "-[Mm]icrosoft" operating-system-release))) init-file "no")
   (setq default-frame-alist '((fullscreen . maximized) (vertical-scroll-bars . nil)))
   (setq frame-resize-pixelwise t) ;; jwm resize fix
 #+end_src
@@ -1000,7 +1001,7 @@ Increment or decrement numbers at the point.
 
 ** WSL Copy/Paste
 
-#+begin_src emacs-lisp :tangle (if (string-match "-[Mm]icrosoft" operating-system-release) init-file "no")
+#+begin_src emacs-lisp :tangle (if (and operating-system-release (string-match "-[Mm]icrosoft" operating-system-release)) init-file "no")
   (defun ts-copy-to-windows-clipboard (start end)
     "Copy region to Window’s clipboard."
     (interactive "r")
@@ -1620,7 +1621,7 @@ Turn on ~fido-mode~ at launch when we are Emacs 27+.
 
 #+begin_src emacs-lisp
   (with-eval-after-load 'icomplete
-    (unless (version< emacs-version "27")
+    (unless (version< emacs-version "28")
       (icomplete-vertical-mode))
     (setq icomplete-delay-completions-threshold 100)
     (setq icomplete-max-delay-chars 2)
