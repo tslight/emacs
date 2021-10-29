@@ -516,18 +516,7 @@ Always do what I mean!
 
 ** Maximize on startup
 
-If in WSL land...
-
-(string-match "hello" 'nil)
-#+begin_src emacs-lisp :tangle (if (and operating-system-release (string-match "-[Mm]icrosoft" operating-system-release)) init-file "no")
-  (setq default-frame-alist '(;(undecorated . t)
-                              (fullscreen . maximized)
-                              (vertical-scroll-bars . nil)))
-#+end_src
-
-If anything else..
-
-#+begin_src emacs-lisp :tangle (if (and operating-system-release (not (string-match "-[Mm]icrosoft" operating-system-release))) init-file "no")
+#+begin_src emacs-lisp
   (setq default-frame-alist '((fullscreen . maximized) (vertical-scroll-bars . nil)))
   (setq frame-resize-pixelwise t) ;; jwm resize fix
 #+end_src
