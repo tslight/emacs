@@ -8,7 +8,7 @@
 #+OPTIONS: broken-links:t toc:t num:nil
 #+STARTUP: overview
 #+EXPORT_FILE_NAME: index
-#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+# #+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 
 A fairly standard [[https://en.wikipedia.org/wiki/Literate_programming][literate]] Emacs configuration using [[https://orgmode.org/][Org mode]]. *Emacs 26+ ONLY*.
 
@@ -2640,6 +2640,12 @@ https://karthinks.com/software/batteries-included-with-emacs/
 
 #+begin_src emacs-lisp
   (with-eval-after-load 'python
+    ;; (when (eq system-type 'windows-nt)
+    ;;   (setq exec-path
+    ;;         (append exec-path
+    ;;                 '("C:/Users/Toby/AppData/Local/Programs/Python/Python310")))
+    ;;   (setq python-shell-interpreter
+    ;;         "C:/Users/Toby/AppData/Local/Programs/Python/Python310"))
     (setq python-fill-docstring-style 'django)
     (message "Lazy loaded python :-)"))
 #+end_src
@@ -3081,7 +3087,7 @@ otherwise it goes in [[https://www.gnu.org/software/emacs/manual/html_node/emacs
     :hook (dired-mode-hook . dired-async-mode))
 #+end_src
 
-** COMMENT Blacken
+** Blacken
 
 #+begin_src emacs-lisp
   (use-package blacken :hook (python-mode . blacken-mode))
@@ -3144,8 +3150,9 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 
 ** Flycheck
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) "no" init-file)
   (use-package flycheck
+    :unless (eq system-type 'windows-nt)
     :diminish flycheck-mode
     :config
     (flycheck-add-mode 'javascript-eslint 'web-mode)
@@ -3179,18 +3186,21 @@ Emacs' ~completing-read~.
 
 Get the source from [[https://gitlab.com/tslight/lazygit][here]].
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) "no" init-file)
   (use-package lazygit :ensure nil
+    :unless (eq system-type 'windows-nt)
     :load-path "~/src/github/tslight/lazygit.el"
     :bind-keymap
     ("C-c g" . lazygit-map))
 
   (use-package lazygitlab :ensure nil
+    :unless (eq system-type 'windows-nt)
     :load-path "~/src/github/tslight/lazygit.el"
     :bind-keymap
     ("C-c L" . lazygitlab-map))
 
   (use-package lazygithub :ensure nil
+    :unless (eq system-type 'windows-nt)
     :load-path "~/src/github/tslight/lazygit.el"
     :bind-keymap
     ("C-c H" . lazygithub-map))
@@ -3244,6 +3254,7 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
       (setq tab-width 2))
     :hook (go-mode . ts-go-indent))
 #+end_src
+
 ** Hungry delete
 
 #+begin_src emacs-lisp
@@ -3287,8 +3298,8 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 
 ** Kubel
 
-#+begin_src emacs-lisp
-  (use-package kubel)
+#+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) "no" init-file)
+  (use-package kubel :unless (equal system-type 'windows-nt))
 #+end_src
 
 ** Markdown
