@@ -8,7 +8,7 @@
 #+OPTIONS: broken-links:t toc:t num:nil
 #+STARTUP: overview
 #+EXPORT_FILE_NAME: index
-# #+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+#+SETUPFILE: ./theme-readtheorg.setup
 
 A fairly standard [[https://en.wikipedia.org/wiki/Literate_programming][literate]] Emacs configuration using [[https://orgmode.org/][Org mode]]. *Emacs 26+ ONLY*.
 
