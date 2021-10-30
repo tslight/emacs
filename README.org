@@ -3093,7 +3093,7 @@ otherwise it goes in [[https://www.gnu.org/software/emacs/manual/html_node/emacs
   (use-package blacken :hook (python-mode . blacken-mode))
 #+end_src
 
-** COMMENT Diminish
+** Diminish
 
 #+begin_src emacs-lisp
   (use-package diminish :defer 2
@@ -3365,13 +3365,14 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
   (use-package powershell :mode (("\\.ps1\\'" . powershell-mode)))
 #+end_src
 
-** COMMENT Projectile
+** Projectile
 
 Don't tangle this block if ~emacs-version~ > 28, as Emacs 28 has the this
 functionality built in via ~project.el~.
 
 #+begin_src emacs-lisp :tangle (if (version< emacs-version "28") init-file "no")
   (use-package projectile :diminish
+    :unless (not (version< emacs-version "28"))
     :bind-keymap
     ("C-x p" . projectile-command-map)
     :config
