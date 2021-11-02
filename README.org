@@ -517,7 +517,9 @@ Always do what I mean!
 ** Maximize on startup
 
 #+begin_src emacs-lisp
-  (setq default-frame-alist '((fullscreen . maximized) (vertical-scroll-bars . nil)))
+  (setq default-frame-alist '((undecorated . t)
+                              (fullscreen . maximized)
+                              (vertical-scroll-bars . nil)))
   (setq frame-resize-pixelwise t) ;; jwm resize fix
 #+end_src
 
@@ -3296,7 +3298,7 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
   (use-package json-navigator)
 #+end_src
 
-** Kubel
+** COMMENT Kubel
 
 #+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) "no" init-file)
   (use-package kubel :unless (equal system-type 'windows-nt))
