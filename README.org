@@ -517,7 +517,7 @@ Always do what I mean!
 ** Maximize on startup
 
 #+begin_src emacs-lisp
-  (setq default-frame-alist '((undecorated . t)
+  (setq default-frame-alist '(;; (undecorated . t)
                               (fullscreen . maximized)
                               (vertical-scroll-bars . nil)))
   (setq frame-resize-pixelwise t) ;; jwm resize fix
@@ -541,7 +541,7 @@ Always do what I mean!
   (defun ts-setup-emacs-gui ()
     "Change some settings that are only applicable to graphical Emacs."
     (cond ((eq system-type 'windows-nt) (set-frame-font "Cascadia Mono 11" nil t))
-          ((eq system-type 'darwin) (set-frame-font "Monaco 11" nil t))
+          ((eq system-type 'darwin) (set-frame-font "Monaco 12" nil t))
           ((eq system-type 'gnu/linux) (set-frame-font "Monospace 11" nil t))
           (t (set-frame-font "Monospace 11" nil t))))
 #+end_src
