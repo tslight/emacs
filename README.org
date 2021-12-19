@@ -3254,7 +3254,9 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
     (defun ts-go-indent ()
       (setq indent-tabs-mode 1)
       (setq tab-width 2))
-    :hook (go-mode . ts-go-indent))
+    :hook
+    (go-mode . ts-go-indent)
+    (before-save . gofmt-before-save))
 #+end_src
 
 ** Hungry delete
