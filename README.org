@@ -1838,6 +1838,18 @@ The default keys are ~C-x C-j~ and ~C-x 4 C-j~.
     (message "Lazy loaded find-dired :-)"))
 #+end_src
 
+*** Windows Find
+
+First install GnuWin32 binaries from [[http://gnuwin32.sourceforge.net/packages.html][here]].
+
+Or if you want all the GNU tools on your Windows box - use [[https://sourceforge.net/projects/getgnuwin32/files/getgnuwin32/][this]].
+
+#+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) init-file "no")
+  (setq find-program "C:/Program Files (x86)/GnuWin32/bin/find.exe")
+  (setq grep-program "C:/Program Files (x86)/GnuWin32/bin/grep.exe")
+  (setq xargs-program "C:/Program Files (x86)/GnuWin32/bin/xargs.exe")
+#+end_src
+
 *** Writeable Dired
 
 #+begin_src emacs-lisp
