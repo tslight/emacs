@@ -990,7 +990,7 @@ Increment or decrement numbers at the point.
       (indent-region (point-min) (point-max))))
 #+end_src
 
-** WSL Copy/Paste
+** COMMENT WSL Copy/Paste
 
 #+begin_src emacs-lisp :tangle (if (and operating-system-release (string-match "-[Mm]icrosoft" operating-system-release)) init-file "no")
   (defun ts-copy-to-windows-clipboard (start end)
@@ -1018,6 +1018,21 @@ Increment or decrement numbers at the point.
 
   (defalias 'ts-paste-from-windows-clipboard 'wsl-paste)
   (global-set-key (kbd "C-c y") 'ts-paste-from-windows-clipboard)
+#+end_src
+
+** WSLg Copy Workaround
+
+https://github.com/microsoft/wslg/issues/15
+https://emacsredux.com/blog/2022/01/04/dealing-with-clipboard-issues-on-windows-11-wslg/
+
+#+begin_src emacs-lisp :tangle (if (and operating-system-release (string-match "-[Mm]icrosoft" operating-system-release)) init-file "no")
+  (defun ts-wslg-copy-workaround (start end)
+    (interactive "r")
+    (if (use-region-p)
+        (let ((text (buffer-substring-no-properties start end)))
+          (shell-command (concat "echo '" text "' | clip.exe")))))
+
+  (global-set-key (kbd "M-w") 'ts-wslg-copy-workaround)
 #+end_src
 
 ** COMMENT Yank pop forwards (Emacs<28)
