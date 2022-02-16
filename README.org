@@ -330,6 +330,17 @@ This variables are added to the end of this file.
   (setq scroll-preserve-screen-position t)
 #+end_src
 
+#+begin_quote
+When enabled, and if your mouse supports it, you can scroll the display up or
+down at pixel resolution, according to what your mouse wheel reports. Unlike
+pixel-scroll-mode, this mode scrolls the display pixel-by-pixel, as opposed to
+only animating line-by-line scrolls.
+#+end_quote
+
+#+begin_src emacs-lisp :tangle (if (version< emacs-version "29") "no" init-file)
+  (pixel-scroll-precision-mode)
+#+end_src
+
 ** Sentence End Spaces
 
 #+begin_src emacs-lisp
@@ -992,6 +1003,8 @@ Increment or decrement numbers at the point.
 
 ** COMMENT WSL Copy/Paste
 
+For older versions of WSL. Deprecated for me now.
+
 #+begin_src emacs-lisp :tangle (if (and operating-system-release (string-match "-[Mm]icrosoft" operating-system-release)) init-file "no")
   (defun ts-copy-to-windows-clipboard (start end)
     "Copy region to Window’s clipboard."
@@ -1032,7 +1045,7 @@ https://emacsredux.com/blog/2022/01/04/dealing-with-clipboard-issues-on-windows-
         (let ((text (buffer-substring-no-properties start end)))
           (shell-command (concat "echo '" text "' | clip.exe")))))
 
-  (global-set-key (kbd "M-w") 'ts-wslg-copy-workaround)
+  (global-set-key (kbd "C-c C-w") 'ts-wslg-copy-workaround)
 #+end_src
 
 ** COMMENT Yank pop forwards (Emacs<28)
@@ -1643,7 +1656,6 @@ Turn on ~fido-mode~ at launch when we are Emacs 27+.
 #+end_src
 
 *** Ido
-
 **** Ido settings
 
 #+begin_src emacs-lisp
