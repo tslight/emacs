@@ -3233,7 +3233,7 @@ https://microsoft.github.io/language-server-protocol/
     (shell-script-mode . eglot-ensure))
 #+end_src
 
-** Elpy
+** COMMENT Elpy
 
 Elpy is an Emacs package to bring powerful Python editing to Emacs. It combines
 and configures a number of other packages, both written in Emacs Lisp as well
