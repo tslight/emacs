@@ -3161,7 +3161,7 @@ https://github.com/minad/corfu
           ([tab] . corfu-next)
           ("S-TAB" . corfu-previous)
           ([backtab] . corfu-previous))
-    :init (corfu-global-mode))
+    :init (global-corfu-mode))
 #+end_src
 
 ** Diminish
