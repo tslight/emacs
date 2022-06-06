@@ -389,7 +389,7 @@ When do I ever want to sort case sensitively?!
   (setq user-mail-address "tslight@pm.me")
 #+end_src
 
-** COMMENT Windows
+** Windows
 
 #+begin_src emacs-lisp
   (setq split-width-threshold 200)
