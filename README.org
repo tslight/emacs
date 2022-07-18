@@ -2596,7 +2596,7 @@ We only tangle this when ~emacs-version~ > 28, since it's not very useful prior
 to that.
 
 #+begin_src emacs-lisp :tangle (if (version< emacs-version "28") "no" init-file)
-  (setq ts-project-roots '("~/src"))
+  (setq ts-project-roots '("~/src" "~/oe-developers"))
 
   (defun ts-project--git-repo-p (directory)
     "Return non-nil if there is a git repository in DIRECTORY."
