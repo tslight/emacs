@@ -1302,7 +1302,9 @@ This block will byte compile ~early-init.el~ and ~init.el~ if an existing
        (message "%.06f" (float-time (time-since time)))))
 #+end_src
 
-** Default Text Scale
+** COMMENT Default Text Scale
+
+This doesn't work as expected...
 
 #+begin_src emacs-lisp
   (defadvice text-scale-increase (around all-buffers (arg) activate)
@@ -3189,6 +3191,15 @@ https://github.com/minad/corfu
           ("S-TAB" . corfu-previous)
           ([backtab] . corfu-previous))
     :init (global-corfu-mode))
+#+end_src
+** Default Text Scale
+
+Increase or decrease font size everywhere with ~C-M-=~ and ~C-M--~
+
+https://github.com/purcell/default-text-scale
+
+#+begin_src emacs-lisp
+(use-package default-text-scale :defer 7 :config (default-text-scale-mode))
 #+end_src
 
 ** Diminish
