@@ -1808,8 +1808,8 @@ Turn on ~ido-mode~ if we are on Emacs < 26.
 
 #+begin_src emacs-lisp
   (with-eval-after-load 'dired
+    (when (eq system-type 'darwin) (setq dired-listing-switches "-alhpL"))
     (when (eq system-type 'berkeley-unix) (setq dired-listing-switches "-alhpL"))
-
     (when (eq system-type 'gnu/linux)
       (setq dired-listing-switches
             "-AGFhlv --group-directories-first --time-style=long-iso")))
@@ -2793,7 +2793,7 @@ https://karthinks.com/software/it-bears-repeating/
 
 #+begin_src emacs-lisp
   (add-hook 'prog-mode-hook 'semantic-mode)
-  (advice-add 'semantic-idle-scheduler-function :around #'ignore)
+  ;; (advice-add 'semantic-idle-scheduler-function :around #'ignore)
 #+end_src
 
 ** Shell
