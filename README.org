@@ -1808,7 +1808,7 @@ Turn on ~ido-mode~ if we are on Emacs < 26.
 
 #+begin_src emacs-lisp
   (with-eval-after-load 'dired
-    (when (eq system-type 'darwin) (setq dired-listing-switches "-alhpL"))
+    (when (eq system-type 'darwin) (setq dired-listing-switches "-alh"))
     (when (eq system-type 'berkeley-unix) (setq dired-listing-switches "-alhpL"))
     (when (eq system-type 'gnu/linux)
       (setq dired-listing-switches
@@ -3193,6 +3193,7 @@ https://github.com/minad/corfu
           ([backtab] . corfu-previous))
     :init (global-corfu-mode))
 #+end_src
+
 ** Default Text Scale
 
 Increase or decrease font size everywhere with ~C-M-=~ and ~C-M--~
