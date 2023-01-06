@@ -579,7 +579,7 @@ Always do what I mean!
     (select-frame frame)
     (if (version< emacs-version "28")
         (load-theme 'wombat)
-      (load-theme 'modus-vivendi))
+      (load-theme 'modus-vivendi-tinted))
     (if (display-graphic-p)
         (ts-setup-emacs-gui)
       (ts-setup-emacs-nw)))
