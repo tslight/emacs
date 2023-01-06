@@ -2619,7 +2619,9 @@ We only tangle this when ~emacs-version~ > 28, since it's not very useful prior
 to that.
 
 #+begin_src emacs-lisp :tangle (if (version< emacs-version "28") "no" init-file)
-  (setq ts-project-roots '("~/src" "~/oe-developers"))
+  (if (and (file-directory-p "~/oe-developers")
+           (file-readable-p "~/oe-developers"))
+      (setq ts-project-roots '("~/src" "~/oe-developers")))
 
   (defun ts-project--git-repo-p (directory)
     "Return non-nil if there is a git repository in DIRECTORY."
@@ -3320,6 +3322,7 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
     (setq exec-path-from-shell-check-startup-files 'nil)
     :config
     (exec-path-from-shell-initialize)
+    (exec-path-from-shell-copy-env "DEVPATH")
     (exec-path-from-shell-copy-env "PYTHONPATH"))
 #+end_src
 
