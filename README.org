@@ -323,7 +323,8 @@ This variables are added to the end of this file.
 
 #+begin_src emacs-lisp
   (setq safe-local-variable-values
-        '((eval setq early-init (expand-file-name "early-init.el" user-emacs-directory))
+        '((eval setq org-confirm-babel-evaluate 'nil)
+          (eval setq early-init (expand-file-name "early-init.el" user-emacs-directory))
           (eval setq init-file (expand-file-name "init.el" user-emacs-directory))
           (eval add-hook 'after-save-hook 'org-html-export-to-html nil t)
           (eval add-hook 'after-save-hook 'org-latex-export-to-pdf nil t)
@@ -1618,6 +1619,25 @@ This is basically ~other-window~ backwards.
 
 ** Completion
 
+https://robbmann.io/posts/emacs-29-completions/
+
+#+begin_src emacs-lisp :tangle (if (version< emacs-version "28") init-file "no")
+  (unless (version< emacs-version "29.0")
+    (setq completion-auto-help 'visible
+          completion-auto-select 'second-tab
+          completion-show-help nil
+          completions-sort nil
+          completions-format 'one-column
+          completions-max-height 15
+          completions-header-format nil))
+#+end_src
+
+#+begin_src emacs-lisp :tangle (if (version< emacs-version "28") init-file "no")
+  (unless (version< emacs-version "29.0")
+    (define-key completion-in-region-mode-map (kbd "C-p") #'minibuffer-previous-completion)
+    (define-key completion-in-region-mode-map (kbd "C-n") #'minibuffer-next-completion))
+#+end_src
+
 Use funky new ~fido~ functionality for everything if we are on Emacs 27+.
 Otherwise just use boring old ~ido~.
 
@@ -2389,6 +2409,7 @@ No need to tangle, when using the advice above, leaving here for reference.
        (sql . t)
        (sqlite . t))))
 #+end_src
+
 *** Org Capture Templates
 
 #+begin_src emacs-lisp
@@ -2450,7 +2471,7 @@ No need to tangle, when using the advice above, leaving here for reference.
     (setq org-image-actual-width nil) ; try to get width from #+ATTR.* keyword
     (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
     (setq org-emphasis-regexp-components '(" \t('\"{" "- \t.,:!?;'\")}\\" " \t\r\n,\"'" "." 300))
-    (setq org-confirm-babel-evaluate t)
+    (setq org-confirm-babel-evaluate 'nil)
     (setq org-export-with-toc t)
     (setq org-indent-indentation-per-level 1)
     (setq org-list-allow-alphabetical t)
@@ -3194,7 +3215,10 @@ minimalistic completion-in-region counterpart of the Vertico minibuffer UI.
 
 https://github.com/minad/corfu
 
-#+begin_src emacs-lisp
+After Emacs 29 we can use the standard ~*Completions*~ buffer and it's much
+lighter, so only tangle on ~Emacs<29~.
+
+#+begin_src emacs-lisp :tangle (if (version< emacs-version "29") init-file "no")
   (use-package corfu
     :custom
     (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
@@ -3673,6 +3697,7 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 
 * COMMENT Local Variables                                  :NOEXPORT:ARCHIVE:
 # Local Variables:
+# eval: (setq org-confirm-babel-evaluate 'nil)
 # eval: (setq init-file (expand-file-name "init.el" user-emacs-directory))
 # eval: (setq early-init (expand-file-name "early-init.el" user-emacs-directory))
 # eval: (add-hook 'after-save-hook 'org-babel-tangle nil t)
