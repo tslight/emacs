@@ -3541,7 +3541,7 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
   (use-package kubel :unless (equal system-type 'windows-nt))
 #+end_src
 
-** Kubernetes
+** COMMENT Kubernetes
 
 #+begin_src emacs-lisp
 (use-package kubernetes
