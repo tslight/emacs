@@ -3240,6 +3240,36 @@ lighter, so only tangle on ~Emacs<29~.
           ([backtab] . corfu-previous))
     :init (global-corfu-mode))
 #+end_src
+** Completions
+
+#+begin_src emacs-lisp
+  (use-package vertico
+    :init (vertico-mode)
+    :config
+    (define-key vertico-map (kbd "<tab>") #'vertico-next)
+    (define-key vertico-map (kbd "<backtab>") #'vertico-previous))
+#+end_src
+
+To get use vertico with code completions.
+
+#+begin_src emacs-lisp
+  (use-package consult)
+#+end_src
+
+#+begin_src emacs-lisp
+  (use-package orderless
+    :init
+    ;; Configure a custom style dispatcher (see the Consult wiki)
+    ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
+    ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+    (setq completion-styles '(orderless basic)
+          completion-category-defaults nil
+          completion-category-overrides '((file (styles partial-completion)))))
+#+end_src
+
+#+begin_src emacs-lisp
+  (setq completion-styles '(orderless flex partial-completion substring basic))
+#+end_src
 
 ** Default Text Scale
 
@@ -3269,7 +3299,7 @@ https://github.com/purcell/default-text-scale
     (hs-minor-mode . (lambda () (diminish 'hs-minor-mode))))
 #+end_src
 
-** Diranged
+** COMMENT Diranged
 
 Preview the file or directory at point when in ~dired~, a bit like [[https://github.com/ranger/ranger][ranger]].
 
@@ -3290,6 +3320,7 @@ Get the source from [[https://github.com/tslight/diranged][here]].
 #+begin_src emacs-lisp
   (use-package dockerfile-mode)
 #+end_src
+
 ** Eglot
 
 Emacs Polyglot: an Emacs LSP client that stays out of your way.
