@@ -3207,7 +3207,7 @@ otherwise it goes in [[https://www.gnu.org/software/emacs/manual/html_node/emacs
 #+begin_src emacs-lisp
   (use-package blacken :hook (python-mode . blacken-mode))
 #+end_src
-** Corfu
+** COMMENT Corfu
 
 Corfu enhances completion at point with a small completion popup. The current
 candidates are shown in a popup below or above the point. Corfu is the
@@ -3240,6 +3240,7 @@ lighter, so only tangle on ~Emacs<29~.
           ([backtab] . corfu-previous))
     :init (global-corfu-mode))
 #+end_src
+
 ** Completions
 
 #+begin_src emacs-lisp
@@ -3252,7 +3253,16 @@ lighter, so only tangle on ~Emacs<29~.
 To get use vertico with code completions.
 
 #+begin_src emacs-lisp
-  (use-package consult)
+  (use-package consult
+    :config
+    ;; Use `consult-completion-in-region' if Vertico is enabled.
+    ;; Otherwise use the default `completion--in-region' function.
+    (setq completion-in-region-function
+          (lambda (&rest args)
+            (apply (if vertico-mode
+                       #'consult-completion-in-region
+                     #'completion--in-region)
+                   args))))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -3525,11 +3535,20 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 #+begin_src emacs-lisp :tangle no
   (use-package json-navigator)
 #+end_src
-
 ** COMMENT Kubel
 
 #+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) "no" init-file)
   (use-package kubel :unless (equal system-type 'windows-nt))
+#+end_src
+
+** Kubernetes
+
+#+begin_src emacs-lisp
+(use-package kubernetes
+  :commands (kubernetes-overview)
+  :config
+  (setq kubernetes-poll-frequency 3600
+        kubernetes-redraw-frequency 3600))
 #+end_src
 
 ** Markdown
