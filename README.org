@@ -3468,12 +3468,12 @@ Get the source from [[https://gitlab.com/tslight/lazygit][here]].
     (setq magit-repository-directories `(("~/" . 0)
                                          ("~/src" . 10)))
     (setq magit-repolist-columns
-          '(("Name" 25 magit-repolist-column-ident)
-            ;; ("Version" 25 magit-repolist-column-version)
-            ("Pull" 5 magit-repolist-column-unpulled-from-upstream)
-            ("Push" 5 magit-repolist-column-unpushed-to-upstream)
-            ("Commit" 8 magit-repolist-column-flag t)
-            ("Path" 99 magit-repolist-column-path))))
+          '(("Name" 25 magit-repolist-column-ident nil)
+            ("Version" 25 magit-repolist-column-version((:sort magit-repolist-version<)))
+            ("Pull" 5 magit-repolist-column-unpulled-from-upstream ((:right-align t) (:sort <)))
+            ("Push" 5 magit-repolist-column-unpushed-to-upstream ((:right-align t) (:sort <)))
+            ("Flag" 5 magit-repolist-column-flag ((:right-align t) (:sort <)))
+            ("Path" 99 magit-repolist-column-path nil))))
 #+end_src
 
 Don't tangle this block if ~system-type~ is ~windows-nt~.
