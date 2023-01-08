@@ -127,7 +127,7 @@ compressed/encrypted files won’t open.
 #+begin_src emacs-lisp
   (setq select-enable-clipboard t)
   ;; (setq select-enable-primary t) ;; breaks standard yank meaning that following
-                                 ;; doesn't work as expected:
+  ;; doesn't work as expected:
   (delete-selection-mode t)
   (setq x-select-enable-clipboard-manager nil)
   (setq save-interprogram-paste-before-kill t)
@@ -579,7 +579,7 @@ Always do what I mean!
     (select-frame frame)
     (if (version< emacs-version "28")
         (load-theme 'wombat)
-      (load-theme 'modus-vivendi-tinted))
+      (load-theme 'modus-vivendi))
     (if (display-graphic-p)
         (ts-setup-emacs-gui)
       (ts-setup-emacs-nw)))
@@ -852,7 +852,7 @@ Increment or decrement numbers at the point.
            (dolist (mods '(() (control)))
              (dolist (key '(?- ?+ ?= ?0)) ;; = is often unshifted +.
                (define-key map (vector (append mods (list key)))
-                 (lambda () (interactive) (ts-change-number (abs inc))))))
+                           (lambda () (interactive) (ts-change-number (abs inc))))))
            map)))))
 
   (global-set-key (kbd "C-c +") 'ts-change-number)
@@ -1617,7 +1617,7 @@ This is basically ~other-window~ backwards.
   (add-hook 'after-init-hook 'column-number-mode)
 #+end_src
 
-** Completion
+** COMMENT Completion
 
 https://robbmann.io/posts/emacs-29-completions/
 
@@ -1641,7 +1641,7 @@ https://robbmann.io/posts/emacs-29-completions/
 Use funky new ~fido~ functionality for everything if we are on Emacs 27+.
 Otherwise just use boring old ~ido~.
 
-*** Icomplete
+*** COMMENT Icomplete
 
 Turn on ~fido-mode~ at launch when we are Emacs 27+.
 
@@ -1651,7 +1651,7 @@ Turn on ~fido-mode~ at launch when we are Emacs 27+.
     (add-hook 'after-init-hook 'fido-mode))
 #+end_src
 
-**** Change completion styles
+**** COMMENT Change completion styles
 
 #+begin_src emacs-lisp
   (defun ts-icomplete-styles ()
@@ -1671,7 +1671,7 @@ Turn on ~fido-mode~ at launch when we are Emacs 27+.
   (add-hook 'icomplete-minibuffer-setup-hook 'ts-icomplete-styles)
 #+end_src
 
-**** Icomplete keybindings
+**** COMMENT Icomplete keybindings
 
 #+begin_src emacs-lisp
   (with-eval-after-load 'icomplete
@@ -1688,7 +1688,7 @@ Turn on ~fido-mode~ at launch when we are Emacs 27+.
     (define-key icomplete-minibuffer-map (kbd "<right>") 'icomplete-forward-completions))
 #+end_src
 
-**** Icomplete settings
+**** COMMENT Icomplete settings
 
 #+begin_src emacs-lisp
   (with-eval-after-load 'icomplete
@@ -1707,7 +1707,7 @@ Turn on ~fido-mode~ at launch when we are Emacs 27+.
     (setq icomplete-in-buffer t))
 #+end_src
 
-*** Ido
+*** COMMENT Ido
 **** Ido settings
 
 #+begin_src emacs-lisp
@@ -3245,7 +3245,6 @@ lighter, so only tangle on ~Emacs<29~.
 #+begin_src emacs-lisp
   (use-package vertico
     :init (vertico-mode)
-    :config
     (define-key vertico-map (kbd "<tab>") #'vertico-next)
     (define-key vertico-map (kbd "<backtab>") #'vertico-previous))
 #+end_src
@@ -3260,15 +3259,11 @@ To get use vertico with code completions.
   (use-package orderless
     :init
     ;; Configure a custom style dispatcher (see the Consult wiki)
-    ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
-    ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-    (setq completion-styles '(orderless basic)
+    (setq orderless-style-dispatchers '(+orderless-dispatch)
+          orderless-component-separator #'orderless-escapable-split-on-space)
+    (setq completion-styles '(orderless flex partial-completion substring basic)
           completion-category-defaults nil
           completion-category-overrides '((file (styles partial-completion)))))
-#+end_src
-
-#+begin_src emacs-lisp
-  (setq completion-styles '(orderless flex partial-completion substring basic))
 #+end_src
 
 ** Default Text Scale
@@ -3278,7 +3273,7 @@ Increase or decrease font size everywhere with ~C-M-=~ and ~C-M--~
 https://github.com/purcell/default-text-scale
 
 #+begin_src emacs-lisp
-(use-package default-text-scale :defer 7 :config (default-text-scale-mode))
+  (use-package default-text-scale :defer 7 :config (default-text-scale-mode))
 #+end_src
 
 ** Diminish
