@@ -3259,7 +3259,7 @@ https://github.com/minad/consult
 
 #+begin_src emacs-lisp
   (use-package consult
-    :config
+    :init
     ;; Use `consult-completion-in-region' if Vertico is enabled.
     ;; Otherwise use the default `completion--in-region' function.
     (setq completion-in-region-function
