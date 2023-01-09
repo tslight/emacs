@@ -3242,6 +3242,7 @@ lighter, so only tangle on ~Emacs<29~.
 #+end_src
 
 ** Completion
+*** Vertico
 
 https://github.com/minad/vertico
 
@@ -3252,7 +3253,9 @@ https://github.com/minad/vertico
     (define-key vertico-map (kbd "<backtab>") #'vertico-previous))
 #+end_src
 
-To get use vertico with code completions.
+*** Consult
+
+https://github.com/minad/consult
 
 #+begin_src emacs-lisp
   (use-package consult
@@ -3266,6 +3269,21 @@ To get use vertico with code completions.
                      #'completion--in-region)
                    args))))
 #+end_src
+
+*** Marginalia
+
+https://github.com/minad/marginalia/
+
+#+begin_src emacs-lisp
+  (use-package marginalia
+    ;; The :init configuration is always executed (Not lazy!)
+    :init
+    ;; Must be in the :init section of use-package such that the mode gets
+    ;; enabled right away. Note that this forces loading the package.
+    (marginalia-mode))
+#+end_src
+
+*** Orderless
 
 https://github.com/oantolin/orderless
 
