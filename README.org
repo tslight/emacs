@@ -3466,14 +3466,16 @@ Get the source from [[https://gitlab.com/tslight/lazygit][here]].
     :bind* ("C-x C-g" . magit-list-repositories)
     :config
     (setq magit-repository-directories `(("~/" . 0)
-                                         ("~/src" . 10)))
+                                         ("~/src" . 10)
+                                         ("~/oe-developers" . 10)))
     (setq magit-repolist-columns
-          '(("Name" 25 magit-repolist-column-ident nil)
-            ("Version" 25 magit-repolist-column-version((:sort magit-repolist-version<)))
-            ("Pull" 5 magit-repolist-column-unpulled-from-upstream ((:right-align t) (:sort <)))
-            ("Push" 5 magit-repolist-column-unpushed-to-upstream ((:right-align t) (:sort <)))
-            ("Flag" 5 magit-repolist-column-flag ((:right-align t) (:sort <)))
-            ("Path" 99 magit-repolist-column-path nil))))
+          '(("Flag" 5 magit-repolist-column-flag ((:right-align t) nil))
+            ("Name" 25 magit-repolist-column-ident nil)
+            ("Version" 25 magit-repolist-column-version nil)
+            ("Pull" 5 magit-repolist-column-unpulled-from-upstream ((:right-align t) nil))
+            ("Push" 5 magit-repolist-column-unpushed-to-upstream ((:right-align t) nil))
+            ("Path" 99 magit-repolist-column-path nil)))
+    (setq magit-repolist-sort-key "Flag"))
 #+end_src
 
 Don't tangle this block if ~system-type~ is ~windows-nt~.
