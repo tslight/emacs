@@ -1669,17 +1669,14 @@ Turn on ~fido-mode~ at launch when we are Emacs 27+.
   (defun ts-icomplete-styles ()
     "Set icomplete styles based on Emacs version."
     (if (version< emacs-version "27")
-        (setq-local completion-styles '(basic
+        (setq-local completion-styles '(initials
                                         partial-completion
-                                        emacs22
                                         substring
-                                        initials))
-      (setq-local completion-styles '(basic
+                                        basic))
+      (setq-local completion-styles '(initials flex
                                       partial-completion
-                                      emacs22
                                       substring
-                                      initials
-                                      flex))))
+                                      basic))))
   (add-hook 'icomplete-minibuffer-setup-hook 'ts-icomplete-styles)
 #+end_src
 
