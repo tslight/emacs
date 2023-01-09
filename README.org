@@ -1561,6 +1561,18 @@ This is basically ~other-window~ backwards.
     (ansi-color-apply-on-region (point-min) (point-max)))
 #+end_src
 
+Make sure we show colors when we run commands with ~M-!~
+
+#+begin_src emacs-lisp
+  (defadvice display-message-or-buffer (before ansi-color activate)
+    "Process ANSI color codes in shell output."
+    (let ((buf (ad-get-arg 0)))
+      (and (bufferp buf)
+           (string= (buffer-name buf) "*Shell Command Output*")
+           (with-current-buffer buf
+             (ansi-color-apply-on-region (point-min) (point-max))))))
+#+end_src
+
 ** Auto-fill
 
 #+begin_src emacs-lisp
@@ -1617,7 +1629,7 @@ This is basically ~other-window~ backwards.
   (add-hook 'after-init-hook 'column-number-mode)
 #+end_src
 
-** COMMENT Completion
+** Completion
 
 https://robbmann.io/posts/emacs-29-completions/
 
@@ -1641,7 +1653,7 @@ https://robbmann.io/posts/emacs-29-completions/
 Use funky new ~fido~ functionality for everything if we are on Emacs 27+.
 Otherwise just use boring old ~ido~.
 
-*** COMMENT Icomplete
+*** Icomplete
 
 Turn on ~fido-mode~ at launch when we are Emacs 27+.
 
@@ -1651,7 +1663,7 @@ Turn on ~fido-mode~ at launch when we are Emacs 27+.
     (add-hook 'after-init-hook 'fido-mode))
 #+end_src
 
-**** COMMENT Change completion styles
+**** Change completion styles
 
 #+begin_src emacs-lisp
   (defun ts-icomplete-styles ()
@@ -1671,7 +1683,7 @@ Turn on ~fido-mode~ at launch when we are Emacs 27+.
   (add-hook 'icomplete-minibuffer-setup-hook 'ts-icomplete-styles)
 #+end_src
 
-**** COMMENT Icomplete keybindings
+**** Icomplete keybindings
 
 #+begin_src emacs-lisp
   (with-eval-after-load 'icomplete
@@ -1688,7 +1700,7 @@ Turn on ~fido-mode~ at launch when we are Emacs 27+.
     (define-key icomplete-minibuffer-map (kbd "<right>") 'icomplete-forward-completions))
 #+end_src
 
-**** COMMENT Icomplete settings
+**** Icomplete settings
 
 #+begin_src emacs-lisp
   (with-eval-after-load 'icomplete
@@ -1707,7 +1719,7 @@ Turn on ~fido-mode~ at launch when we are Emacs 27+.
     (setq icomplete-in-buffer t))
 #+end_src
 
-*** COMMENT Ido
+*** Ido
 **** Ido settings
 
 #+begin_src emacs-lisp
@@ -3241,7 +3253,7 @@ lighter, so only tangle on ~Emacs<29~.
     :init (global-corfu-mode))
 #+end_src
 
-** Completion
+** COMMENT Completion
 *** Vertico
 
 https://github.com/minad/vertico
@@ -3291,8 +3303,8 @@ https://github.com/oantolin/orderless
   (use-package orderless
     :init
     ;; Configure a custom style dispatcher (see the Consult wiki)
-    (setq orderless-style-dispatchers '(+orderless-dispatch)
-          orderless-component-separator #'orderless-escapable-split-on-space)
+    ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
+          ;; orderless-component-separator #'orderless-escapable-split-on-space)
     (setq completion-styles '(orderless initials flex partial-completion substring basic)
           completion-category-defaults nil
           completion-category-overrides '((file (styles partial-completion)))))
