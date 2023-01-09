@@ -3497,7 +3497,7 @@ Get the source from [[https://gitlab.com/tslight/lazygit][here]].
             ("Pull" 5 magit-repolist-column-unpulled-from-upstream ((:right-align t) nil))
             ("Push" 5 magit-repolist-column-unpushed-to-upstream ((:right-align t) nil))
             ("Path" 99 magit-repolist-column-path nil)))
-    (setq magit-repolist-sort-key "Flag"))
+    (setq magit-repolist-sort-key '("Flag" . t)))
 #+end_src
 
 Don't tangle this block if ~system-type~ is ~windows-nt~.
