@@ -3491,11 +3491,14 @@ Get the source from [[https://gitlab.com/tslight/lazygit][here]].
                                          ("~/src" . 10)
                                          ("~/oe-developers" . 10)))
     (setq magit-repolist-columns
-          '(("Flag" 5 magit-repolist-column-flag ((:right-align t) nil))
-            ("Name" 25 magit-repolist-column-ident nil)
-            ("Version" 25 magit-repolist-column-version nil)
+          '(("Flag" 5 magit-repolist-column-flags ((:right-align t) nil))
+            ("Name" 20 magit-repolist-column-ident nil)
+            ("Branch" 10 magit-repolist-column-branch nil)
+            ;; ("Version" 25 magit-repolist-column-version nil)
             ("Pull" 5 magit-repolist-column-unpulled-from-upstream ((:right-align t) nil))
             ("Push" 5 magit-repolist-column-unpushed-to-upstream ((:right-align t) nil))
+            ;; ("Pull" 5 magit-repolist-column-unpulled-from-pushremote ((:right-align t) nil))
+            ;; ("Push" 5 magit-repolist-column-unpushed-to-pushremote ((:right-align t) nil))
             ("Path" 99 magit-repolist-column-path nil)))
     (setq magit-repolist-sort-key '("Flag" . t)))
 #+end_src
