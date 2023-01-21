@@ -298,7 +298,8 @@ If init.elc is older, use newer ~init.el~.
 #+begin_src emacs-lisp
   (setq load-prefer-newer t) ;; if init.elc is older, use newer init.el
 #+end_src
-** Preferred programs
+** COMMENT Preferred programs
+
 
 #+begin_src emacs-lisp
   (when (executable-find "rg")
@@ -2801,23 +2802,24 @@ https://karthinks.com/software/batteries-included-with-emacs/
   (global-set-key (kbd "C-c C-r") 'recentf-open-files)
   (add-hook 'emacs-startup-hook 'recentf-mode)
 #+end_src
-** Repeat Mode
+** COMMENT Repeat Mode
 
 Emacs 28+
 
 https://karthinks.com/software/it-bears-repeating/
 
 #+begin_src emacs-lisp :tangle (if (version< emacs-version "28") "no" init-file)
-  (defvar isearch-repeat-map
-    (let ((map (make-sparse-keymap)))
-      (define-key map (kbd "s") #'isearch-repeat-forward)
-      (define-key map (kbd "r") #'isearch-repeat-backward)
-      map))
-
-  (dolist (cmd '(isearch-repeat-forward isearch-repeat-backward))
-    (put cmd 'repeat-map 'isearch-repeat-map))
-
-  (repeat-mode)
+  (with-eval-after-load 'isearch-mode
+    (defvar isearch-repeat-map
+      (let ((map (make-sparse-keymap)))
+        (define-key map (kbd "s") #'isearch-repeat-forward)
+        (define-key map (kbd "r") #'isearch-repeat-backward)
+        map))
+    (dolist (cmd '(isearch-repeat-forward isearch-repeat-backward))
+      (put cmd 'repeat-map 'isearch-repeat-map))
+    (repeat-mode)
+    (message "Lazy loaded repeat-mode :-)"))
+  (add-hook 'emacs-startup-hook 'repeat-mode)
 #+end_src
 
 ** Saveplace
