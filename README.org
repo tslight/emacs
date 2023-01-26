@@ -2848,7 +2848,8 @@ https://karthinks.com/software/it-bears-repeating/
 
 #+begin_src emacs-lisp
   (add-hook 'prog-mode-hook 'semantic-mode)
-  ;; (advice-add 'semantic-idle-scheduler-function :around #'ignore)
+  ;; https://github.com/abo-abo/lispy/issues/473
+  (advice-add 'semantic-idle-scheduler-function :around #'ignore)
 #+end_src
 
 ** Shell
