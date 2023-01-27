@@ -10,13 +10,13 @@
 #+EXPORT_FILE_NAME: index
 #+SETUPFILE: ./theme-readtheorg.setup
 
-A fairly standard [[https://en.wikipedia.org/wiki/Literate_programming][literate]] Emacs configuration using [[https://orgmode.org/][Org mode]]. *Emacs 26+ ONLY*.
+A fairly standard [[https://en.wikipedia.org/wiki/Literate_programming][literate]] Emacs configuration using [[https://orgmode.org/][Org mode]]. *Emacs 27+ ONLY*.
 
 To install, evaluate the code block below with ~C-c C-c~ in an Emacs buffer:
 
 #+begin_src emacs-lisp :tangle no
   (org-babel-tangle)
-  (if (not (version< emacs-version "27")) (load early-init))
+  (load early-init)
   (load init-file)
   (ts-ensure-byte-compiled-init)
 #+end_src
@@ -26,70 +26,6 @@ that file and load it, installing a [[*MELPA Packages][plethora of packages]] al
 
 Be sure to back up your current =~/.emacs.d= with something like ~mv
 ~/.emacs.d{,.bak}~.
-
-* Lexical Binding
-
-This must come at the beginning of the file
-
-[[https://nullprogram.com/blog/2016/12/22/][Some Performance Advantages of Lexical Scope]]
-
-#+NAME: lexical-binding
-#+begin_src emacs-lisp :comments no
-  ;; -*- lexical-binding: t; -*-
-#+end_src
-
-And one for =~/.emacs.d/early-init.el= if it exists...
-
-#+begin_src emacs-lisp :noweb yes :comments no :tangle (if (version< emacs-version "27") "no" early-init)
-  <<lexical-binding>>
-#+end_src
-
-* [[https://github.com/hlissner/doom-emacs/blob/develop/docs/faq.org#how-does-doom-start-up-so-quickly][Doom Speed Hacks]]
-** Avoid garbage collection at startup
-
-The GC can easily double startup time, so we suppress it at startup by
-turning up gc-cons-threshold (and perhaps gc-cons-percentage) temporarily:
-
-#+begin_src emacs-lisp :tangle (if (version< emacs-version "27") init-file early-init)
-  (setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
-        gc-cons-percentage 0.6)
-#+end_src
-
-It is important to reset the garbage collection settings eventually. Not
-doing so will cause garbage collection freezes during long-term interactive
-use. Conversely, a gc-cons-threshold that is too small will cause
-stuttering. We use 16mb as our default.
-
-#+begin_src emacs-lisp :tangle (if (version< emacs-version "27") init-file early-init)
-  (defun ts-default-gc-cons-settings ()
-    (setq gc-cons-threshold 16777216 ; 16mb
-          gc-cons-percentage 0.1))
-  (add-hook 'emacs-startup-hook 'ts-default-gc-cons-settings)
-#+end_src
-
-** Unset file-name-handler-alist temporarily
-
-Emacs consults this variable every time a file is read or library loaded, or
-when certain functions in the file API are used (like expand-file-name or
-file-truename).
-
-Emacs does this to check if a special handler is needed to read that file, but
-none of them are (typically) necessary at startup, so we disable them
-(temporarily!):
-
-#+begin_src emacs-lisp :tangle (if (version< emacs-version "27") init-file early-init)
-  (defvar ts-default-file-name-handler-alist file-name-handler-alist)
-  (setq file-name-handler-alist nil)
-#+end_src
-
-Don’t forget to restore file-name-handler-alist, otherwise TRAMP won’t work and
-compressed/encrypted files won’t open.
-
-#+begin_src emacs-lisp :tangle (if (version< emacs-version "27") init-file early-init)
-  (defun ts-restore-default-file-name-handler-alist ()
-    (setq file-name-handler-alist ts-default-file-name-handler-alist))
-  (add-hook 'emacs-startup-hook 'ts-restore-default-file-name-handler-alist)
-#+end_src
 
 * Settings
 ** Auto-save
@@ -278,7 +214,7 @@ permissions to be compiled, for them you can run
   (setq create-lockfiles nil) ;; prevent creation of .#myfile.ext
 #+end_src
 
-** COMMENT Passwords
+** Passwords
 
 #+begin_src emacs-lisp :tangle no
   (setq password-cache t) ; enable password caching
@@ -298,7 +234,8 @@ If init.elc is older, use newer ~init.el~.
 #+begin_src emacs-lisp
   (setq load-prefer-newer t) ;; if init.elc is older, use newer init.el
 #+end_src
-** COMMENT Preferred programs
+
+** Preferred programs
 
 
 #+begin_src emacs-lisp
@@ -436,50 +373,22 @@ https://www.reddit.com/r/emacs/comments/l42oep/suppress_nativecomp_warnings_buff
 ** Buffers
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "C-c M-l") 'lisp-interaction-mode)
-  (global-set-key (kbd "C-x c") 'save-buffers-kill-emacs)
   (global-set-key (kbd "C-x C-b") 'ibuffer)
-  (global-set-key (kbd "C-x M-k") 'kill-buffer)
-#+end_src
-
-#+begin_src emacs-lisp
-  (unless (version< emacs-version "28") ; Emacs 28
-    (let ((map ctl-x-x-map))
-      (define-key map "e" #'eval-buffer)))
-#+end_src
-
-** Browse Url
-
-#+begin_src emacs-lisp
-  (global-set-key (kbd "C-x M-b") 'browse-url-of-file)
-#+end_src
-
-** Calculator
-
-#+begin_src emacs-lisp
-  (global-set-key (kbd "C-c c") 'calculator)
-  (global-set-key (kbd "C-c M-c") 'calc)
 #+end_src
 
 ** Editing
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "C-c C-e") 'pp-eval-last-sexp)
   (global-set-key (kbd "C-z") 'zap-up-to-char) ; suspend is still bound to C-x C-z
   (global-set-key (kbd "M-z") 'zap-to-char)
-  (global-set-key (kbd "C-x M-t") 'transpose-regions)
-  (global-set-key (kbd "C-x M-p") 'transpose-paragraphs)
 #+end_src
 
 Remap some default to saner options
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "M-%") 'query-replace-regexp) ; regex all the things!
   (global-set-key (kbd "M-;") 'comment-line)         ; comment-dwim by default
   (global-set-key (kbd "C-M-;") 'comment-dwim)       ; unbound by default
   (global-set-key (kbd "C-x C-;") 'comment-box)      ; comment-line by default
-  (global-set-key (kbd "M-o") 'delete-blank-lines)   ; this is on C-x C-o by default
-  (global-set-key (kbd "M-SPC") 'cycle-spacing)      ; just-one-space by default
 #+end_src
 
 Always do what I mean!
@@ -488,14 +397,6 @@ Always do what I mean!
   (global-set-key [remap capitalize-word] 'capitalize-dwim)
   (global-set-key [remap downcase-word] 'downcase-dwim)
   (global-set-key [remap upcase-word] 'upcase-dwim)
-#+end_src
-
-** Eval
-
-#+begin_src emacs-lisp
-  (global-set-key (kbd "C-x M-e b") (lambda () (interactive) (eval-buffer) (message "Evaluated buffer")))
-  (global-set-key (kbd "C-x M-e d") (lambda () (interactive) (eval-defun) (message "Evaluated function")))
-  (global-set-key (kbd "C-x M-e r") (lambda () (interactive) (eval-region) (message "Evaluated region")))
 #+end_src
 
 ** Frames
@@ -511,12 +412,6 @@ Always do what I mean!
 
 #+begin_src emacs-lisp
   (global-set-key (kbd "S-<f10>") 'menu-bar-mode)
-#+end_src
-
-** Registers
-
-#+begin_src emacs-lisp
-  (global-set-key (kbd "C-x j") 'jump-to-register)
 #+end_src
 
 ** Special mode
@@ -707,7 +602,7 @@ Always do what I mean!
   (global-set-key (kbd "C-c M-n") 'ts-nuke-buffers)
 #+end_src
 
-** COMMENT Remove stuff from a buffer
+** Remove stuff from a buffer
 
 #+begin_src emacs-lisp
   (defun ts-remove-from-buffer (string)
@@ -798,16 +693,6 @@ Some handy functions to make aligning symbols less painful.
       (back-to-indentation)))
 
   (global-set-key [remap move-beginning-of-line] 'ts-move-beginning-of-line)
-#+end_src
-
-** COMMENT Case insensitive sort-lines
-
-#+begin_src emacs-lisp
-  (defun ts-sort-lines-nocase ()
-    "Sort marked lines with case sensitivity."
-    (interactive)
-    (let ((sort-fold-case t))
-      (call-interactively 'sort-lines)))
 #+end_src
 
 ** Change numbers
@@ -998,15 +883,6 @@ Increment or decrement numbers at the point.
   (global-set-key (kbd "M-s M-s") 'ts-surround)
 #+end_src
 
-** Untabify a buffer
-
-#+begin_src emacs-lisp
-  (defun ts-untabify-buffer ()
-    "Convert all tabs to spaces in the buffer."
-    (interactive)
-    (untabify (point-min) (point-max)))
-#+end_src
-
 ** XML pretty print
 
 #+begin_src emacs-lisp
@@ -1093,27 +969,6 @@ to completing read of the kill ring, making this pretty pointless.
       (kill-this-buffer)))
 
   (global-set-key (kbd "C-c f d") 'ts-delete-this-file)
-#+end_src
-
-** Insert other buffer file name
-
-#+begin_src emacs-lisp
-  (defun ts-insert-other-buffer-file-name (arg)
-    "Does what it say on the the tin!
-  With prefix ARG, omit path."
-    (interactive "P")
-    (insert (completing-read
-             "Select Buffer Filename: "
-             (delete nil
-                     (mapcar (lambda (buffer)
-                               (if (buffer-file-name buffer)
-                                   (if arg
-                                       (file-name-nondirectory
-                                        (buffer-file-name buffer))
-                                     (buffer-file-name buffer))))
-                             (buffer-list))))))
-
-  (global-set-key (kbd "C-c f i") 'ts-insert-other-buffer-file-name)
 #+end_src
 
 ** Make backup of current file
@@ -1264,6 +1119,7 @@ This block will byte compile ~early-init.el~ and ~init.el~ if an existing
 
   (add-hook 'after-init-hook 'ts-ensure-byte-compiled-init)
 #+end_src
+
 ** Recompile config
 
 #+begin_src emacs-lisp
@@ -1290,57 +1146,6 @@ This block will byte compile ~early-init.el~ and ~init.el~ if an existing
     (interactive)
     (autoload 'org-babel-tangle-file "ob-tangle")
     (org-babel-tangle-file "~/src/emacs/README.org"))
-#+end_src
-
-** Googling
-
-#+begin_src emacs-lisp
-  (defun ts-google (arg)
-    "Googles a query or region.  With prefix ARG, wrap in quotes."
-    (interactive "P")
-    (let ((query
-           (if (region-active-p)
-               (buffer-substring (region-beginning) (region-end))
-             (read-string "Query: "))))
-      (when arg (setq query (concat "\"" query "\"")))
-      (browse-url
-       (concat "http://www.google.com/search?ie=utf-8&oe=utf-8&q=" query))))
-
-  (global-set-key (kbd "C-c M-s") 'ts-google)
-#+end_src
-
-** COMMENT Measure function executions
-
-#+begin_src emacs-lisp
-  (defmacro ts-measure-time (&rest body)
-    "Measure the time it takes to evaluate BODY."
-    `(let ((time (current-time)))
-       ,@body
-       (message "%.06f" (float-time (time-since time)))))
-#+end_src
-
-** COMMENT Default Text Scale
-
-This doesn't work as expected...
-
-#+begin_src emacs-lisp
-  (defadvice text-scale-increase (around all-buffers (arg) activate)
-    (dolist (buffer (buffer-list))
-      (with-current-buffer buffer
-        ad-do-it)))
-#+end_src
-
-** COMMENT Registers
-
-#+begin_src emacs-lisp
-  (defun ts-jump-to-register-other-window ()
-    "Tin job."
-    (interactive)
-    (split-window-sensibly)
-    (other-window 1)
-    (jump-to-register (register-read-with-preview "Jump to register")))
-
-  (define-key ctl-x-4-map "j" 'ts-jump-to-register-other-window)
 #+end_src
 
 * Window Functions
@@ -1372,69 +1177,6 @@ This is better, since I don't need to send prefix to ~scroll-other-window~.
       (select-window current-window)))
 
   (global-set-key (kbd "C-c w k") 'ts-kill-buffer-other-window)
-#+end_src
-
-** Open a buffer in another window
-
-#+begin_src emacs-lisp
-  (defun ts-display-buffer-in-previous-window (buffer)
-    "Display BUFFER in other window without switching to it."
-    (interactive "BDisplay buffer in other window: ")
-    (display-buffer buffer 'display-buffer-in-previous-window))
-
-  (global-set-key (kbd "C-c w o") 'ts-display-buffer-in-previous-window)
-#+end_src
-
-** COMMENT Scroll lines down like Ctrl-y in Vim
-
-#+begin_src emacs-lisp
-  (defun ts-scroll-line-down (n)
-    "Scroll line down N lines.  Ctrl-y in Vim."
-    (interactive "p")
-    (scroll-down n))
-
-  (global-set-key (kbd "M-n") 'ts-scroll-line-down)
-#+end_src
-
-** COMMENT Scroll lines up like Ctrl-e in Vim
-
-#+begin_src emacs-lisp
-  (defun ts-scroll-line-up (n)
-    "Scroll line up N lines.  Like Ctrl-e in Vim."
-    (interactive "p")
-    (scroll-up n))
-
-  (global-set-key (kbd "M-p") 'ts-scroll-line-up)
-#+end_src
-
-** Split window right to last buffer
-
-#+begin_src emacs-lisp
-  (defun ts-split-window-right (prefix)
-    "Split the window vertically and display the previous buffer.
-  With PREFIX stay in current buffer."
-    (interactive "p")
-    (split-window-right)
-    (other-window 1)
-    (if (= prefix 1)
-        (switch-to-next-buffer)))
-
-  (global-set-key (kbd "C-c 3") 'ts-split-window-right)
-#+end_src
-
-** Split window below to last buffer
-
-#+begin_src emacs-lisp
-  (defun ts-split-window-below (prefix)
-    "Split the window horizontally and display the previous buffer.
-  With PREFIX stay in current buffer."
-    (interactive "p")
-    (split-window-below)
-    (other-window 1)
-    (if (= prefix 1)
-        (switch-to-next-buffer)))
-
-  (global-set-key (kbd "C-c 2") 'ts-split-window-below)
 #+end_src
 
 ** Switch to the previous window
@@ -1517,7 +1259,7 @@ This is basically ~other-window~ backwards.
   (global-set-key (kbd "C-c w s") 'ts-toggle-split)
 #+end_src
 
-** COMMENT Transpose windows
+** Transpose windows
 
 #+begin_src emacs-lisp
   (defun ts-transpose-windows (arg)
@@ -1651,33 +1393,20 @@ https://robbmann.io/posts/emacs-29-completions/
     (define-key completion-in-region-mode-map (kbd "C-n") #'minibuffer-next-completion))
 #+end_src
 
-Use funky new ~fido~ functionality for everything if we are on Emacs 27+.
-Otherwise just use boring old ~ido~.
-
 *** Icomplete
 
-Turn on ~fido-mode~ at launch when we are Emacs 27+.
+Turn on ~fido-mode~ at launch.
 
 #+begin_src emacs-lisp
-  (if (version< emacs-version "27")
-      (add-hook 'after-init-hook 'icomplete-mode)
-    (add-hook 'after-init-hook 'fido-mode))
+  (add-hook 'after-init-hook 'fido-mode)
 #+end_src
 
 **** Change completion styles
 
 #+begin_src emacs-lisp
+  (setq completion-styles '(initials flex partial-completion substring basic))
   (defun ts-icomplete-styles ()
-    "Set icomplete styles based on Emacs version."
-    (if (version< emacs-version "27")
-        (setq-local completion-styles '(initials
-                                        partial-completion
-                                        substring
-                                        basic))
-      (setq-local completion-styles '(initials flex
-                                      partial-completion
-                                      substring
-                                      basic))))
+    (setq-local completion-styles '(initials flex partial-completion substring basic)))
   (add-hook 'icomplete-minibuffer-setup-hook 'ts-icomplete-styles)
 #+end_src
 
@@ -1685,8 +1414,7 @@ Turn on ~fido-mode~ at launch when we are Emacs 27+.
 
 #+begin_src emacs-lisp
   (with-eval-after-load 'icomplete
-    (unless (version< emacs-version "27")
-      (define-key icomplete-minibuffer-map (kbd "C-j") 'icomplete-fido-exit))
+    (define-key icomplete-minibuffer-map (kbd "C-j") 'icomplete-fido-exit)
     (define-key icomplete-minibuffer-map (kbd "M-j") 'exit-minibuffer)
     (define-key icomplete-minibuffer-map (kbd "C-n") 'icomplete-forward-completions)
     (define-key icomplete-minibuffer-map (kbd "C-p") 'icomplete-backward-completions)
@@ -1710,79 +1438,10 @@ Turn on ~fido-mode~ at launch when we are Emacs 27+.
     (setq icomplete-show-matches-on-no-input t)
     (setq icomplete-hide-common-prefix nil)
     (setq icomplete-prospects-height 1)
-    ;; (setq icomplete-separator "\n")
     (setq icomplete-separator (propertize " · " 'face 'shadow))
     (setq icomplete-with-completion-tables t)
     (setq icomplete-tidy-shadowed-file-names t)
     (setq icomplete-in-buffer t))
-#+end_src
-
-*** Ido
-**** Ido settings
-
-#+begin_src emacs-lisp
-  (setq ido-use-virtual-buffers 't) ;; show recent files too
-  (setq ido-create-new-buffer 'always)
-  (setq ido-enable-prefix t)
-  (setq ido-enable-flex-matching 't)
-  (setq ido-auto-merge-work-directories-length -1)
-  (setq ido-use-filename-at-point 'nil)
-  ;; vertical display
-  (setq ido-decorations (quote ("\n--> "
-                                " "
-                                "\n    "
-                                "\n    ..."
-                                "["  "]"
-                                "  [No match]"
-                                "  [Matched]"
-                                "  [Not readable]"
-                                "  [Too big]"
-                                "  [Confirm]")))
-#+end_src
-
-**** Ido M-x
-
-Make ~M-x~ work as expected when ~ido-mode~ is enabled.
-
-#+begin_src emacs-lisp
-  (when (version< emacs-version "27")
-    (with-eval-after-load 'ido
-      (global-set-key
-       "\M-x"
-       (lambda ()
-         (interactive)
-         (call-interactively
-          (intern
-           (ido-completing-read
-            "M-x "
-            (all-completions "" obarray 'commandp))))))))
-#+end_src
-
-**** Ido keybindings
-
-Add some custom keybindings in ~ido-mode~.
-
-#+begin_src emacs-lisp
-  (defun my/ido-keys ()
-    "Custom ido keybindings."
-    (define-key ido-completion-map (kbd "C-n") 'ido-next-match)
-    (define-key ido-completion-map (kbd "C-p") 'ido-prev-match)
-    ;; stop ido suggestion when doing a save-as
-    (define-key (cdr ido-minor-mode-map-entry) [remap write-file] nil))
-
-  (add-hook 'ido-minibuffer-setup-hook (lambda () (set (make-local-variable 'truncate-lines) nil)))
-  (add-hook 'ido-setup-hook (lambda () (define-key ido-completion-map [tab] 'ido-complete)))
-  (add-hook 'ido-setup-hook 'my/ido-keys)
-#+end_src
-
-**** Turn on Ido and Ido Everywhere
-
-Turn on ~ido-mode~ if we are on Emacs < 26.
-
-#+begin_src emacs-lisp
-  (when (version< emacs-version "27")
-    (ido-mode t)
-    (ido-everywhere t))
 #+end_src
 
 ** Dabbrev
@@ -1891,10 +1550,8 @@ Turn on ~ido-mode~ if we are on Emacs < 26.
 #+begin_src emacs-lisp
   (with-eval-after-load 'dired-aux
     (setq dired-isearch-filenames 'dwim)
-    ;; The following variables were introduced in Emacs 27.1
-    (unless (version< emacs-version "27.1")
-      (setq dired-create-destination-dirs 'ask)
-      (setq dired-vc-rename-file t))
+    (setq dired-create-destination-dirs 'ask)
+    (setq dired-vc-rename-file t)
     (message "Lazy loaded dired-aux :-)"))
 #+end_src
 
@@ -2301,14 +1958,11 @@ Don't bother using this on Windows as I can rather be bothered to install
 
 *** Settings
 
-Don't tangle this on ~emacs-version~ < 27
-
-#+begin_src emacs-lisp :tangle (if (version< emacs-version "27.1") "no" init-file)
-  (unless (version< emacs-version "27.1")
-    (setq isearch-allow-scroll 'unlimited)
-    (setq isearch-yank-on-move 'shift)
-    (setq isearch-lazy-count t)
-    (setq lazy-count-suffix-format " (%s/%s)"))
+#+begin_src emacs-lisp
+  (setq isearch-allow-scroll 'unlimited)
+  (setq isearch-yank-on-move 'shift)
+  (setq isearch-lazy-count t)
+  (setq lazy-count-suffix-format " (%s/%s)")
 #+end_src
 
 ** Line Numbers
@@ -2911,11 +2565,9 @@ https://karthinks.com/software/it-bears-repeating/
   (add-hook 'after-init-hook 'global-subword-mode) ;; move by camel case, etc
 #+end_src
 
-** Tab-bar (Emacs 27+)
+** Tab-bar
 
-Don't tangle this block on ~emacs-version~ < 27.
-
-#+begin_src emacs-lisp :tangle (if (version< emacs-version "27") "no" init-file)
+#+begin_src emacs-lisp
   (defun ts-tab-bar-select-dwim ()
     "Do-What-I-Mean function for getting to a `tab-bar-mode' tab.
   If no other tab exists, create one and switch to it. If there is
@@ -3150,14 +2802,9 @@ party packages from [[https://melpa.org/][MELPA]].
 
 ** Setup package.el
 
-If we are on an Emacs version lower than "27" this will go in ~init.el~,
-otherwise it goes in [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html][early-init.el]] for faster starup.
+Goes in ~~/.emacs.d/early-init.el~:
 
-#+begin_src emacs-lisp :tangle (if (version< emacs-version "27") init-file "no")
-  (if (version< emacs-version "27") (package-initialize))
-#+end_src
-
-#+begin_src emacs-lisp :tangle (if (version< emacs-version "27") init-file early-init)
+#+begin_src emacs-lisp early-init
   ;; This must be true otherwise use-package won't load!
   (setq package-enable-at-startup t)
   ;; Allow loading from the package cache.
