@@ -2531,14 +2531,6 @@ https://karthinks.com/software/it-bears-repeating/
   (add-hook 'after-init-hook 'global-subword-mode) ;; move by camel case, etc
 #+end_src
 
-** Tab-bar
-
-#+begin_src emacs-lisp
-  (global-set-key (kbd "C-<tab>") 'tab-line-switch-to-next-tab)
-  (global-set-key (kbd "C-S-<tab>") 'tab-line-switch-to-prev-tab)
-  (add-hook 'after-init-hook 'global-tab-line-mode)
-#+end_src
-
 ** Term
 *** ANSI Term launcher
 
