@@ -10,7 +10,7 @@
 #+EXPORT_FILE_NAME: index
 #+SETUPFILE: ./theme-readtheorg.setup
 
-A fairly standard [[https://en.wikipedia.org/wiki/Literate_programming][literate]] Emacs configuration using [[https://orgmode.org/][Org mode]]. *Emacs 27+ ONLY*.
+A fairly standard [[https://en.wikipedia.org/wiki/Literate_programming][literate]] Emacs configuration using [[https://orgmode.org/][Org mode]]. *Emacs 29+ ONLY*.
 
 To install, evaluate the code block below with ~C-c C-c~ in an Emacs buffer:
 
@@ -24,6 +24,27 @@ that file and load it, installing a [[*MELPA Packages][plethora of packages]] al
 
 Be sure to back up your current =~/.emacs.d= with something like ~mv
 ~/.emacs.d{,.bak}~.
+
+* use-package bootstrap
+
+#+begin_src emacs-lisp
+  ;; Allow loading from the package cache.
+  (setq package-quickstart t)
+  ;; Don't write (package-initialize) to my init file!
+  (setq package--init-file-ensured t)
+  ;; Turn on ahead-of-time native compilation when installing a package.
+  (setq package-native-compile t)
+  ;; Setup up archives
+  (setq package-archives
+        '(("melpa" . "https://melpa.org/packages/")
+          ("gnu" . "https://elpa.gnu.org/packages/")))
+  (setq use-package-enable-imenu-support t
+        ;; use-package-hook-name-suffix nil
+        use-package-always-defer t
+        use-package-always-ensure t
+        use-package-verbose t)
+  (require 'use-package)
+#+end_src
 
 * Settings
 ** Auto-save
@@ -1737,16 +1758,6 @@ Don't bother using this on Windows as I can rather be bothered to install
     (add-hook 'prog-mode-hook 'flyspell-prog-mode))
 #+end_src
 
-** COMMENT Fringe
-
-#+begin_src emacs-lisp
-  (fringe-mode nil)
-  (setq-default fringes-outside-margins nil)
-  (setq-default indicate-buffer-boundaries nil)
-  (setq-default indicate-empty-lines nil)
-  (setq-default overflow-newline-into-fringe t)
-#+end_src
-
 ** Gnus
 
 #+begin_src emacs-lisp
@@ -2259,10 +2270,7 @@ https://orgmode.org/manual/Tracking-TODO-state-changes.html
   (add-hook 'emacs-startup-hook 'global-prettify-symbols-mode)
 #+end_src
 
-** Project (Emacs 28+)
-
-We only tangle this when ~emacs-version~ > 28, since it's not very useful prior
-to that.
+** Project
 
 #+begin_src emacs-lisp :tangle (if (version< emacs-version "28") "no" init-file)
   (setq ts-project-roots '("~"))
@@ -2714,8 +2722,7 @@ Cleanup whitespace on save
 * MELPA Packages
 
 I like to split up my "vanilla" Emacs configuration and custom functions from
-the customisations provided by third party libraries that have been installed
-using ~package.el~ and ~use-package~.
+the customisations provided by third party libraries.
 
 If you want to go for a more vanilla setup, just prefix the ~COMMENT~ keyword
 to the tile above, and re-tangle the file.
@@ -2723,42 +2730,6 @@ to the tile above, and re-tangle the file.
 This way it makes it very easy to run a semi-stock Emacs without ~package.el~
 or any third party libraries, but still have some saner defaults and some extra
 functionality.
-
-I'm using John Wiegley's awesome [[https://github.com/jwiegley/use-package][use-package]] to pull in and configure any third
-party packages from [[https://melpa.org/][MELPA]].
-
-** Setup package.el
-
-#+begin_src emacs-lisp
-  ;; This must be true otherwise use-package won't load!
-  (setq package-enable-at-startup t)
-  ;; Allow loading from the package cache.
-  (setq package-quickstart t)
-  ;; Don't write (package-initialize) to my init file!
-  (setq package--init-file-ensured t)
-  ;; Turn on ahead-of-time native compilation when installing a package.
-  (setq package-native-compile t)
-  ;; Setup up archives
-  (setq package-archives
-        '(("melpa" . "https://melpa.org/packages/")
-          ("gnu" . "https://elpa.gnu.org/packages/")))
-#+end_src
-
-** use-package bootstrap
-
-#+begin_src emacs-lisp
-  (require 'package)
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
-
-  (setq use-package-enable-imenu-support t
-        ;; use-package-hook-name-suffix nil
-        use-package-always-defer t
-        use-package-always-ensure t
-        use-package-verbose t)
-  (require 'use-package)
-#+end_src
 
 ** Ansible
 
@@ -3175,19 +3146,6 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
     :init (setq markdown-command "multimarkdown"))
 #+end_src
 
-** COMMENT Node JS
-
-#+begin_src emacs-lisp
-  (use-package nodejs-repl
-    :bind (:map js2-mode-map
-                ("C-x C-e" . nodejs-repl-send-last-expression)
-                ("C-c C-j" . nodejs-repl-send-line)
-                ("C-c SPC" . nodejs-repl-send-region)
-                ("C-c C-b" . nodejs-repl-send-buffer)
-                ("C-c C-f" . nodejs-repl-load-file)
-                ("C-c C-z" . nodejs-repl-switch-to-repl)))
-#+end_src
-
 ** Org
 *** htmlize
 
@@ -3225,26 +3183,6 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 
 #+begin_src emacs-lisp
   (use-package powershell :mode (("\\.ps1\\'" . powershell-mode)))
-#+end_src
-
-** Projectile
-
-Don't tangle this block if ~emacs-version~ > 28, as Emacs 28 has the this
-functionality built in via ~project.el~.
-
-#+begin_src emacs-lisp :tangle (if (version< emacs-version "28") init-file "no")
-  (use-package projectile :diminish
-    :unless (not (version< emacs-version "28"))
-    :bind-keymap
-    ("C-x p" . projectile-command-map)
-    :config
-    (projectile-mode)
-    ;; (setq projectile-completion-system 'ivy)
-    (when (require 'magit nil t)
-      (mapc #'projectile-add-known-project
-            (mapcar #'file-name-as-directory (magit-list-repos)))
-      ;; Optionally write to persistent `projectile-known-projects-file'
-      (projectile-save-known-projects)))
 #+end_src
 
 ** Restclient
