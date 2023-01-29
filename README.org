@@ -1273,13 +1273,13 @@ Make sure we show colors when we run commands with ~M-!~
 ** Auto-revert
 
 #+begin_src emacs-lisp
-  (add-hook 'after-init-hook 'global-auto-revert-mode) ;; reload if file changed on disk
+  (use-package auto-revert :hook (after-init . global-auto-revert-mode))
 #+end_src
 
 ** Column Number
 
 #+begin_src emacs-lisp
-  (add-hook 'after-init-hook 'column-number-mode)
+  (use-package column-number-mode :hook (after-init . column-number-mode))
 #+end_src
 
 ** Dabbrev
@@ -1563,15 +1563,6 @@ Don't bother using this on Windows as I can rather be bothered to install
   (add-hook 'prog-mode-hook 'hs-minor-mode)
 #+end_src
 
-** Highlight changes
-
-#+begin_src emacs-lisp
-  (setq highlight-changes-visibility-initial-state nil)
-  (global-set-key (kbd "C-c n") 'highlight-changes-next-change)
-  (global-set-key (kbd "C-c p") 'highlight-changes-previous-change)
-  (add-hook 'emacs-startup-hook 'global-highlight-changes-mode)
-#+end_src
-
 ** Highlight line
 
 #+begin_src emacs-lisp
@@ -1711,11 +1702,11 @@ Don't bother using this on Windows as I can rather be bothered to install
 *** Save history mode
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'savehist
+  (use-package savehist
+    :config
     (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
     (setq savehist-save-minibuffer-history 1)
-    (message "Lazy loaded savehist :-)"))
-  (add-hook 'emacs-startup-hook 'savehist-mode)
+    :hook (after-init . savehist-mode))
 #+end_src
 
 ** Occur
@@ -1821,10 +1812,9 @@ Don't bother using this on Windows as I can rather be bothered to install
 ** Prettify Symbols
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'prettify-symbols
-    (setq prettify-symbols-unprettify-at-point 'right-edge)
-    (message "Lazy loaded prettify-symbols :-)"))
-  (add-hook 'emacs-startup-hook 'global-prettify-symbols-mode)
+  (use-package prettify-symbols
+    :config (setq prettify-symbols-unprettify-at-point 'right-edge)
+    :hook (after-init . global-prettify-symbols-mode))
 #+end_src
 
 ** Project
@@ -1955,10 +1945,9 @@ Don't bother using this on Windows as I can rather be bothered to install
 ** Saveplace
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'save-place
-    (setq save-place-file (concat user-emacs-directory "saveplace.el"))
-    (message "Lazy loaded save-place-mode :-)"))
-  (add-hook 'emacs-startup-hook 'save-place-mode)
+  (use-package save-place
+    :config (setq save-place-file (concat user-emacs-directory "saveplace.el"))
+    :hook (after-init . save-place-mode))
 #+end_src
 
 ** Semantic
