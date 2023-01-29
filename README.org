@@ -1285,11 +1285,11 @@ Make sure we show colors when we run commands with ~M-!~
 ** Dabbrev
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'dabbrev
+  (use-package dabbrev
+    :config
     (setq abbrev-file-name (concat user-emacs-directory "abbrevs"))
     (setq save-abbrevs 'silently)
-    (unless (version< emacs-version "28")
-      (setq abbrev-suggest t))
+    (setq abbrev-suggest t)
     (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
     (setq dabbrev-abbrev-skip-leading-regexp "[$*/=']")
     (setq dabbrev-backward-only nil)
@@ -1298,8 +1298,7 @@ Make sure we show colors when we run commands with ~M-!~
     (setq dabbrev-case-replace 'case-replace)
     (setq dabbrev-check-other-buffers t)
     (setq dabbrev-eliminate-newlines t)
-    (setq dabbrev-upcase-means-case-search t)
-    (message "Lazy loaded dabbrev :-)"))
+    (setq dabbrev-upcase-means-case-search t))
 #+end_src
 
 ** Dired
@@ -1390,16 +1389,17 @@ Make sure we show colors when we run commands with ~M-!~
 ** Doc View
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'doc-view-mode
+  (use-package doc-view-mode
+    :config
     (setq doc-view-continuous t)
-    (setq doc-view-resolution 300)
-    (message "Lazy loaded doc-view-mode :-)"))
+    (setq doc-view-resolution 300))
 #+end_src
 
 ** Ediff
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'ediff
+  (use-package ediff
+    :config
     (setq ediff-diff-options "-w")
     (setq ediff-keep-variants nil)
     (setq ediff-make-buffers-readonly-at-startup nil)
@@ -1407,16 +1407,14 @@ Make sure we show colors when we run commands with ~M-!~
     (setq ediff-show-clashes-only t)
     (setq ediff-split-window-function 'split-window-horizontally)
     (setq ediff-window-setup-function 'ediff-setup-windows-plain)
-    (add-hook 'ediff-after-quit-hook-internal 'winner-undo)
-
     ;; https://emacs.stackexchange.com/a/24602
     (defun disable-y-or-n-p (orig-fun &rest args)
       "Advise ORIG-FUN with ARGS so it dynamically rebinds `y-or-n-p'."
       (cl-letf (((symbol-function 'y-or-n-p) (lambda () t)))
         (apply orig-fun args)))
-
     (advice-add 'ediff-quit :around #'disable-y-or-n-p)
-    (message "Lazy loaded ediff :-)"))
+    :hook
+    (ediff-after-quit-hook-internal . winner-undo))
 #+end_src
 
 ** Eglot
@@ -1468,7 +1466,8 @@ https://microsoft.github.io/language-server-protocol/
 ** ERC
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'erc
+  (use-package erc
+    :config
     (setq erc-autojoin-channels-alist '(("freenode.net" "#emacs")))
     (setq erc-fill-column 80)
     (setq erc-hide-list '("JOIN" "PART" "QUIT"))
@@ -1476,33 +1475,14 @@ https://microsoft.github.io/language-server-protocol/
     (setq erc-keywords '("knowayback"))
     (setq erc-nick "knowayback")
     (setq erc-prompt-for-password t)
-    (setq erc-track-enable-keybindings t)
-    (message "Lazy loaded erc :-)"))
+    (setq erc-track-enable-keybindings t))
 #+end_src
 
 ** Eshell
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'eshell
-    (defun ts-eshell-complete-recent-dir (&optional arg)
-      "Switch to a recent `eshell' directory using completion.
-  With \\[universal-argument] also open the directory in a `dired'
-  buffer."
-      (interactive "P")
-      (let* ((dirs (ring-elements eshell-last-dir-ring))
-             (dir (completing-read "Switch to recent dir: " dirs nil t)))
-        (insert dir)
-        (eshell-send-input)
-        (when arg
-          (dired dir))))
-
-    (defun ts-eshell-complete-history ()
-      "Insert element from `eshell' history using completion."
-      (interactive)
-      (let ((hist (ring-elements eshell-history-ring)))
-        (insert
-         (completing-read "Input history: " hist nil t))))
-
+  (use-package eshell
+    :config
     (defun ts-eshell-prompt ()
       "Custom eshell prompt."
       (concat
@@ -1518,7 +1498,6 @@ https://microsoft.github.io/language-server-protocol/
            (propertize "#" 'face `(:foreground "red"))
          (propertize "$" 'face `(:foreground "yellow")))
        (propertize " " 'face `(:foreground "white"))))
-
     ;; https://www.emacswiki.org/emacs/EshellPrompt
     (setq eshell-cd-on-directory t
           eshell-destroy-buffer-when-process-dies t
@@ -1534,29 +1513,11 @@ https://microsoft.github.io/language-server-protocol/
           eshell-save-history-on-exit t
           eshell-smart-space-goes-to-end t
           eshell-where-to-jump 'begin)
-
-    (add-to-list 'eshell-modules-list 'eshell-tramp) ;; no sudo password with ~/.authinfo
-    (add-hook 'eshell-preoutput-filter-functions 'ansi-color-apply)
-
-    (defun ts-eshell-keys()
-      (define-key eshell-mode-map (kbd "M-r") 'ts-eshell-complete-history)
-      (define-key eshell-mode-map (kbd "C-=") 'ts-eshell-complete-recent-dir))
-
-    (add-hook 'eshell-mode-hook 'ts-eshell-keys)
-    (message "Lazy loaded eshell :-)"))
-#+end_src
-
-#+begin_src emacs-lisp
-  (defun ts-eshell-other-window ()
-    "Open an `eshell' in another window."
-    (interactive)
-    (split-window-sensibly)
-    (other-window 1)
-    (eshell))
-
-  (autoload 'eshell "eshell" nil t)
-  (global-set-key (kbd "C-c e") 'eshell)
-  (global-set-key (kbd "C-c 4 e") 'ts-eshell-other-window)
+    (add-to-list 'eshell-modules-list 'eshell-tramp)
+    :bind
+    ("C-c e" . eshell)
+    :hook
+    (eshell-preoutput-filter-functions . ansi-color-apply))
 #+end_src
 
 ** Flymake
@@ -1580,7 +1541,8 @@ Don't bother using this on Windows as I can rather be bothered to install
 ** Gnus
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'gnus
+  (use-package gnus
+    :config
     (setq gnus-init-file "~/.emacs.d/init.el")
     (setq gnus-home-directory "~/.emacs.d/")
     (setq message-directory "~/.emacs.d/mail")
@@ -1591,8 +1553,7 @@ Don't bother using this on Windows as I can rather be bothered to install
     ;; (setq gnus-secondary-select-methods '((nntp "news.gnus.org")))
     (setq gnus-summary-thread-gathering-function 'gnus-gather-threads-by-subject)
     (setq gnus-thread-hide-subtree t)
-    (setq gnus-thread-ignore-subject t)
-    (message "Lazy loaded gnus :-)"))
+    (setq gnus-thread-ignore-subject t))
 #+end_src
 
 ** Hide/Show
