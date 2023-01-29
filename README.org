@@ -1903,20 +1903,6 @@ Don't bother using this on Windows as I can rather be bothered to install
     ("C-x pu" . ts-project-update-projects))
 #+end_src
 
-** Pulse
-
-https://karthinks.com/software/batteries-included-with-emacs/
-
-#+begin_src emacs-lisp
-  (defun pulse-line (&rest _)
-    "Pulse the current line."
-    (pulse-momentary-highlight-one-line (point)))
-
-  (dolist (command '(scroll-up-command scroll-down-command
-                                       recenter-top-bottom other-window))
-    (advice-add command :after #'pulse-line))
-#+end_src
-
 ** Python
 
 #+begin_src emacs-lisp
