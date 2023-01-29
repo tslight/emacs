@@ -16,7 +16,6 @@ To install, evaluate the code block below with ~C-c C-c~ in an Emacs buffer:
 
 #+begin_src emacs-lisp :tangle no
   (org-babel-tangle)
-  (load early-init)
   (load init-file)
   (ts-ensure-byte-compiled-init)
 #+end_src
@@ -2118,23 +2117,23 @@ No need to tangle, when using the advice above, leaving here for reference.
 *** Org Narrow to Parent
 
 #+begin_src emacs-lisp
-  (defun ts-org-narrow-to-parent ()
-    "Narrow buffer to the current subtree."
-    (interactive)
-    (widen)
-    (org-up-element)
-    (save-excursion
-      (save-match-data
-        (org-with-limited-levels
-         (narrow-to-region
-          (progn
-            (org-back-to-heading t) (point))
-          (progn (org-end-of-subtree t t)
-                 (when (and (org-at-heading-p) (not (eobp)))
-                   (backward-char 1))
-                 (point)))))))
-
-  (define-key org-mode-map (kbd "C-c M-p") 'ts-org-narrow-to-parent)
+  (with-eval-after-load 'org
+    (defun ts-org-narrow-to-parent ()
+      "Narrow buffer to the current subtree."
+      (interactive)
+      (widen)
+      (org-up-element)
+      (save-excursion
+        (save-match-data
+          (org-with-limited-levels
+           (narrow-to-region
+            (progn
+              (org-back-to-heading t) (point))
+            (progn (org-end-of-subtree t t)
+                   (when (and (org-at-heading-p) (not (eobp)))
+                     (backward-char 1))
+                   (point))))))
+      (define-key org-mode-map (kbd "C-c M-p") 'ts-org-narrow-to-parent)))
 #+end_src
 
 *** Org Outline/Goto
@@ -2769,9 +2768,7 @@ party packages from [[https://melpa.org/][MELPA]].
 
 ** Setup package.el
 
-Goes in ~~/.emacs.d/early-init.el~:
-
-#+begin_src emacs-lisp early-init
+#+begin_src emacs-lisp
   ;; This must be true otherwise use-package won't load!
   (setq package-enable-at-startup t)
   ;; Allow loading from the package cache.
