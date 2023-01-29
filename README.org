@@ -24,19 +24,12 @@ that file and load it, installing a [[*MELPA Packages][plethora of packages]] al
 Be sure to back up your current =~/.emacs.d= with something like ~mv
 ~/.emacs.d{,.bak}~.
 
-* use-package bootstrap
+* Use Package
+
+This is part of Emacs from version 29 and this configuration depends
+on it, so turn it on first.
 
 #+begin_src emacs-lisp
-  ;; Allow loading from the package cache.
-  (setq package-quickstart t)
-  ;; Don't write (package-initialize) to my init file!
-  (setq package--init-file-ensured t)
-  ;; Turn on ahead-of-time native compilation when installing a package.
-  (setq package-native-compile t)
-  ;; Setup up archives
-  (setq package-archives
-        '(("melpa" . "https://melpa.org/packages/")
-          ("gnu" . "https://elpa.gnu.org/packages/")))
   (setq use-package-enable-imenu-support t
         use-package-always-defer t
         use-package-verbose t)
@@ -2179,6 +2172,19 @@ to the tile above, and re-tangle the file.
 This way it makes it very easy to run a semi-stock Emacs without ~package.el~
 or any third party libraries, but still have some saner defaults and some extra
 functionality.
+
+#+begin_src emacs-lisp
+  ;; Allow loading from the package cache.
+  (setq package-quickstart t)
+  ;; Don't write (package-initialize) to my init file!
+  (setq package--init-file-ensured t)
+  ;; Turn on ahead-of-time native compilation when installing a package.
+  (setq package-native-compile t)
+  ;; Setup up archives
+  (setq package-archives
+        '(("melpa" . "https://melpa.org/packages/")
+          ("gnu" . "https://elpa.gnu.org/packages/")))
+#+end_src
 
 ** Ansible
 
