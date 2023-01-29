@@ -459,7 +459,7 @@ Always do what I mean!
   (setq default-frame-alist '((undecorated . t)
                               (fullscreen . maximized)
                               (vertical-scroll-bars . nil)))
-  (setq frame-resize-pixelwise t) ;; jwm resize fix
+  ;; (setq frame-resize-pixelwise t) ;; jwm resize fix
 #+end_src
 
 ** Setup Frame for Emacsclient
@@ -2068,15 +2068,6 @@ Don't bother using this on Windows as I can rather be bothered to install
       (kill-buffer))
     (setq term-buffer-maximum-size 200000)
     (message "Lazy loaded term :-)"))
-#+end_src
-
-** Time
-
-#+begin_src emacs-lisp :tangle no
-  (with-eval-after-load 'time
-    (setq display-time-format "%H:%M %d/%m")
-    (setq display-time-default-load-average 'nil))
-  (add-hook 'after-init-hook 'display-time-mode)
 #+end_src
 
 ** Tramp
