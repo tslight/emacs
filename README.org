@@ -1396,58 +1396,6 @@ Make sure we show colors when we run commands with ~M-!~
   (add-hook 'after-init-hook 'column-number-mode)
 #+end_src
 
-** Completion
-*** Icomplete
-
-Turn on ~fido-mode~ at launch.
-
-#+begin_src emacs-lisp
-  (add-hook 'after-init-hook 'fido-mode)
-#+end_src
-
-**** Change completion styles
-
-#+begin_src emacs-lisp
-  (setq completion-styles '(initials flex partial-completion substring basic))
-  (defun ts-icomplete-styles ()
-    (setq-local completion-styles '(initials flex partial-completion substring basic)))
-  (add-hook 'icomplete-minibuffer-setup-hook 'ts-icomplete-styles)
-#+end_src
-
-**** Icomplete keybindings
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'icomplete
-    (define-key icomplete-minibuffer-map (kbd "C-j") 'icomplete-fido-exit)
-    (define-key icomplete-minibuffer-map (kbd "M-j") 'exit-minibuffer)
-    (define-key icomplete-minibuffer-map (kbd "C-n") 'icomplete-forward-completions)
-    (define-key icomplete-minibuffer-map (kbd "C-p") 'icomplete-backward-completions)
-    (define-key icomplete-minibuffer-map (kbd "C-s") 'icomplete-forward-completions)
-    (define-key icomplete-minibuffer-map (kbd "C-r") 'icomplete-backward-completions)
-    (define-key icomplete-minibuffer-map (kbd "<up>") 'icomplete-backward-completions)
-    (define-key icomplete-minibuffer-map (kbd "<down>") 'icomplete-forward-completions)
-    (define-key icomplete-minibuffer-map (kbd "<left>") 'icomplete-backward-completions)
-    (define-key icomplete-minibuffer-map (kbd "<right>") 'icomplete-forward-completions))
-#+end_src
-
-**** Icomplete settings
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'icomplete
-    (unless (version< emacs-version "28")
-      (icomplete-vertical-mode))
-    (setq icomplete-delay-completions-threshold 100)
-    (setq icomplete-max-delay-chars 2)
-    (setq icomplete-compute-delay 0.2)
-    (setq icomplete-show-matches-on-no-input t)
-    (setq icomplete-hide-common-prefix nil)
-    (setq icomplete-prospects-height 1)
-    (setq icomplete-separator (propertize " · " 'face 'shadow))
-    (setq icomplete-with-completion-tables t)
-    (setq icomplete-tidy-shadowed-file-names t)
-    (setq icomplete-in-buffer t))
-#+end_src
-
 ** Dabbrev
 
 #+begin_src emacs-lisp
@@ -1823,6 +1771,40 @@ Don't bother using this on Windows as I can rather be bothered to install
 
   (global-set-key (kbd "M-/") 'hippie-expand)
   (global-set-key (kbd "C-M-/") 'ts-hippie-expand-completing-read)
+#+end_src
+
+** Icomplete
+
+#+begin_src emacs-lisp
+  (use-package icomplete
+    :config
+    (icomplete-vertical-mode)
+    (setq icomplete-delay-completions-threshold 100)
+    (setq icomplete-max-delay-chars 2)
+    (setq icomplete-compute-delay 0.2)
+    (setq icomplete-show-matches-on-no-input t)
+    (setq icomplete-hide-common-prefix nil)
+    (setq icomplete-prospects-height 1)
+    (setq icomplete-separator (propertize " · " 'face 'shadow))
+    (setq icomplete-with-completion-tables t)
+    (setq icomplete-tidy-shadowed-file-names t)
+    (setq icomplete-in-buffer t)
+    (defun ts-icomplete-styles ()
+      (setq-local completion-styles '(initials flex partial-completion substring basic)))
+    :hook
+    (after-init . fido-mode)
+    (icomplete-minibuffer-setup . ts-icomplete-styles)
+    :bind (:map icomplete-minibuffer-map
+                ("C-j" . icomplete-fido-exit)
+                ("M-j" . exit-minibuffer)
+                ("C-n" . icomplete-forward-completions)
+                ("C-p" . icomplete-backward-completions)
+                ("C-s" . icomplete-forward-completions)
+                ("C-r" . icomplete-backward-completions)
+                ("<up>" . icomplete-backward-completions)
+                ("<down>" . icomplete-forward-completions)
+                ("<left>" . icomplete-backward-completions)
+                ("<right>" . icomplete-forward-completions)))
 #+end_src
 
 ** Imenu
