@@ -1988,10 +1988,11 @@ Don't bother using this on Windows as I can rather be bothered to install
 ** Show paren
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'paren
+  (use-package paren
+    :config
     (setq show-paren-when-point-in-periphery t)
-    (setq show-paren-when-point-inside-paren t))
-  (add-hook 'after-init-hook 'show-paren-mode)
+    (setq show-paren-when-point-inside-paren t)
+    :hook (after-init . show-paren-mode))
 #+end_src
 
 ** Size Indication
