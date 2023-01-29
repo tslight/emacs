@@ -1929,8 +1929,6 @@ Don't bother using this on Windows as I can rather be bothered to install
 #+end_src
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "C-r") 'isearch-backward-regexp)
-  (global-set-key (kbd "C-s") 'isearch-forward-regexp)
   (global-set-key (kbd "M-s b") 'multi-isearch-buffers-regexp)
   (global-set-key (kbd "M-s f") 'multi-isearch-files-regexp)
   (global-set-key (kbd "M-s M-o") 'multi-occur)
