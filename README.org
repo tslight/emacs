@@ -173,9 +173,6 @@ Only tangled on Windows.
 ** Initial startup
 
 #+begin_src emacs-lisp
-  (defun display-startup-echo-area-message ()
-    "Redefine this function to be more useful."
-    (message "Started in %s. Hacks & Glory await! :-)" (emacs-init-time)))
   (setq inhibit-startup-screen t)
   (setq initial-scratch-message nil)
   (setq initial-major-mode 'fundamental-mode)
@@ -324,8 +321,6 @@ only animating line-by-line scrolls.
 
 ** Sort Fold Case
 
-When do I ever want to sort case sensitively?!
-
 #+begin_src emacs-lisp
   (setq sort-fold-case t)
 #+end_src
@@ -339,7 +334,6 @@ When do I ever want to sort case sensitively?!
 ** Undo limits
 
 #+begin_src emacs-lisp
-  ;; http://www.dr-qubit.org/Lost_undo-tree_history.html
   (setq undo-limit 80000000)
   (setq undo-strong-limit 90000000)
 #+end_src
@@ -574,38 +568,6 @@ Always do what I mean!
     (switch-to-buffer (other-buffer (current-buffer) 1)))
 
   (global-set-key (kbd "C-c b") 'ts-last-buffer)
-#+end_src
-
-** Narrow DWIM
-
-#+begin_src emacs-lisp
-  (defun ts-narrow-or-widen-dwim (p)
-    "If the buffer is narrowed, it widens, otherwise, it narrows intelligently.
-
-  Intelligently means: region, org-src-block, org-subtree, or
-  defun, whichever applies first.
-
-  Narrowing to org-src-block actually calls `org-edit-src-code'.
-  With prefix P, don't widen, just narrow even if buffer is already
-  narrowed."
-    (interactive "P")
-    (declare (interactive-only))
-    (cond ((and (buffer-narrowed-p) (not p)) (widen))
-          ((region-active-p)
-           (narrow-to-region (region-beginning) (region-end)))
-          ((derived-mode-p 'org-mode)
-           ;; `org-edit-src-code' is not a real narrowing command.
-           ;; Remove this first conditional if you don't want it.
-           (cond ((ignore-errors (org-edit-src-code))
-                  (delete-other-windows))
-                 ((org-at-block-p)
-                  (org-narrow-to-block))
-                 (t (org-narrow-to-subtree))))
-          (t (narrow-to-defun))))
-
-  (define-key ctl-x-map "n" 'ts-narrow-or-widen-dwim)
-  (with-eval-after-load 'org
-    (define-key org-mode-map (kbd "C-x n") 'ts-narrow-or-widen-dwim))
 #+end_src
 
 ** Nuke buffers
@@ -914,67 +876,6 @@ Increment or decrement numbers at the point.
     (save-excursion
       (sgml-pretty-print (point-min) (point-max))
       (indent-region (point-min) (point-max))))
-#+end_src
-
-** COMMENT WSL Copy/Paste
-
-For older versions of WSL. Deprecated for me now.
-
-#+begin_src emacs-lisp :tangle (if (and operating-system-release (string-match "-[Mm]icrosoft" operating-system-release)) init-file "no")
-  (defun ts-copy-to-windows-clipboard (start end)
-    "Copy region to Window’s clipboard."
-    (interactive "r")
-    (shell-command-on-region start end "clip.exe")
-    (deactivate-mark))
-
-  (defalias 'ts-copy-to-windows-clipboard 'wsl-copy)
-  (global-set-key (kbd "C-c C-w") 'ts-copy-to-windows-clipboard)
-
-  (defun ts-paste-from-windows-clipboard ()
-    "Paste from Window’s clipboard."
-    (interactive)
-    (let ((wslbuffername "wsl-temp-buffer"))
-      (get-buffer-create wslbuffername)
-      (with-current-buffer wslbuffername
-        (insert (let ((coding-system-for-read 'dos))
-                  ;; TODO: put stderr somewhere else
-                  (shell-command
-                   "powershell.exe -command ’Get-Clipboard’ 2> /dev/null"
-                   wslbuffername nil))))
-      (insert-buffer wslbuffername)
-      (kill-buffer wslbuffername)))
-
-  (defalias 'ts-paste-from-windows-clipboard 'wsl-paste)
-  (global-set-key (kbd "C-c y") 'ts-paste-from-windows-clipboard)
-#+end_src
-
-** COMMENT WSLg Copy Workaround
-
-https://github.com/microsoft/wslg/issues/15
-https://emacsredux.com/blog/2022/01/04/dealing-with-clipboard-issues-on-windows-11-wslg/
-
-#+begin_src emacs-lisp :tangle (if (and operating-system-release (string-match "-[Mm]icrosoft" operating-system-release)) init-file "no")
-  (defun ts-wslg-copy-workaround (start end)
-    (interactive "r")
-    (if (use-region-p)
-        (let ((text (buffer-substring-no-properties start end)))
-          (shell-command (concat "echo '" text "' | clip.exe")))))
-
-  (global-set-key (kbd "C-c C-w") 'ts-wslg-copy-workaround)
-#+end_src
-
-** COMMENT Yank pop forwards (Emacs<28)
-
-Don't bother tangling this if ~emacs-version~ > 28, as Emacs 28 has ~M-y~ bound
-to completing read of the kill ring, making this pretty pointless.
-
-#+begin_src emacs-lisp :tangle (if (version< emacs-version "28") init-file "no")
-  (defun ts-yank-pop-forwards (arg)
-    "Cycle forwards through the kill.  Reverse `yank-pop'.  With ARG."
-    (interactive "p")
-    (yank-pop (- arg)))
-
-  (global-set-key (kbd "C-M-y") 'ts-yank-pop-forwards)
 #+end_src
 
 * File Functions
@@ -1341,51 +1242,38 @@ Make sure we show colors when we run commands with ~M-!~
 ** Auto-fill
 
 #+begin_src emacs-lisp
-  (defun ts-fill-or-unfill ()
-    "Like `fill-paragraph', but unfill if used twice."
-    (interactive)
-    (let ((fill-column
-           (if (eq last-command 'ts-fill-or-unfill)
-               (progn (setq this-command nil)
-                      (point-max))
-             fill-column)))
-      (call-interactively #'fill-paragraph)))
+  (use-package auto-fill-mode
+    :config
+    (setq-default fill-column 79)
+    (defun ts-fill-or-unfill ()
+      "Like `fill-paragraph', but unfill if used twice."
+      (interactive)
+      (let ((fill-column
+             (if (eq last-command 'ts-fill-or-unfill)
+                 (progn (setq this-command nil)
+                        (point-max))
+               fill-column)))
+        (call-interactively #'fill-paragraph)))
 
-  (defun ts-unfill-region (beg end)
-    "Unfill the region from BEG to END.
+    (defun ts-unfill-region (beg end)
+      "Unfill the region from BEG to END.
   Joining text paragraphs into a single logical line. This is
   useful, e.g., for use with function `visual-line-mode'."
-    (interactive "*r")
-    (let ((fill-column (point-max)))
-      (fill-region beg end)))
-
-  (global-set-key [remap fill-paragraph] 'ts-fill-or-unfill)
-  (global-set-key (kbd "C-M-q") 'ts-unfill-region)
-
-  (setq-default fill-column 79)
-  (add-hook 'org-mode-hook 'auto-fill-mode)
-  (add-hook 'text-mode-hook 'auto-fill-mode)
-
-  (global-set-key (kbd "C-c M-t a") 'toggle-text-mode-autofill)
+      (interactive "*r")
+      (let ((fill-column (point-max)))
+        (fill-region beg end)))
+    :bind
+    ([remap fill-paragraph] . ts-fill-or-unfill)
+    ("C-M-q" . ts-unfill-region)
+    :hook
+    (org-mode . auto-fill-mode)
+    (text-mode . auto-fill-mode))
 #+end_src
 
 ** Auto-revert
 
 #+begin_src emacs-lisp
   (add-hook 'after-init-hook 'global-auto-revert-mode) ;; reload if file changed on disk
-#+end_src
-
-** Battery
-
-#+begin_src emacs-lisp :tangle no
-  (with-eval-after-load 'battery
-    (setq battery-mode-line-format " [%b%p%%]")
-    (setq battery-mode-line-limit 95)
-    (setq battery-update-interval 180)
-    (setq battery-load-low 20)
-    (setq battery-load-critical 10))
-
-  (add-hook 'after-init-hook 'display-battery-mode)
 #+end_src
 
 ** Column Number
