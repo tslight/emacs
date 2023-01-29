@@ -1671,94 +1671,6 @@ Don't bother using this on Windows as I can rather be bothered to install
     ("C-c i" . imenu))
 #+end_src
 
-** Isearch
-*** Isearch exit
-
-#+begin_src emacs-lisp
-  (defun ts-isearch-exit ()
-    "Move point to the start of the matched string."
-    (interactive)
-    (when (eq isearch-forward t)
-      (goto-char isearch-other-end))
-    (isearch-exit))
-
-  (define-key isearch-mode-map (kbd "RET") 'ts-isearch-exit)
-#+end_src
-
-*** Copy to isearch
-
-#+begin_src emacs-lisp
-  (defun ts-copy-to-isearch ()
-    "Copy up to the search match when searching forward.
-
-  When searching backward, copy to the start of the search match."
-    (interactive)
-    (ts-isearch-exit)
-    (call-interactively 'kill-ring-save)
-    (exchange-point-and-mark))
-
-  (define-key isearch-mode-map (kbd "M-w") 'ts-copy-to-isearch)
-#+end_src
-
-*** Kill to isearch
-
-#+begin_src emacs-lisp
-  (defun ts-kill-to-isearch ()
-    "Kill up to the search match when searching forward.
-
-  When searching backward, kill to the beginning of the match."
-    (interactive)
-    (ts-isearch-exit)
-    (call-interactively 'kill-region))
-
-  (define-key isearch-mode-map (kbd "C-k") 'ts-kill-to-isearch)
-#+end_src
-
-*** Isearch Abort DWIM
-
-#+begin_src emacs-lisp
-  (defun ts-isearch-abort-dwim ()
-    "Delete failed `isearch' input, single char, or cancel search.
-
-  This is a modified variant of `isearch-abort' that allows us to
-  perform the following, based on the specifics of the case: (i)
-  delete the entirety of a non-matching part, when present; (ii)
-  delete a single character, when possible; (iii) exit current
-  search if no character is present and go back to point where the
-  search started."
-    (interactive)
-    (if (eq (length isearch-string) 0)
-        (isearch-cancel)
-      (isearch-del-char)
-      (while (or (not isearch-success) isearch-error)
-        (isearch-pop-state)))
-    (isearch-update))
-
-  (define-key isearch-mode-map (kbd "<backspace>") 'ts-isearch-abort-dwim)
-#+end_src
-
-*** Keybindings
-
-#+begin_src emacs-lisp
-  (define-key isearch-mode-map (kbd "M-/") 'isearch-complete)
-  (define-key minibuffer-local-isearch-map (kbd "M-/") 'isearch-complete-edit)
-#+end_src
-
-#+begin_src emacs-lisp
-  (global-set-key (kbd "M-s b") 'multi-isearch-buffers-regexp)
-  (global-set-key (kbd "M-s f") 'multi-isearch-files-regexp)
-  (global-set-key (kbd "M-s M-o") 'multi-occur)
-#+end_src
-
-*** Settings
-
-#+begin_src emacs-lisp
-  (setq isearch-allow-scroll 'unlimited)
-  (setq isearch-yank-on-move 'shift)
-  (setq isearch-lazy-count t)
-  (setq lazy-count-suffix-format " (%s/%s)")
-#+end_src
-
 ** Line Numbers
 
 #+begin_src emacs-lisp
@@ -1814,23 +1726,10 @@ Don't bother using this on Windows as I can rather be bothered to install
 #+end_src
 
 ** Org
-*** Org Babel Load Languages
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'org
-    (defadvice org-babel-execute-src-block (around load-language nil activate)
-      "Load language if needed"
-      (let ((language (org-element-property :language (org-element-at-point))))
-        (unless (cdr (assoc (intern language) org-babel-load-languages))
-          (add-to-list 'org-babel-load-languages (cons (intern language) t))
-          (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages))
-        ad-do-it)))
-#+end_src
-
-No need to tangle, when using the advice above, leaving here for reference.
-
-#+begin_src emacs-lisp :tangle no
-  (with-eval-after-load 'org
+  (use-package org
+    :config
     (org-babel-do-load-languages
      'org-babel-load-languages
      '((awk . t)
@@ -1841,7 +1740,6 @@ No need to tangle, when using the advice above, leaving here for reference.
        (emacs-lisp . t)
        (gnuplot . t)
        (haskell . t)
-       ;; (http . t)
        (java . t)
        (js . t)
        (latex . t)
@@ -1856,63 +1754,20 @@ No need to tangle, when using the advice above, leaving here for reference.
        (sed . t)
        (shell . t)
        (sql . t)
-       (sqlite . t))))
-#+end_src
-
-*** Org Capture Templates
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'org
+       (sqlite . t)))
     (setq org-capture-templates
           '(("t" "TODO Entry" entry (file+headline "~/org/todo.org" "Captured")
              "* TODO %?\n  %i\n  %a")
             ("j" "Journal Entry" entry (file+datetree "~/org/journal.org" "Captured")
              "* %?\nEntered on %U\n %i\n  %a")
             ("n" "Notes Entry" entry (file+datetree "~/org/notes.org" "Captured")
-             "* %?\nEntered on %U\n %i\n  %a"))))
-#+end_src
-
-*** Org Export & View HTML
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'org
-    (defun ts-org-export-to-html-and-browse ()
-      "Export org file to html and browse-url-of-file"
-      (interactive)
-      (browse-url-of-file (org-html-export-to-html)))
-    (define-key org-mode-map (kbd "C-x M-b") 'ts-org-export-to-html-and-browse))
-#+end_src
-
-*** Org Global Keybindings
-
-#+begin_src emacs-lisp
-  (autoload 'org-mode "org" nil t)
-  (autoload 'org-agenda "org" nil t)
-  (global-set-key (kbd "C-c o a") 'org-agenda)
-  (autoload 'org-capture "org" nil t)
-  (global-set-key (kbd "C-c o c") 'org-capture)
-  (autoload 'org-store-link "org" nil t)
-  (global-set-key (kbd "C-c o l") 'org-store-link)
-  (autoload 'org-time-stamp "org" nil t)
-  (global-set-key (kbd "C-c o t") 'org-time-stamp)
-#+end_src
-
-*** Org Latex
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'org-latex
+             "* %?\nEntered on %U\n %i\n  %a")))
     (setq org-latex-listings 'minted)
     (setq org-latex-pdf-process
           '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
             "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
             "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-    (add-to-list 'org-latex-packages-alist '("" "minted")))
-#+end_src
-
-*** Org Misc Settings
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'org
+    (add-to-list 'org-latex-packages-alist '("" "minted"))
     (setq org-startup-folded t) ; start in overview mode
     (setq org-directory "~/org")
     (setq org-agenda-files (file-expand-wildcards "~/org/*.org"))
@@ -1928,109 +1783,20 @@ No need to tangle, when using the advice above, leaving here for reference.
     (setq org-return-follows-link t)
     (setq org-startup-indented t)
     (setq org-html-validation-link nil) ; don't add "validate" postamble
-    (setq org-use-fast-todo-selection t))
-#+end_src
-
-*** Org Narrow to Parent
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'org
-    (defun ts-org-narrow-to-parent ()
-      "Narrow buffer to the current subtree."
-      (interactive)
-      (widen)
-      (org-up-element)
-      (save-excursion
-        (save-match-data
-          (org-with-limited-levels
-           (narrow-to-region
-            (progn
-              (org-back-to-heading t) (point))
-            (progn (org-end-of-subtree t t)
-                   (when (and (org-at-heading-p) (not (eobp)))
-                     (backward-char 1))
-                   (point))))))
-      (define-key org-mode-map (kbd "C-c M-p") 'ts-org-narrow-to-parent)))
-#+end_src
-
-*** Org Outline/Goto
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'org
+    (setq org-use-fast-todo-selection t)
     (setq org-goto-interface 'outline-path-completionp)
     (setq org-outline-path-complete-in-steps nil)
-    ;; org-goto is basically imenu on steroids for org-mode
-    (define-key org-mode-map (kbd "C-c i") 'org-goto))
-#+end_src
-
-*** Org Recompile Post Tangle
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'org
-    (cond ((version= emacs-version "27")
-           (progn
-             (add-hook 'org-babel-post-tangle-hook (lambda () (byte-recompile-file early-init nil 0 t)))
-             (add-hook 'org-babel-post-tangle-hook (lambda () (byte-recompile-file init-file nil 0 t)))))
-          ((version= emacs-version "28")
-           (progn
-             (add-hook 'org-babel-post-tangle-hook (lambda () (byte-recompile-file early-init nil 0)))
-             (add-hook 'org-babel-post-tangle-hook 'emacs-lisp-byte-compile-and-load)))
-          (t (add-hook 'org-babel-post-tangle-hook 'emacs-lisp-byte-compile-and-load))))
-#+end_src
-
-*** Org Recursive Sort
-
-#+begin_src emacs-lisp
-  (defun ts-org-recursive-sort ()
-    "Sort all entries in the current buffer, recursively."
-    (interactive)
-    (org-map-entries (lambda ()
-                       (condition-case x
-                           (org-sort-entries nil ?a) (user-error)))))
-#+end_src
-
-*** Org Refile
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'org
     (setq org-refile-use-outline-path 'file)
     (setq org-refile-allow-creating-parent-nodes 'confirm)
-    (setq org-refile-targets '((nil :maxlevel . 9))))
-#+end_src
-
-*** Org Special Keys
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'org
+    (setq org-refile-targets '((nil :maxlevel . 9)))
     (setq org-special-ctrl-a/e 'reversed)
     (setq org-special-ctrl-k t)
-    (setq org-special-ctrl-o t))
-#+end_src
-
-*** Org Speed Commands
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'org
+    (setq org-special-ctrl-o t)
     (setq org-use-speed-commands t)
-    (setq org-speed-commands-user
-          '(("N" . org-down-element)
-            ("P" . org-up-element))))
-#+end_src
-
-*** Org Src
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'org
+    (setq org-speed-commands-user '(("N" . org-down-element) ("P" . org-up-element)))
     (setq org-src-fontify-natively t)
     (setq org-src-tab-acts-natively t)
-    (setq org-src-window-setup 'current-window))
-#+end_src
-
-*** Org Structure Templates
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'org
-    (if (not (version< emacs-version "27")) (require 'org-tempo))
+    (setq org-src-window-setup 'current-window)
     (setq org-structure-template-alist (append org-structure-template-alist
                                                '(("cl" . "src common-lisp")
                                                  ("el" . "src emacs-lisp")
@@ -2041,31 +1807,9 @@ No need to tangle, when using the advice above, leaving here for reference.
                                                  ("py" . "src python")
                                                  ("sh" . "src shell")
                                                  ("sq" . "src sql")
-                                                 ("tx" . "src text")))))
-#+end_src
-
-*** Org Todo Keywords
-
-Add =!= in the sequence parens to insert timestamps and add =@= to require a
-message.
-
-#+begin_quote
-Since it is normally too much to record a note for every state, Org mode
-expects configuration on a per-keyword basis for this. This is achieved by
-adding special markers ‘!’ (for a timestamp) or ‘@’ (for a note with timestamp)
-in parentheses after each keyword.
-#+end_quote
-
-https://orgmode.org/manual/Tracking-TODO-state-changes.html
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'org
-    (setq org-todo-keywords '((sequence
-                               "TODO(t)"
-                               "IN-PROGRESS(i)"
-                               "BLOCKED(b)"
-                               "DONE(d)"
-                               ))))
+                                                 ("tx" . "src text"))))
+    :bind (:map org-mode-map ("C-c i" . org-goto))
+    :hook (org-babel-post-tangle . emacs-lisp-byte-compile-and-load))
 #+end_src
 
 ** Pending delete
