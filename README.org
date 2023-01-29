@@ -1551,7 +1551,8 @@ Don't bother using this on Windows as I can rather be bothered to install
     ;; (setq gnus-secondary-select-methods '((nntp "news.gnus.org")))
     (setq gnus-summary-thread-gathering-function 'gnus-gather-threads-by-subject)
     (setq gnus-thread-hide-subtree t)
-    (setq gnus-thread-ignore-subject t))
+    (setq gnus-thread-ignore-subject t)
+    :commands (gnus))
 #+end_src
 
 ** Hide/Show
@@ -1817,7 +1818,7 @@ Don't bother using this on Windows as I can rather be bothered to install
 
 ** Project
 
-#+begin_src emacs-lisp :tangle (if (version< emacs-version "28") "no" init-file)
+#+begin_src emacs-lisp
   (use-package project
     :config
     (setq ts-project-roots '("~"))
@@ -2092,24 +2093,12 @@ Don't bother using this on Windows as I can rather be bothered to install
 [[https://protesilaos.com/dotemacs/#h:31deeff4-dfae-48d9-a906-1f3272f29bc9][Protesilaos Stavrou's VC reference]]
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'vc
+  (use-package vc
+    :config
     (setq vc-follow-symlinks t)
     (setq vc-make-backup-files t)
     (setq version-control t)
-    (message "Lazy loaded vc :-)"))
-
-  (defun ts-vc-dir (&optional arg)
-    "Run `vc-dir' for the current project or directory.
-  With optional ARG (\\[universal-argument]), use the present
-  working directory, else default to the root of the current
-  project, as defined by `vc-root-dir'."
-    (interactive "P")
-    (let ((dir (if arg default-directory (vc-root-dir))))
-      (vc-dir dir)))
-
-  (if (version< emacs-version "28")
-      (global-set-key (kbd "C-x v d") 'ts-vc-dir)
-    (global-set-key (kbd "C-x v d") 'vc-dir-root))
+    :bind ("C-x v d" . vc-dir-root))
 #+end_src
 
 ** View mode
