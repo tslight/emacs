@@ -2620,7 +2620,8 @@ C-q.
 ** Whitespace
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'whitespace
+  (use-package whitespace
+    :config
     (setq whitespace-line-column 120)
     (setq whitespace-style '(face
                              tabs
@@ -2636,14 +2637,8 @@ C-q.
                              tab-mark
                              newline-mark)
           whitespace-face 'whitespace-trailing)
-    (global-set-key (kbd "C-c M-w") 'whitespace-mode)
-    (message "Lazy loaded whitespace :-)"))
-#+end_src
-
-Cleanup whitespace on save
-
-#+begin_src emacs-lisp
-  (add-hook 'before-save-hook 'whitespace-cleanup)
+    :bind ("C-c M-w" . whitespace-mode)
+    :hook (before-save . whitespace-cleanup))
 #+end_src
 
 ** Windmove
