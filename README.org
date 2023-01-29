@@ -15,8 +15,7 @@ A fairly standard [[https://en.wikipedia.org/wiki/Literate_programming][literate
 To install, evaluate the code block below with ~C-c C-c~ in an Emacs buffer:
 
 #+begin_src emacs-lisp :tangle no
-  (org-babel-tangle) (load init-file)
-  (ts-ensure-byte-compiled-init)
+  (org-babel-tangle) (load init-file) (ts-ensure-byte-compiled-init)
 #+end_src
 
 This will tangle all the code blocks below into =~/.emacs.d/init.el=, compile
@@ -39,7 +38,6 @@ Be sure to back up your current =~/.emacs.d= with something like ~mv
         '(("melpa" . "https://melpa.org/packages/")
           ("gnu" . "https://elpa.gnu.org/packages/")))
   (setq use-package-enable-imenu-support t
-        ;; use-package-hook-name-suffix nil
         use-package-always-defer t
         use-package-verbose t)
   (require 'use-package)
@@ -1481,7 +1479,7 @@ Make sure we show colors when we run commands with ~M-!~
     (setq dired-isearch-filenames 'dwim)
     (setq dired-create-destination-dirs 'ask)
     (setq dired-vc-rename-file t))
-  #+end_src
+#+end_src
 
 *** Find Dired
 
@@ -1810,7 +1808,8 @@ Don't bother using this on Windows as I can rather be bothered to install
 ** Imenu
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'imenu
+  (use-package imenu
+    :config
     (setq imenu-auto-rescan t)
     (setq imenu-auto-rescan-maxout 600000)
     (setq imenu-eager-completion-buffer t)
@@ -1819,10 +1818,8 @@ Don't bother using this on Windows as I can rather be bothered to install
     (setq imenu-space-replacement " ")
     (setq imenu-use-markers t)
     (setq imenu-use-popup-menu nil)
-    (message "Lazy loaded imenu :-)"))
-
-  (autoload 'imenu "imenu" nil t)
-  (global-set-key (kbd "C-c i") 'imenu)
+    :bind
+    ("C-c i" . imenu))
 #+end_src
 
 ** Isearch
