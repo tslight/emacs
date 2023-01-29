@@ -1920,21 +1920,14 @@ https://karthinks.com/software/batteries-included-with-emacs/
 ** Python
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'python
-    ;; (when (eq system-type 'windows-nt)
-    ;;   (setq exec-path
-    ;;         (append exec-path
-    ;;                 '("C:/Users/Toby/AppData/Local/Programs/Python/Python310")))
-    ;;   (setq python-shell-interpreter
-    ;;         "C:/Users/Toby/AppData/Local/Programs/Python/Python310"))
-    (setq python-fill-docstring-style 'django)
-    (message "Lazy loaded python :-)"))
+  (use-package python :config (setq python-fill-docstring-style 'django))
 #+end_src
 
 ** Recentf
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'recentf
+  (use-package recentf
+    :config
     (setq recentf-exclude '(".gz"
                             ".xz"
                             ".zip"
@@ -1947,54 +1940,30 @@ https://karthinks.com/software/batteries-included-with-emacs/
                             "[/\\]\\.elpa/"))
     (setq recentf-max-menu-items 128)
     (setq recentf-max-saved-items 256)
-
     (defun ts--recentf-get-paths ()
       "Return de-duplicated and abbreviated `recentf-list'."
       (delete-dups (mapcar 'abbreviate-file-name recentf-list)))
-
     (defun ts-recentf-find-file ()
       "`find-file' using `recentf-list'."
       (interactive)
       (find-file (completing-read "Find file: " (ts--recentf-get-paths))))
-    (global-set-key (kbd "C-c r") 'ts-recentf-find-file)
-
     (defun ts-recentf-find-file-other-window ()
       "`find-file' using `recentf-list'."
       (interactive)
       (find-file-other-window
        (completing-read "Find file in other window: " (ts--recentf-get-paths))))
-    (global-set-key (kbd "C-c 4 r") 'ts-recentf-find-file-other-window)
-
     (defun ts-recentf-find-file-other-frame ()
       "`find-file' using `recentf-list'."
       (interactive)
       (find-file-other-frame
        (completing-read "Find file in other frame: " (ts--recentf-get-paths))))
-    (global-set-key (kbd "C-c 5 r") 'ts-recentf-find-file-other-frame)
-
-    (message "Lazy loaded recentf :-)"))
-
-  (global-set-key (kbd "C-c C-r") 'recentf-open-files)
-  (add-hook 'emacs-startup-hook 'recentf-mode)
-#+end_src
-** Repeat Mode
-
-Emacs 28+
-
-https://karthinks.com/software/it-bears-repeating/
-
-#+begin_src emacs-lisp :tangle (if (version< emacs-version "28") "no" init-file)
-  (with-eval-after-load 'isearch-mode
-    (defvar isearch-repeat-map
-      (let ((map (make-sparse-keymap)))
-        (define-key map (kbd "s") #'isearch-repeat-forward)
-        (define-key map (kbd "r") #'isearch-repeat-backward)
-        map))
-    (dolist (cmd '(isearch-repeat-forward isearch-repeat-backward))
-      (put cmd 'repeat-map 'isearch-repeat-map))
-    (repeat-mode)
-    (message "Lazy loaded repeat-mode :-)"))
-  (add-hook 'emacs-startup-hook 'repeat-mode)
+    :bind
+    ("C-c r" . ts-recentf-find-file)
+    ("C-c 4 r" . ts-recentf-find-file-other-window)
+    ("C-c 5 r" . ts-recentf-find-file-other-frame)
+    ("C-c C-r" . recentf-open-files)
+    :hook
+    (after-init . recentf-mode))
 #+end_src
 
 ** Saveplace
@@ -2006,35 +1975,12 @@ https://karthinks.com/software/it-bears-repeating/
   (add-hook 'emacs-startup-hook 'save-place-mode)
 #+end_src
 
-** Selective Display
-
-#+begin_src emacs-lisp
-  (defun ts-toggle-selective-display ()
-    "Toggle `selective-display'."
-    (interactive)
-    (if selective-display
-        (setq-local selective-display nil)
-      (setq-local selective-display 1)))
-
-  (global-set-key (kbd "C-x $") 'ts-toggle-selective-display)
-#+end_src
-
 ** Semantic
 
 #+begin_src emacs-lisp
   (add-hook 'prog-mode-hook 'semantic-mode)
   ;; https://github.com/abo-abo/lispy/issues/473
   (advice-add 'semantic-idle-scheduler-function :around #'ignore)
-#+end_src
-
-** Shell
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'shell
-    (setq ansi-color-for-comint-mode t)
-    (unless (version< emacs-version "27")
-      ;; show current directory when prompting for a shell command.
-      (setq shell-command-prompt-show-cwd t)))
 #+end_src
 
 ** Shell Script
