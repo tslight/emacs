@@ -1373,26 +1373,6 @@ Make sure we show colors when we run commands with ~M-!~
 #+end_src
 
 ** Completion
-
-https://robbmann.io/posts/emacs-29-completions/
-
-#+begin_src emacs-lisp :tangle (if (version< emacs-version "28") init-file "no")
-  (unless (version< emacs-version "29.0")
-    (setq completion-auto-help 'visible
-          completion-auto-select 'second-tab
-          completion-show-help nil
-          completions-sort nil
-          completions-format 'one-column
-          completions-max-height 15
-          completions-header-format nil))
-#+end_src
-
-#+begin_src emacs-lisp :tangle (if (version< emacs-version "28") init-file "no")
-  (unless (version< emacs-version "29.0")
-    (define-key completion-in-region-mode-map (kbd "C-p") #'minibuffer-previous-completion)
-    (define-key completion-in-region-mode-map (kbd "C-n") #'minibuffer-next-completion))
-#+end_src
-
 *** Icomplete
 
 Turn on ~fido-mode~ at launch.
@@ -2002,15 +1982,6 @@ Don't bother using this on Windows as I can rather be bothered to install
   (setq resize-mini-windows t)
 #+end_src
 
-It may also be wise to raise gc-cons-threshold while the minibuffer is active,
-so the GC doesn’t slow down expensive commands (or completion frameworks, like
-helm and ivy). Stolen from [[https://github.com/hlissner/doom-emacs/blob/develop/docs/faq.org#how-does-doom-start-up-so-quickly][Doom Emacs FAQ]].
-
-#+begin_src emacs-lisp
-  (add-hook 'minibuffer-setup-hook (lambda () (setq gc-cons-threshold most-positive-fixnum)))
-  (add-hook 'minibuffer-exit-hook (lambda () (setq gc-cons-threshold 16777216))) ; 16mb
-#+end_src
-
 *** Save history mode
 
 #+begin_src emacs-lisp
@@ -2146,7 +2117,7 @@ No need to tangle, when using the advice above, leaving here for reference.
     (setq org-use-fast-todo-selection t))
 #+end_src
 
-*** COMMENT Org Narrow to Parent
+*** Org Narrow to Parent
 
 #+begin_src emacs-lisp
   (defun ts-org-narrow-to-parent ()
@@ -2304,9 +2275,7 @@ We only tangle this when ~emacs-version~ > 28, since it's not very useful prior
 to that.
 
 #+begin_src emacs-lisp :tangle (if (version< emacs-version "28") "no" init-file)
-  (if (and (file-directory-p "~/oe-developers")
-           (file-readable-p "~/oe-developers"))
-      (setq ts-project-roots '("~/src" "~/oe-developers")))
+  (setq ts-project-roots '("~"))
 
   (defun ts-project--git-repo-p (directory)
     "Return non-nil if there is a git repository in DIRECTORY."
@@ -2456,7 +2425,7 @@ https://karthinks.com/software/batteries-included-with-emacs/
   (global-set-key (kbd "C-c C-r") 'recentf-open-files)
   (add-hook 'emacs-startup-hook 'recentf-mode)
 #+end_src
-** COMMENT Repeat Mode
+** Repeat Mode
 
 Emacs 28+
 
@@ -2866,6 +2835,7 @@ Goes in ~~/.emacs.d/early-init.el~:
 #+begin_src emacs-lisp
   (use-package blacken :hook (python-mode . blacken-mode))
 #+end_src
+
 ** COMMENT Corfu
 
 Corfu enhances completion at point with a small completion popup. The current
@@ -3221,6 +3191,7 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 #+begin_src emacs-lisp :tangle no
   (use-package json-navigator)
 #+end_src
+
 ** COMMENT Kubel
 
 #+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) "no" init-file)
