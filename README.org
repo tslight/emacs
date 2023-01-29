@@ -2237,68 +2237,9 @@ https://orgmode.org/manual/Tracking-TODO-state-changes.html
 ** Project
 
 #+begin_src emacs-lisp :tangle (if (version< emacs-version "28") "no" init-file)
-  (setq ts-project-roots '("~"))
-
-  (defun ts-project--git-repo-p (directory)
-    "Return non-nil if there is a git repository in DIRECTORY."
-    (and
-     (file-directory-p (concat directory "/.git"))
-     (file-directory-p (concat directory "/.git/info"))
-     (file-directory-p (concat directory "/.git/objects"))
-     (file-directory-p (concat directory "/.git/refs"))
-     (file-regular-p (concat directory "/.git/HEAD"))))
-
-  (defun ts-project--git-repos-recursive (directory maxdepth)
-    "List git repos in under DIRECTORY recursively to MAXDEPTH."
-    (let* ((git-repos '())
-           (current-directory-list
-            (directory-files directory t directory-files-no-dot-files-regexp)))
-      ;; while we are in the current directory
-      (if (ts-project--git-repo-p directory)
-          (setq git-repos (cons (file-truename (expand-file-name directory)) git-repos)))
-      (while current-directory-list
-        (let ((f (car current-directory-list)))
-          (cond ((and (file-directory-p f)
-                      (file-readable-p f)
-                      (> maxdepth 0)
-                      (not (ts-project--git-repo-p f)))
-                 (setq git-repos
-                       (append git-repos
-                               (ts-project--git-repos-recursive f (- maxdepth 1)))))
-                ((ts-project--git-repo-p f)
-                 (setq git-repos (cons
-                                  (file-truename (expand-file-name f)) git-repos))))
-          (setq current-directory-list (cdr current-directory-list))))
-      (delete-dups git-repos)))
-
-  (defun ts-project--list-projects ()
-    "Produce list of projects in `ts-project-roots'."
-    (let ((cands (delete-dups (mapcan (lambda (directory)
-                                        (ts-project--git-repos-recursive
-                                         (expand-file-name directory)
-                                         10))
-                                      ts-project-roots))))
-      ;; needs to be a list of lists
-      (mapcar (lambda (d)
-                (list (abbreviate-file-name d)))
-              cands)))
-
-  (defun ts-project-update-projects ()
-    "Overwrite `project--list' using `ts-project--list-projects'.
-      WARNING: This will destroy & replace the contents of `project-list-file'."
-    (interactive)
-    (autoload 'project--ensure-read-project-list "project" nil t)
-    (project--ensure-read-project-list)
-    (setq project--list (ts-project--list-projects))
-    (project--write-project-list)
-    (message "Updated project list in %s" project-list-file))
-
-  ;; (add-hook 'emacs-startup-hook 'ts-project-update-projects)
-  (global-set-key (kbd "C-x p u") 'ts-project-update-projects)
-#+end_src
-
-#+begin_src emacs-lisp :tangle (if (version< emacs-version "28") "no" init-file)
-  (with-eval-after-load 'project
+  (use-package project
+    :config
+    (setq ts-project-roots '("~"))
     (setq project-switch-commands
           '((?b "Buffer" project-switch-to-buffer)
             (?c "Compile" project-compile)
@@ -2310,7 +2251,63 @@ https://orgmode.org/manual/Tracking-TODO-state-changes.html
             (?r "Run command" project-async-shell-command)
             (?s "Search" project-search)
             (?v "VC dir" project-vc-dir)))
-    (message "Lazy loaded project :-)"))
+
+    (defun ts-project--git-repo-p (directory)
+      "Return non-nil if there is a git repository in DIRECTORY."
+      (and
+       (file-directory-p (concat directory "/.git"))
+       (file-directory-p (concat directory "/.git/info"))
+       (file-directory-p (concat directory "/.git/objects"))
+       (file-directory-p (concat directory "/.git/refs"))
+       (file-regular-p (concat directory "/.git/HEAD"))))
+
+    (defun ts-project--git-repos-recursive (directory maxdepth)
+      "List git repos in under DIRECTORY recursively to MAXDEPTH."
+      (let* ((git-repos '())
+             (current-directory-list
+              (directory-files directory t directory-files-no-dot-files-regexp)))
+        ;; while we are in the current directory
+        (if (ts-project--git-repo-p directory)
+            (setq git-repos (cons (file-truename (expand-file-name directory)) git-repos)))
+        (while current-directory-list
+          (let ((f (car current-directory-list)))
+            (cond ((and (file-directory-p f)
+                        (file-readable-p f)
+                        (> maxdepth 0)
+                        (not (ts-project--git-repo-p f)))
+                   (setq git-repos
+                         (append git-repos
+                                 (ts-project--git-repos-recursive f (- maxdepth 1)))))
+                  ((ts-project--git-repo-p f)
+                   (setq git-repos (cons
+                                    (file-truename (expand-file-name f)) git-repos))))
+            (setq current-directory-list (cdr current-directory-list))))
+        (delete-dups git-repos)))
+
+    (defun ts-project--list-projects ()
+      "Produce list of projects in `ts-project-roots'."
+      (let ((cands (delete-dups (mapcan (lambda (directory)
+                                          (ts-project--git-repos-recursive
+                                           (expand-file-name directory)
+                                           10))
+                                        ts-project-roots))))
+        ;; needs to be a list of lists
+        (mapcar (lambda (d)
+                  (list (abbreviate-file-name d)))
+                cands)))
+
+    (defun ts-project-update-projects ()
+      "Overwrite `project--list' using `ts-project--list-projects'.
+        WARNING: This will destroy & replace the contents of `project-list-file'."
+      (interactive)
+      (autoload 'project--ensure-read-project-list "project" nil t)
+      (project--ensure-read-project-list)
+      (setq project--list (ts-project--list-projects))
+      (project--write-project-list)
+      (message "Updated project list in %s" project-list-file))
+
+    :bind
+    ("C-x pu" . ts-project-update-projects))
 #+end_src
 
 ** Pulse
