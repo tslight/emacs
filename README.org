@@ -41,7 +41,6 @@ Be sure to back up your current =~/.emacs.d= with something like ~mv
   (setq use-package-enable-imenu-support t
         ;; use-package-hook-name-suffix nil
         use-package-always-defer t
-        use-package-always-ensure t
         use-package-verbose t)
   (require 'use-package)
 #+end_src
@@ -260,6 +259,18 @@ If init.elc is older, use newer ~init.el~.
   (when (executable-find "rg") (setq grep-program "rg"))
   (when (executable-find "fd") (setq find-program "fd"))
   (when (executable-find "aspell") (setq ispell-program-name "aspell"))
+#+end_src
+
+*** Windows Find
+
+First install GnuWin32 binaries from [[http://gnuwin32.sourceforge.net/packages.html][here]].
+
+Or if you want all the GNU tools on your Windows box - use [[https://sourceforge.net/projects/getgnuwin32/files/getgnuwin32/][this]].
+
+#+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) init-file "no")
+  (setq find-program "C:/Program Files (x86)/GnuWin32/bin/find.exe")
+  (setq grep-program "C:/Program Files (x86)/GnuWin32/bin/grep.exe")
+  (setq xargs-program "C:/Program Files (x86)/GnuWin32/bin/xargs.exe")
 #+end_src
 
 ** Repeat on final keystroke
@@ -1458,10 +1469,10 @@ Turn on ~fido-mode~ at launch.
 #+end_src
 
 ** Dired
-*** Dired Extras
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'dired
+  (use-package dired
+    :config
     (defun ts-dired-get-size ()
       "Get cumlative size of marked or current item."
       (interactive)
@@ -1473,15 +1484,11 @@ Turn on ~fido-mode~ at launch.
                      (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
                      (match-string 1))))))
 
-    (define-key dired-mode-map "?" 'ts-dired-get-size)
-
     (defun ts-dired-beginning-of-buffer ()
       "Go to first file in directory."
       (interactive)
       (goto-char (point-min))
       (dired-next-line 2))
-
-    (define-key dired-mode-map [remap beginning-of-buffer] 'ts-dired-beginning-of-buffer)
 
     (defun ts-dired-end-of-buffer ()
       "Go to last file in directory."
@@ -1489,113 +1496,61 @@ Turn on ~fido-mode~ at launch.
       (goto-char (point-max))
       (dired-next-line -1))
 
-    (define-key dired-mode-map [remap end-of-buffer] 'ts-dired-end-of-buffer)
-
     (defun ts-dired-up-directory ()
       (interactive)
       (find-alternate-file ".."))
 
-    (define-key dired-mode-map "b" 'ts-dired-up-directory))
-#+end_src
-
-*** Dired Omit
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'dired
     (autoload 'dired-omit-mode "dired-x" nil t)
     (autoload 'dired-omit-files "dired-x" nil t)
-    (setq dired-omit-files "\\`[.]?#\\|\\`[.][.]?\\'\\|^\\..+$"))
-#+end_src
 
-*** Dired Listing Switches
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'dired
     (when (eq system-type 'darwin) (setq dired-listing-switches "-alh"))
     (when (eq system-type 'berkeley-unix) (setq dired-listing-switches "-alhpL"))
-    (when (eq system-type 'gnu/linux)
-      (setq dired-listing-switches
-            "-AGFhlv --group-directories-first --time-style=long-iso")))
-#+end_src
+    (when (eq system-type 'gnu/linux) (setq dired-listing-switches "-AGFhlv"))
 
-*** Dired Settings
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'dired
-    (setq dired-dwim-target t
+    (setq dired-omit-files "\\`[.]?#\\|\\`[.][.]?\\'\\|^\\..+$"
+          dired-dwim-target t
           delete-by-moving-to-trash t
           dired-use-ls-dired nil
           dired-recursive-copies 'always
-          dired-recursive-deletes 'always))
-#+end_src
+          dired-recursive-deletes 'always)
 
-*** Dired Keybindings
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'dired
-    (define-key dired-mode-map "f" 'dired-find-alternate-file)
-    (define-key dired-mode-map "c" 'dired-do-compress-to)
-    (define-key dired-mode-map ")" 'dired-omit-mode))
+    :bind (:map dired-mode-map
+                (")" . dired-omit-mode)
+                ("<" . ts-dired-beginning-of-buffer)
+                (">" . ts-dired-end-of-buffer)
+                ("?" . ts-dired-get-size)
+                ("b" . ts-dired-up-directory)
+                ("c" . dired-do-compress-to)
+                ("f" . 'dired-find-alternate-file)))
 #+end_src
 
 *** Dired AUX
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'dired-aux
+  (use-package dired-aux
+    :after dired
+    :config
     (setq dired-isearch-filenames 'dwim)
     (setq dired-create-destination-dirs 'ask)
-    (setq dired-vc-rename-file t)
-    (message "Lazy loaded dired-aux :-)"))
-#+end_src
-
-*** Dired-X Jump (Emacs<28)
-
-Has to come outside of with-eval-after-load otherwise we have no dired-jump.
-
-This is in ~dired~ not ~dired-jump~ in Emacs 28, which means we no longer have
-to autoload these and bind the default keys prior to ~dired~ being loaded.
-
-The default keys are ~C-x C-j~ and ~C-x 4 C-j~.
-
-#+begin_src emacs-lisp :tangle (if (version< emacs-version "28") init-file "no")
-  ;; This is in `dired' not `dired-jump' in Emacs 28
-  (when (version< emacs-version "28")
-    (autoload 'dired-jump "dired-x" nil t)
-    (global-set-key (kbd "C-x C-j") 'dired-jump)
-    (autoload 'dired-jump-other-window "dired-x" nil t)
-    (define-key ctl-x-4-map "C-j" 'dired-jump-other-window))
-#+end_src
+    (setq dired-vc-rename-file t))
+  #+end_src
 
 *** Find Dired
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'find-dired
-    ;; (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
-    (setq find-ls-option
-          '("-ls" . "-AGFhlv --group-directories-first --time-style=long-iso"))
-    (setq find-name-arg "-iname")
-    (message "Lazy loaded find-dired :-)"))
-#+end_src
-
-*** Windows Find
-
-First install GnuWin32 binaries from [[http://gnuwin32.sourceforge.net/packages.html][here]].
-
-Or if you want all the GNU tools on your Windows box - use [[https://sourceforge.net/projects/getgnuwin32/files/getgnuwin32/][this]].
-
-#+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) init-file "no")
-  (setq find-program "C:/Program Files (x86)/GnuWin32/bin/find.exe")
-  (setq grep-program "C:/Program Files (x86)/GnuWin32/bin/grep.exe")
-  (setq xargs-program "C:/Program Files (x86)/GnuWin32/bin/xargs.exe")
+  (use-package find-dired
+    :config
+    (setq find-ls-option '("-ls" . "-AGFhlv"))
+    (setq find-name-arg "-iname"))
 #+end_src
 
 *** Writeable Dired
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'wdired
+  (use-package wdired
+    :config
     (setq wdired-allow-to-change-permissions t)
-    (setq wdired-create-parent-directories t)
-    (message "Lazy loaded wdired :-)"))
+    (setq wdired-create-parent-directories t))
 #+end_src
 
 ** Doc View
@@ -1628,6 +1583,36 @@ Or if you want all the GNU tools on your Windows box - use [[https://sourceforge
 
     (advice-add 'ediff-quit :around #'disable-y-or-n-p)
     (message "Lazy loaded ediff :-)"))
+#+end_src
+
+** Eglot
+
+Emacs Polyglot: an Emacs LSP client that stays out of your way.
+
+https://github.com/joaotavora/eglot
+
+The Language Server Protocol (LSP) defines the protocol used between an editor
+or IDE and a language server that provides language features like auto
+complete, go to definition, find all references etc. The goal of the Language
+Server Index Format (LSIF, pronounced like "else if") is to support rich code
+navigation in development tools or a Web UI without needing a local copy of the
+source code.
+
+https://microsoft.github.io/language-server-protocol/
+
+#+begin_src shell :tangle no
+  pip install python-lsp-server
+  go install golang.org/x/tools/gopls@latest
+  npm install -g typescript-language-server typescript
+  npm install -g bash-language-server
+  npm install -g dockerfile-language-server-nodejs
+#+end_src
+
+#+begin_src emacs-lisp
+  (use-package eglot
+    :hook
+    (prog-mode . eglot-ensure)
+    (shell-script-mode . eglot-ensure))
 #+end_src
 
 ** Eldoc
@@ -2734,17 +2719,17 @@ functionality.
 ** Ansible
 
 #+begin_src emacs-lisp
-  (use-package ansible :hook (yaml-mode . ansible))
+  (use-package ansible :ensure :hook (yaml-mode . ansible))
 #+end_src
 
 #+begin_src emacs-lisp
-  (use-package ansible-doc :hook (yaml-mode . ansible-doc-mode))
+  (use-package ansible-doc :ensure :hook (yaml-mode . ansible-doc-mode))
 #+end_src
 
 ** Async
 
 #+begin_src emacs-lisp
-  (use-package async :defer 5
+  (use-package async :ensure :defer 5
     :commands (async-byte-compile-file
                async-bytecomp-package-mode)
     :init
@@ -2760,98 +2745,7 @@ functionality.
 ** Blacken
 
 #+begin_src emacs-lisp
-  (use-package blacken :hook (python-mode . blacken-mode))
-#+end_src
-
-** COMMENT Corfu
-
-Corfu enhances completion at point with a small completion popup. The current
-candidates are shown in a popup below or above the point. Corfu is the
-minimalistic completion-in-region counterpart of the Vertico minibuffer UI.
-
-https://github.com/minad/corfu
-
-After Emacs 29 we can use the standard ~*Completions*~ buffer and it's much
-lighter, so only tangle on ~Emacs<29~.
-
-#+begin_src emacs-lisp :tangle (if (version< emacs-version "29") init-file "no")
-  (use-package corfu
-    :custom
-    (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-    (corfu-auto t)                 ;; Enable auto completion
-    ;; (corfu-separator ?\s)          ;; Orderless field separator
-    ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-    ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
-    ;; (corfu-preview-current nil)    ;; Disable current candidate preview
-    ;; (corfu-preselect-first nil)    ;; Disable candidate preselection
-    ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
-    ;; (corfu-echo-documentation nil) ;; Disable documentation in the echo area
-    ;; (corfu-scroll-margin 5)        ;; Use scroll margin
-    ;; Use TAB for cycling, default is `corfu-complete'.
-    :bind
-    (:map corfu-map
-          ("TAB" . corfu-next)
-          ([tab] . corfu-next)
-          ("S-TAB" . corfu-previous)
-          ([backtab] . corfu-previous))
-    :init (global-corfu-mode))
-#+end_src
-
-** COMMENT Completion
-*** Vertico
-
-https://github.com/minad/vertico
-
-#+begin_src emacs-lisp
-  (use-package vertico
-    :init (vertico-mode)
-    (define-key vertico-map (kbd "<tab>") #'vertico-next)
-    (define-key vertico-map (kbd "<backtab>") #'vertico-previous))
-#+end_src
-
-*** Consult
-
-https://github.com/minad/consult
-
-#+begin_src emacs-lisp
-  (use-package consult
-    :init
-    ;; Use `consult-completion-in-region' if Vertico is enabled.
-    ;; Otherwise use the default `completion--in-region' function.
-    (setq completion-in-region-function
-          (lambda (&rest args)
-            (apply (if vertico-mode
-                       #'consult-completion-in-region
-                     #'completion--in-region)
-                   args))))
-#+end_src
-
-*** Marginalia
-
-https://github.com/minad/marginalia/
-
-#+begin_src emacs-lisp
-  (use-package marginalia
-    ;; The :init configuration is always executed (Not lazy!)
-    :init
-    ;; Must be in the :init section of use-package such that the mode gets
-    ;; enabled right away. Note that this forces loading the package.
-    (marginalia-mode))
-#+end_src
-
-*** Orderless
-
-https://github.com/oantolin/orderless
-
-#+begin_src emacs-lisp
-  (use-package orderless
-    :init
-    ;; Configure a custom style dispatcher (see the Consult wiki)
-    ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
-          ;; orderless-component-separator #'orderless-escapable-split-on-space)
-    (setq completion-styles '(orderless initials flex partial-completion substring basic)
-          completion-category-defaults nil
-          completion-category-overrides '((file (styles partial-completion)))))
+  (use-package blacken :ensure :hook (python-mode . blacken-mode))
 #+end_src
 
 ** Default Text Scale
@@ -2861,13 +2755,13 @@ Increase or decrease font size everywhere with ~C-M-=~ and ~C-M--~
 https://github.com/purcell/default-text-scale
 
 #+begin_src emacs-lisp
-  (use-package default-text-scale :defer 7 :config (default-text-scale-mode))
+  (use-package default-text-scale :ensure :defer 7 :config (default-text-scale-mode))
 #+end_src
 
 ** Diminish
 
 #+begin_src emacs-lisp
-  (use-package diminish :defer 2
+  (use-package diminish :ensure :defer 2
     :diminish abbrev-mode
     :diminish auto-fill-function ;; wtf?!
     :diminish eldoc-mode
@@ -2882,70 +2776,10 @@ https://github.com/purcell/default-text-scale
     (hs-minor-mode . (lambda () (diminish 'hs-minor-mode))))
 #+end_src
 
-** COMMENT Diranged
-
-Preview the file or directory at point when in ~dired~, a bit like [[https://github.com/ranger/ranger][ranger]].
-
-Get the source from [[https://github.com/tslight/diranged][here]].
-
-#+begin_src emacs-lisp
-  (use-package diranged :ensure nil :after dired
-    :load-path "~/src/diranged"
-    :bind (:map dired-mode-map ("r" . diranged-mode)))
-#+end_src
-
 ** Docker
 
 #+begin_src emacs-lisp
-  (use-package docker :bind ("C-c C-d" . docker))
-#+end_src
-
-#+begin_src emacs-lisp
-  (use-package dockerfile-mode)
-#+end_src
-
-** Eglot
-
-Emacs Polyglot: an Emacs LSP client that stays out of your way.
-
-https://github.com/joaotavora/eglot
-
-The Language Server Protocol (LSP) defines the protocol used between an editor
-or IDE and a language server that provides language features like auto
-complete, go to definition, find all references etc. The goal of the Language
-Server Index Format (LSIF, pronounced like "else if") is to support rich code
-navigation in development tools or a Web UI without needing a local copy of the
-source code.
-
-https://microsoft.github.io/language-server-protocol/
-
-#+begin_src shell :tangle no
-  pip install python-lsp-server
-  go install golang.org/x/tools/gopls@latest
-  npm install -g typescript-language-server typescript
-  npm install -g bash-language-server
-  npm install -g dockerfile-language-server-nodejs
-#+end_src
-
-#+begin_src emacs-lisp
-  (use-package eglot
-    :hook
-    (prog-mode . eglot-ensure)
-    (shell-script-mode . eglot-ensure))
-#+end_src
-
-** COMMENT Elpy
-
-Elpy is an Emacs package to bring powerful Python editing to Emacs. It combines
-and configures a number of other packages, both written in Emacs Lisp as well
-as Python.
-
-https://github.com/jorgenschaefer/elpy
-
-https://elpy.readthedocs.io/en/latest/index.html
-
-#+begin_src emacs-lisp
-  (use-package elpy :init (advice-add 'python-mode :before 'elpy-enable))
+  (use-package dockerfile-mode :ensure)
 #+end_src
 
 ** Exec path from shell
@@ -2953,7 +2787,7 @@ https://elpy.readthedocs.io/en/latest/index.html
 Don't tangle this block if ~system-type~ is ~windows-nt~.
 
 #+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) "no" init-file)
-  (use-package exec-path-from-shell :defer 10
+  (use-package exec-path-from-shell :ensure :defer 10
     :unless (eq system-type 'windows-nt)
     :commands exec-path-from-shell-initialize
     :init
@@ -2967,7 +2801,7 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 ** Flycheck
 
 #+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) "no" init-file)
-  (use-package flycheck
+  (use-package flycheck :ensure
     :unless (eq system-type 'windows-nt)
     :diminish flycheck-mode
     :config
@@ -2981,7 +2815,7 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 *** Gitlab CI
 
 #+begin_src emacs-lisp
-  (use-package gitlab-ci-mode
+  (use-package gitlab-ci-mode :ensure
     :mode
     "\\.gitlab-ci.yaml\\'"
     "\\.gitlab-ci.yml\\'"
@@ -2992,40 +2826,13 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 *** Git Timemachine
 
 #+begin_src emacs-lisp
-  (use-package git-timemachine)
-#+end_src
-
-*** Lazygit
-
-Clone some or all of my projects on GitLab or GitHub via the magic of APIs and
-Emacs' ~completing-read~.
-
-Get the source from [[https://gitlab.com/tslight/lazygit][here]].
-
-#+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) "no" init-file)
-  (use-package lazygit :ensure nil
-    :unless (eq system-type 'windows-nt)
-    :load-path "~/src/lazygit.el"
-    :bind-keymap
-    ("C-c g" . lazygit-map))
-
-  (use-package lazygitlab :ensure nil
-    :unless (eq system-type 'windows-nt)
-    :load-path "~/src/lazygit.el"
-    :bind-keymap
-    ("C-c L" . lazygitlab-map))
-
-  (use-package lazygithub :ensure nil
-    :unless (eq system-type 'windows-nt)
-    :load-path "~/src/lazygit.el"
-    :bind-keymap
-    ("C-c H" . lazygithub-map))
+  (use-package git-timemachine :ensure)
 #+end_src
 
 *** Magit
 
 #+begin_src emacs-lisp
-  (use-package magit
+  (use-package magit :ensure
     :bind*
     ("C-x g" . magit-status)
     :config
@@ -3040,7 +2847,7 @@ Get the source from [[https://gitlab.com/tslight/lazygit][here]].
 #+end_src
 
 #+begin_src emacs-lisp
-  (use-package magit-repos :ensure nil
+  (use-package magit-repos
     :bind* ("C-x C-g" . magit-list-repositories)
     :config
     (setq magit-repository-directories `(("~/" . 0)
@@ -3059,16 +2866,10 @@ Get the source from [[https://gitlab.com/tslight/lazygit][here]].
     (setq magit-repolist-sort-key '("Flag" . t)))
 #+end_src
 
-Don't tangle this block if ~system-type~ is ~windows-nt~.
-
-#+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) "no" init-file)
-  (use-package forge :unless (equal system-type 'windows-nt) :after magit)
-#+end_src
-
 ** Go mode
 
 #+begin_src emacs-lisp
-  (use-package go-mode
+  (use-package go-mode :ensure
     :config
     (defun ts-go-indent ()
       (setq indent-tabs-mode 1)
@@ -3081,30 +2882,13 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 ** Hungry delete
 
 #+begin_src emacs-lisp
-  (use-package hungry-delete :defer 6 :config (global-hungry-delete-mode))
-#+end_src
-
-** JS2 mode
-
-#+begin_src emacs-lisp
-  (use-package js2-mode
-    :hook
-    (js-mode . js2-minor-mode)
-    (js2-mode . js2-imenu-extras-mode)
-    :mode
-    "\\.js\\'")
-
-  (use-package js2-refactor
-    :hook (js2-mode . js2-refactor-mode)
-    :bind (:map js2-mode-map
-                ("C-k" . js2r-kill))
-    :config (js2r-add-keybindings-with-prefix "C-c C-j"))
+  (use-package hungry-delete :ensure :defer 6 :config (global-hungry-delete-mode))
 #+end_src
 
 ** JSON
 
 #+begin_src emacs-lisp
-  (use-package json-mode
+  (use-package json-mode :ensure
     :config
     (defun ts-json-mode-setup ()
       (json-mode)
@@ -3115,30 +2899,10 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
                  '("\\.json\\'" . 'ts-json-mode-setup)))
 #+end_src
 
-#+begin_src emacs-lisp :tangle no
-  (use-package json-navigator)
-#+end_src
-
-** COMMENT Kubel
-
-#+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) "no" init-file)
-  (use-package kubel :unless (equal system-type 'windows-nt))
-#+end_src
-
-** COMMENT Kubernetes
-
-#+begin_src emacs-lisp
-(use-package kubernetes
-  :commands (kubernetes-overview)
-  :config
-  (setq kubernetes-poll-frequency 3600
-        kubernetes-redraw-frequency 3600))
-#+end_src
-
 ** Markdown
 
 #+begin_src emacs-lisp
-  (use-package markdown-mode
+  (use-package markdown-mode :ensure
     :commands (markdown-mode gfm-mode)
     :mode (("README\\.md\\'" . gfm-mode)
            ("\\.md\\'" . gfm-mode)
@@ -3150,45 +2914,19 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 *** htmlize
 
 #+begin_src emacs-lisp
-  (use-package htmlize)
-#+end_src
-
-*** COMMENT Org Bullets
-
-#+begin_src emacs-lisp
-  (use-package org-bullets :hook (org-mode . org-bullets-mode))
-#+end_src
-
-*** COMMENT PDF Tools
-
-Don't tangle this block if ~system-type~ is ~windows-nt~.
-
-#+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) "no" init-file)
-  (use-package pdf-tools :unless (eq system-type 'windows-nt))
-#+end_src
-
-*** COMMENT Toc Org
-
-#+begin_src emacs-lisp
-  (use-package toc-org :hook (org-mode . toc-org-enable))
-#+end_src
-
-*** COMMENT Ox TWBS
-
-#+begin_src emacs-lisp
-  (use-package ox-twbs)
+  (use-package htmlize :ensure)
 #+end_src
 
 ** Powershell
 
 #+begin_src emacs-lisp
-  (use-package powershell :mode (("\\.ps1\\'" . powershell-mode)))
+  (use-package powershell :ensure :mode (("\\.ps1\\'" . powershell-mode)))
 #+end_src
 
 ** Restclient
 
 #+begin_src emacs-lisp
-  (use-package restclient)
+  (use-package restclient :ensure)
 #+end_src
 
 ** systemd
@@ -3196,25 +2934,25 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 Don't tangle this block if ~system-type~ is ~windows-nt~.
 
 #+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) "no" init-file)
-  (use-package systemd :unless (equal system-type 'windows-nt))
+  (use-package systemd :ensure :unless (equal system-type 'windows-nt))
 #+end_src
 
 ** Terraform
 
 #+begin_src emacs-lisp
-  (use-package terraform-mode)
+  (use-package terraform-mode :ensure)
 #+end_src
 
 ** Trashed
 
 #+begin_src emacs-lisp
-  (use-package trashed :bind ("C-c f t" . trashed))
+  (use-package trashed :ensure :bind ("C-c f t" . trashed))
 #+end_src
 
 ** Web Mode
 
 #+begin_src emacs-lisp
-  (use-package web-mode
+  (use-package web-mode :ensure
     :mode
     "\\.phtml\\'"
     "\\.tpl\\.php\\'"
@@ -3251,13 +2989,13 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 ** Which Key
 
 #+begin_src emacs-lisp
-  (use-package which-key :defer 5 :config (which-key-mode))
+  (use-package which-key :ensure :defer 5 :config (which-key-mode))
 #+end_src
 
 ** Writeable Grep
 
 #+begin_src emacs-lisp
-  (use-package wgrep :commands wgrep
+  (use-package wgrep :ensure :commands wgrep
     :bind (:map grep-mode-map
                 ("e" . wgrep-change-to-wgrep-mode)
                 ("C-x C-q" . wgrep-change-to-wgrep-mode)))
@@ -3266,11 +3004,11 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 ** YAML
 
 #+begin_src emacs-lisp
-  (use-package highlight-indentation)
+  (use-package highlight-indentation :ensure)
 #+end_src
 
 #+begin_src emacs-lisp
-  (use-package yaml-mode
+  (use-package yaml-mode :ensure
     :hook
     (yaml-mode . highlight-indentation-mode)
     (yaml-mode . hs-minor-mode)
@@ -3280,15 +3018,15 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 ** Yasnippet
 
 #+begin_src emacs-lisp
-  (use-package yasnippet :hook (prog-mode . yas-minor-mode))
+  (use-package yasnippet :ensure :hook (prog-mode . yas-minor-mode))
 #+end_src
 
 #+begin_src emacs-lisp
-  (use-package yasnippet-classic-snippets)
+  (use-package yasnippet-classic-snippets :ensure)
 #+end_src
 
 #+begin_src emacs-lisp
-  (use-package yasnippet-snippets)
+  (use-package yasnippet-snippets :ensure)
 #+end_src
 
 * COMMENT Local Variables                                  :NOEXPORT:ARCHIVE:
