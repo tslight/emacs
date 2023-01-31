@@ -85,10 +85,8 @@ on it, so turn it on first.
   (setq c-basic-offset 4)
   (setq css-indent-offset 2)
   (setq js-indent-level 2)
-
   ;; If indent-tabs-mode is t, it may use tab, resulting in mixed spaces and tabs
   (setq-default indent-tabs-mode nil)
-
   ;; make tab key do indent first then completion.
   (setq-default tab-always-indent 'complete)
 #+end_src
@@ -1647,34 +1645,17 @@ Don't bother using this on Windows as I can rather be bothered to install
      'org-babel-load-languages
      '((awk . t)
        (C . t)
-       (clojure . t)
        (css . t)
-       (dot . t) ;; graphviz language
        (emacs-lisp . t)
-       (gnuplot . t)
-       (haskell . t)
-       (java . t)
-       (js . t)
-       (latex . t)
        (lisp . t)
        (makefile . t)
-       (ocaml . t)
        (perl . t)
        (python . t)
-       (plantuml . t)
        (ruby . t)
-       (scheme . t)
        (sed . t)
        (shell . t)
        (sql . t)
        (sqlite . t)))
-    (setq org-capture-templates
-          '(("t" "TODO Entry" entry (file+headline "~/org/todo.org" "Captured")
-             "* TODO %?\n  %i\n  %a")
-            ("j" "Journal Entry" entry (file+datetree "~/org/journal.org" "Captured")
-             "* %?\nEntered on %U\n %i\n  %a")
-            ("n" "Notes Entry" entry (file+datetree "~/org/notes.org" "Captured")
-             "* %?\nEntered on %U\n %i\n  %a")))
     (setq org-latex-listings 'minted)
     (setq org-latex-pdf-process
           '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
@@ -1682,9 +1663,9 @@ Don't bother using this on Windows as I can rather be bothered to install
             "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
     (add-to-list 'org-latex-packages-alist '("" "minted"))
     (setq org-startup-folded t) ; start in overview mode
-    (setq org-directory "~/org")
-    (setq org-agenda-files (file-expand-wildcards "~/org/*.org"))
-    (setq org-default-notes-file "~/org/notes.org")
+    (setq org-directory "~")
+    (setq org-agenda-files (file-expand-wildcards "~/**/*.org"))
+    (setq org-default-notes-file "~/notes.org")
     (setq org-image-actual-width nil) ; try to get width from #+ATTR.* keyword
     (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
     (setq org-emphasis-regexp-components '(" \t('\"{" "- \t.,:!?;'\")}\\" " \t\r\n,\"'" "." 300))
