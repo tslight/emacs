@@ -1223,6 +1223,13 @@ Make sure we show colors when we run commands with ~M-!~
 
 #+begin_src emacs-lisp
   (use-package dired
+    :custom
+    (dired-omit-files "\\`[.]?#\\|\\`[.][.]?\\'\\|^\\..+$")
+    (dired-dwim-target t)
+    (delete-by-moving-to-trash t)
+    (dired-use-ls-dired nil)
+    (dired-recursive-copies 'always)
+    (dired-recursive-deletes 'always)
     :config
     (defun ts-dired-get-size ()
       "Get cumlative size of marked or current item."
@@ -1257,13 +1264,6 @@ Make sure we show colors when we run commands with ~M-!~
     (when (eq system-type 'darwin) (setq dired-listing-switches "-alh"))
     (when (eq system-type 'berkeley-unix) (setq dired-listing-switches "-alhpL"))
     (when (eq system-type 'gnu/linux) (setq dired-listing-switches "-AGFhlv"))
-
-    (setq dired-omit-files "\\`[.]?#\\|\\`[.][.]?\\'\\|^\\..+$"
-          dired-dwim-target t
-          delete-by-moving-to-trash t
-          dired-use-ls-dired nil
-          dired-recursive-copies 'always
-          dired-recursive-deletes 'always)
 
     :bind (:map dired-mode-map
                 (")" . dired-omit-mode)
@@ -1461,18 +1461,18 @@ Don't bother using this on Windows as I can rather be bothered to install
 
 #+begin_src emacs-lisp
   (use-package gnus
-    :config
-    (setq gnus-init-file "~/.emacs.d/init.el")
-    (setq gnus-home-directory "~/.emacs.d/")
-    (setq message-directory "~/.emacs.d/mail")
-    (setq gnus-directory "~/.emacs.d/news")
-    (setq nnfolder-directory "~/.emacs.d/mail/archive")
-    (setq gnus-use-full-window nil)
-    (setq gnus-select-method '(nntp "news.gwene.org"))
+    :custom
+    (gnus-init-file "~/.emacs.d/init.el")
+    (gnus-home-directory "~/.emacs.d/")
+    (message-directory "~/.emacs.d/mail")
+    (gnus-directory "~/.emacs.d/news")
+    (nnfolder-directory "~/.emacs.d/mail/archive")
+    (gnus-use-full-window nil)
+    (gnus-select-method '(nntp "news.gwene.org"))
     ;; (setq gnus-secondary-select-methods '((nntp "news.gnus.org")))
-    (setq gnus-summary-thread-gathering-function 'gnus-gather-threads-by-subject)
-    (setq gnus-thread-hide-subtree t)
-    (setq gnus-thread-ignore-subject t)
+    (gnus-summary-thread-gathering-function 'gnus-gather-threads-by-subject)
+    (gnus-thread-hide-subtree t)
+    (gnus-thread-ignore-subject t)
     :commands (gnus))
 #+end_src
 
@@ -1537,16 +1537,6 @@ Don't bother using this on Windows as I can rather be bothered to install
   (use-package icomplete
     :config
     (icomplete-vertical-mode)
-    (setq icomplete-delay-completions-threshold 100)
-    (setq icomplete-max-delay-chars 2)
-    (setq icomplete-compute-delay 0.2)
-    (setq icomplete-show-matches-on-no-input t)
-    (setq icomplete-hide-common-prefix nil)
-    (setq icomplete-prospects-height 1)
-    (setq icomplete-separator (propertize " · " 'face 'shadow))
-    (setq icomplete-with-completion-tables t)
-    (setq icomplete-tidy-shadowed-file-names t)
-    (setq icomplete-in-buffer t)
     (defun ts-icomplete-styles ()
       (setq-local completion-styles '(initials flex partial-completion substring basic)))
     :hook
@@ -1563,6 +1553,42 @@ Don't bother using this on Windows as I can rather be bothered to install
                 ("<down>" . icomplete-forward-completions)
                 ("<left>" . icomplete-backward-completions)
                 ("<right>" . icomplete-forward-completions)))
+#+end_src
+
+** COMMENT Ido
+
+#+begin_src emacs-lisp
+  (use-package ido
+    :config
+    (setq ido-use-virtual-buffers 't) ;; show recent files too
+    (setq ido-create-new-buffer 'always)
+    (setq ido-enable-prefix t)
+    (setq ido-enable-flex-matching 't)
+    (setq ido-auto-merge-work-directories-length -1)
+    (setq ido-use-filename-at-point 'nil)
+    ;; vertical display
+    (setq ido-decorations (quote ("\n--> "
+                                  " "
+                                  "\n    "
+                                  "\n    ..."
+                                  "["  "]"
+                                  "  [No match]"
+                                  "  [Matched]"
+                                  "  [Not readable]"
+                                  "  [Too big]"
+                                  "  [Confirm]")))
+    (global-set-key
+     "\M-x"
+     (lambda ()
+       (interactive)
+       (call-interactively
+        (intern
+         (ido-completing-read
+          "M-x "
+          (all-completions "" obarray 'commandp))))))
+    :hook
+    (after-init . ido-mode)
+    (after-init . ido-everywhere))
 #+end_src
 
 ** Imenu
@@ -1594,15 +1620,8 @@ Don't bother using this on Windows as I can rather be bothered to install
 *** Completion framework settings
 
 #+begin_src emacs-lisp
-  (setq completion-category-defaults nil)
+  (setq completion-auto-help 'nil)
   (setq completion-cycle-threshold 3)
-  (setq completion-flex-nospace nil)
-  (setq completion-ignore-case t)
-  (setq completion-pcm-complete-word-inserts-delimiters t)
-  (setq completion-pcm-word-delimiters "-_./:| ")
-  (setq completion-show-help nil)
-  (setq completions-detailed t)
-  (setq completions-format 'one-column)
 #+end_src
 
 *** Misc Minibuffer settings
@@ -1640,6 +1659,53 @@ Don't bother using this on Windows as I can rather be bothered to install
 
 #+begin_src emacs-lisp
   (use-package org
+    :custom
+    (org-latex-listings 'minted)
+    (org-latex-pdf-process
+     '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+       "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+       "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+    (org-startup-folded t) ; start in overview mode
+    (org-directory "~")
+    (org-agenda-files (file-expand-wildcards "~/**/*.org"))
+    (org-default-notes-file "~/notes.org")
+    (org-image-actual-width nil) ; try to get width from #+ATTR.* keyword
+    (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+    (org-emphasis-regexp-components '(" \t('\"{" "- \t.,:!?;'\")}\\" " \t\r\n,\"'" "." 300))
+    (org-confirm-babel-evaluate 'nil)
+    (org-export-with-toc t)
+    (org-indent-indentation-per-level 1)
+    (org-list-allow-alphabetical t)
+    (org-list-indent-offset 1)
+    (org-return-follows-link t)
+    (org-startup-indented t)
+    (org-html-validation-link nil) ; don't add "validate" postamble
+    (org-use-fast-todo-selection t)
+    (org-goto-interface 'outline-path-completionp)
+    (org-outline-path-complete-in-steps nil)
+    (org-refile-use-outline-path 'file)
+    (org-refile-allow-creating-parent-nodes 'confirm)
+    (org-refile-targets '((nil :maxlevel . 9)))
+    (org-special-ctrl-a/e 'reversed)
+    (org-special-ctrl-k t)
+    (org-special-ctrl-o t)
+    (org-use-speed-commands t)
+    (org-speed-commands-user '(("N" . org-down-element) ("P" . org-up-element)))
+    (org-src-fontify-natively t)
+    (org-src-tab-acts-natively t)
+    (org-src-window-setup 'current-window)
+    (org-modules '(org-tempo))
+    (org-structure-template-alist (append org-structure-template-alist
+                                          '(("cl" . "src common-lisp")
+                                            ("el" . "src emacs-lisp")
+                                            ("go" . "src go")
+                                            ("ja" . "src java")
+                                            ("js" . "src javascript")
+                                            ("kr" . "src c")
+                                            ("py" . "src python")
+                                            ("sh" . "src shell")
+                                            ("sq" . "src sql")
+                                            ("tx" . "src text"))))
     :config
     (org-babel-do-load-languages
      'org-babel-load-languages
@@ -1656,52 +1722,7 @@ Don't bother using this on Windows as I can rather be bothered to install
        (shell . t)
        (sql . t)
        (sqlite . t)))
-    (setq org-latex-listings 'minted)
-    (setq org-latex-pdf-process
-          '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-            "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-            "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
     (add-to-list 'org-latex-packages-alist '("" "minted"))
-    (setq org-startup-folded t) ; start in overview mode
-    (setq org-directory "~")
-    (setq org-agenda-files (file-expand-wildcards "~/**/*.org"))
-    (setq org-default-notes-file "~/notes.org")
-    (setq org-image-actual-width nil) ; try to get width from #+ATTR.* keyword
-    (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
-    (setq org-emphasis-regexp-components '(" \t('\"{" "- \t.,:!?;'\")}\\" " \t\r\n,\"'" "." 300))
-    (setq org-confirm-babel-evaluate 'nil)
-    (setq org-export-with-toc t)
-    (setq org-indent-indentation-per-level 1)
-    (setq org-list-allow-alphabetical t)
-    (setq org-list-indent-offset 1)
-    (setq org-return-follows-link t)
-    (setq org-startup-indented t)
-    (setq org-html-validation-link nil) ; don't add "validate" postamble
-    (setq org-use-fast-todo-selection t)
-    (setq org-goto-interface 'outline-path-completionp)
-    (setq org-outline-path-complete-in-steps nil)
-    (setq org-refile-use-outline-path 'file)
-    (setq org-refile-allow-creating-parent-nodes 'confirm)
-    (setq org-refile-targets '((nil :maxlevel . 9)))
-    (setq org-special-ctrl-a/e 'reversed)
-    (setq org-special-ctrl-k t)
-    (setq org-special-ctrl-o t)
-    (setq org-use-speed-commands t)
-    (setq org-speed-commands-user '(("N" . org-down-element) ("P" . org-up-element)))
-    (setq org-src-fontify-natively t)
-    (setq org-src-tab-acts-natively t)
-    (setq org-src-window-setup 'current-window)
-    (setq org-structure-template-alist (append org-structure-template-alist
-                                               '(("cl" . "src common-lisp")
-                                                 ("el" . "src emacs-lisp")
-                                                 ("go" . "src go")
-                                                 ("ja" . "src java")
-                                                 ("js" . "src javascript")
-                                                 ("kr" . "src c")
-                                                 ("py" . "src python")
-                                                 ("sh" . "src shell")
-                                                 ("sq" . "src sql")
-                                                 ("tx" . "src text"))))
     :bind (:map org-mode-map ("C-c i" . org-goto))
     :hook (org-babel-post-tangle . emacs-lisp-byte-compile-and-load))
 #+end_src
@@ -1716,7 +1737,7 @@ Don't bother using this on Windows as I can rather be bothered to install
 
 #+begin_src emacs-lisp
   (use-package prettify-symbols
-    :config (setq prettify-symbols-unprettify-at-point 'right-edge)
+    :custom (prettify-symbols-unprettify-at-point 'right-edge)
     :hook (after-init . global-prettify-symbols-mode))
 #+end_src
 
@@ -1724,20 +1745,20 @@ Don't bother using this on Windows as I can rather be bothered to install
 
 #+begin_src emacs-lisp
   (use-package project
+    :custom
+    (ts-project-roots '("~"))
+    (project-switch-commands
+     '((?b "Buffer" project-switch-to-buffer)
+       (?c "Compile" project-compile)
+       (?d "Dired" project-dired)
+       (?e "Eshell" project-eshell)
+       (?f "File" project-find-file)
+       (?g "Grep" project-find-regexp)
+       (?q "Query replace" project-query-replace-regexp)
+       (?r "Run command" project-async-shell-command)
+       (?s "Search" project-search)
+       (?v "VC dir" project-vc-dir)))
     :config
-    (setq ts-project-roots '("~"))
-    (setq project-switch-commands
-          '((?b "Buffer" project-switch-to-buffer)
-            (?c "Compile" project-compile)
-            (?d "Dired" project-dired)
-            (?e "Eshell" project-eshell)
-            (?f "File" project-find-file)
-            (?g "Grep" project-find-regexp)
-            (?q "Query replace" project-query-replace-regexp)
-            (?r "Run command" project-async-shell-command)
-            (?s "Search" project-search)
-            (?v "VC dir" project-vc-dir)))
-
     (defun ts-project--git-repo-p (directory)
       "Return non-nil if there is a git repository in DIRECTORY."
       (and
@@ -1791,7 +1812,6 @@ Don't bother using this on Windows as I can rather be bothered to install
       (setq project--list (ts-project--list-projects))
       (project--write-project-list)
       (message "Updated project list in %s" project-list-file))
-
     :bind
     ("C-x pu" . ts-project-update-projects))
 #+end_src
@@ -1799,26 +1819,27 @@ Don't bother using this on Windows as I can rather be bothered to install
 ** Python
 
 #+begin_src emacs-lisp
-  (use-package python :config (setq python-fill-docstring-style 'django))
+  (use-package python :custom (python-fill-docstring-style 'django))
 #+end_src
 
 ** Recentf
 
 #+begin_src emacs-lisp
   (use-package recentf
+    :custom
+    (recentf-exclude '(".gz"
+                       ".xz"
+                       ".zip"
+                       "/elpa/"
+                       "/ssh:"
+                       "/sudo:"
+                       "^/var/folders\\.*"
+                       "COMMIT_EDITMSG\\'"
+                       ".*-autoloads\\.el\\'"
+                       "[/\\]\\.elpa/"))
+    (recentf-max-menu-items 128)
+    (recentf-max-saved-items 256)
     :config
-    (setq recentf-exclude '(".gz"
-                            ".xz"
-                            ".zip"
-                            "/elpa/"
-                            "/ssh:"
-                            "/sudo:"
-                            "^/var/folders\\.*"
-                            "COMMIT_EDITMSG\\'"
-                            ".*-autoloads\\.el\\'"
-                            "[/\\]\\.elpa/"))
-    (setq recentf-max-menu-items 128)
-    (setq recentf-max-saved-items 256)
     (defun ts--recentf-get-paths ()
       "Return de-duplicated and abbreviated `recentf-list'."
       (delete-dups (mapcar 'abbreviate-file-name recentf-list)))
@@ -1849,7 +1870,7 @@ Don't bother using this on Windows as I can rather be bothered to install
 
 #+begin_src emacs-lisp
   (use-package save-place
-    :config (setq save-place-file (concat user-emacs-directory "saveplace.el"))
+    :custom (save-place-file (concat user-emacs-directory "saveplace.el"))
     :hook (after-init . save-place-mode))
 #+end_src
 
@@ -1893,9 +1914,9 @@ Don't bother using this on Windows as I can rather be bothered to install
 
 #+begin_src emacs-lisp
   (use-package paren
-    :config
-    (setq show-paren-when-point-in-periphery t)
-    (setq show-paren-when-point-inside-paren t)
+    :custom
+    (show-paren-when-point-in-periphery t)
+    (show-paren-when-point-inside-paren t)
     :hook (after-init . show-paren-mode))
 #+end_src
 
@@ -1939,10 +1960,10 @@ Don't bother using this on Windows as I can rather be bothered to install
 
 #+begin_src emacs-lisp
   (use-package vc
-    :config
-    (setq vc-follow-symlinks t)
-    (setq vc-make-backup-files t)
-    (setq version-control t)
+    :custom
+    (vc-follow-symlinks t)
+    (vc-make-backup-files t)
+    (version-control t)
     :bind ("C-x v d" . vc-dir-root))
 #+end_src
 
@@ -1964,22 +1985,22 @@ C-q.
 
 #+begin_src emacs-lisp
   (use-package whitespace
-    :config
-    (setq whitespace-line-column 120)
-    (setq whitespace-style '(face
-                             tabs
-                             spaces
-                             trailing
-                             lines
-                             space-before-tab::space
-                             newline
-                             indentation::space
-                             empty
-                             space-after-tab::space
-                             space-mark
-                             tab-mark
-                             newline-mark)
-          whitespace-face 'whitespace-trailing)
+    :custom
+    (whitespace-line-column 120)
+    (whitespace-style '(face
+                        tabs
+                        spaces
+                        trailing
+                        lines
+                        space-before-tab::space
+                        newline
+                        indentation::space
+                        empty
+                        space-after-tab::space
+                        space-mark
+                        tab-mark
+                        newline-mark)
+                      whitespace-face 'whitespace-trailing)
     :bind ("C-c M-w" . whitespace-mode)
     :hook (before-save . whitespace-cleanup))
 #+end_src
@@ -1988,7 +2009,7 @@ C-q.
 
 #+begin_src emacs-lisp
   (use-package windmove
-    :config (setq windmove-wrap-around t)
+    :custom (windmove-wrap-around t)
     :bind
     ("C-c w b" . windmove-left)
     ("C-c w f" . windmove-right)
@@ -2074,6 +2095,26 @@ functionality.
 
 #+begin_src emacs-lisp
   (use-package blacken :ensure :hook (python-mode . blacken-mode))
+#+end_src
+
+** Corfu
+
+#+begin_src emacs-lisp
+  (use-package corfu :ensure
+    ;; :custom
+    ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+    ;; (corfu-auto t)                 ;; Enable auto completion
+    ;; (corfu-separator ?\s)          ;; Orderless field separator
+    ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+    ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+    ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+    ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
+    ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+    ;; (corfu-scroll-margin 5)        ;; Use scroll margin
+    :hook
+    (prog-mode . corfu-mode)
+    (shell-mode . corfu-mode)
+    (eshell-mode . corfu-mode))
 #+end_src
 
 ** Default Text Scale
