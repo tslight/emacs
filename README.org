@@ -15,7 +15,7 @@ A fairly standard [[https://en.wikipedia.org/wiki/Literate_programming][literate
 To install, evaluate the code block below with ~C-c C-c~ in an Emacs buffer:
 
 #+begin_src emacs-lisp :tangle no
-  (org-babel-tangle) (load init-file) (ts-ensure-byte-compiled-init)
+  (org-babel-tangle) (load init-file)
 #+end_src
 
 This will tangle all the code blocks below into =~/.emacs.d/init.el=, compile
@@ -274,7 +274,6 @@ This variables are added to the end of this file.
 #+begin_src emacs-lisp
   (setq safe-local-variable-values
         '((eval setq org-confirm-babel-evaluate 'nil)
-          (eval setq early-init (expand-file-name "early-init.el" user-emacs-directory))
           (eval setq init-file (expand-file-name "init.el" user-emacs-directory))
           (eval add-hook 'after-save-hook 'org-html-export-to-html nil t)
           (eval add-hook 'after-save-hook 'org-latex-export-to-pdf nil t)
@@ -295,14 +294,7 @@ This variables are added to the end of this file.
   (setq scroll-preserve-screen-position t)
 #+end_src
 
-#+begin_quote
-When enabled, and if your mouse supports it, you can scroll the display up or
-down at pixel resolution, according to what your mouse wheel reports. Unlike
-pixel-scroll-mode, this mode scrolls the display pixel-by-pixel, as opposed to
-only animating line-by-line scrolls.
-#+end_quote
-
-#+begin_src emacs-lisp :tangle (if (version< emacs-version "29") "no" init-file)
+#+begin_src emacs-lisp
   (pixel-scroll-precision-mode)
 #+end_src
 
@@ -999,69 +991,6 @@ Very useful for copying ssh public keys...
   (global-set-key (kbd "C-c f w") 'ts-copy-file-name-to-clipboard)
 #+end_src
 
-* Miscellaneous
-** Byte compile and load on save
-
-#+begin_src emacs-lisp
-  (defun ts-byte-compile-and-load ()
-    "Byte compile Emacs Lisp files and load if ARG."
-    (when (and buffer-file-name
-               (equal (file-name-extension buffer-file-name) "el")
-               (equal major-mode 'emacs-lisp-mode))
-      (byte-compile-file buffer-file-name)
-      (message "Compiled %s :-)" buffer-file-name)
-      (load (file-name-sans-extension buffer-file-name))
-      (message "Loaded %s :-)" buffer-file-name)))
-
-  (add-hook 'after-save-hook 'ts-byte-compile-and-load)
-#+end_src
-
-** Ensure init files are byte compiled
-
-This block will byte compile ~early-init.el~ and ~init.el~ if an existing
-~.elc~ file is not up to date with their contents.
-
-#+begin_src emacs-lisp
-  (defun ts-ensure-byte-compiled-init ()
-    "Run `byte-recompile-file' on config files with 'nil' FORCE and ARG 0.
-  This means we don't compile if .elc is up to date but we always
-  create a new .elc file if it doesn't already exist."
-    (autoload 'byte-recompile-file "bytecomp")
-    (if (file-readable-p (expand-file-name "early-init.el" user-emacs-directory))
-        (byte-recompile-file (expand-file-name "early-init.el" user-emacs-directory) 'nil 0))
-    (byte-recompile-file (expand-file-name "init.el" user-emacs-directory) 'nil 0))
-
-  (add-hook 'after-init-hook 'ts-ensure-byte-compiled-init)
-#+end_src
-
-** Recompile config
-
-#+begin_src emacs-lisp
-  (defvar ts-files-to-recompile '("early-init.el" "init.el")
-    "Files under `user-emacs-directory' that we use for configuration.")
-
-  (defun ts-recompile-config ()
-    "Recompile everything in Emacs configuration."
-    (interactive)
-    (mapc (lambda (file)
-            (let ((path (expand-file-name file user-emacs-directory)))
-              (when (file-readable-p path)
-                (byte-recompile-file path t 0)
-                (load (file-name-sans-extension path))
-                (message "Re-compiled & loaded %s :-)" path))))
-          ts-files-to-recompile))
-#+end_src
-
-** Tangle config
-
-#+begin_src emacs-lisp
-  (defun ts-tangle-config ()
-    "Re-tangle my org mode configuration file."
-    (interactive)
-    (autoload 'org-babel-tangle-file "ob-tangle")
-    (org-babel-tangle-file "~/src/emacs/README.org"))
-#+end_src
-
 * Window Functions
 ** Better scrolling of other windows
 
@@ -1466,7 +1395,8 @@ https://microsoft.github.io/language-server-protocol/
     (setq erc-keywords '("knowayback"))
     (setq erc-nick "knowayback")
     (setq erc-prompt-for-password t)
-    (setq erc-track-enable-keybindings t))
+    (setq erc-track-enable-keybindings t)
+    :commands (erc))
 #+end_src
 
 ** Eshell
@@ -2001,66 +1931,15 @@ Don't bother using this on Windows as I can rather be bothered to install
 #+end_src
 
 ** Term
-*** ANSI Term launcher
 
 #+begin_src emacs-lisp
-  (defun ts-ansi-term ()
-    "Opens shell from $SHELL environmental variable in `ansi-term'."
-    (interactive)
-    ;; https://emacs.stackexchange.com/a/48481
-    (let ((switch-to-buffer-obey-display-actions))
-      (ansi-term (getenv "SHELL"))))
-
-  (global-set-key (kbd "C-c tt") 'ts-ansi-term)
-
-  (defun ts-ansi-term-other-window ()
-    "Opens default $SHELL `ansi-term' in another window."
-    (interactive)
-    (split-window-sensibly)
-    (other-window 1)
-    (ts-ansi-term))
-
-  (global-set-key (kbd "C-c 4 tt") 'ts-ansi-term-other-window)
-#+end_src
-
-*** Set term coding system to UTF-8
-
-#+begin_src emacs-lisp
-  (add-hook 'term-exec (lambda () (set-process-coding-system 'utf-8-unix 'utf-8-unix)))
-#+end_src
-
-*** Switch to ANSI Term
-
-#+begin_src emacs-lisp
-  (defun ts-switch-to-ansi-term ()
-    "Open an `ansi-term' if it doesn't already exist.
-  Otherwise switch to current one."
-    (interactive)
-    (if (get-buffer "*ansi-term*")
-        (switch-to-buffer "*ansi-term*")
-      (ansi-term (getenv "SHELL"))))
-
-  (global-set-key (kbd "C-c ts") 'ts-switch-to-ansi-term)
-
-  (defun ts-switch-to-ansi-term-other-window()
-    "Does what it states on the tin!"
-    (interactive)
-    (split-window-sensibly)
-    (other-window 1)
-    (ts-switch-to-ansi-term))
-
-  (global-set-key (kbd "C-c 4 ts") 'ts-switch-to-ansi-term-other-window)
-#+end_src
-
-*** Term Advise
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'term
+  (use-package term
+    :config
     (defadvice term-handle-exit (after term-kill-buffer-on-exit activate)
       "Kill term when shell exits."
       (kill-buffer))
     (setq term-buffer-maximum-size 200000)
-    (message "Lazy loaded term :-)"))
+    :bind ("C-c t" . ansi-term))
 #+end_src
 
 ** Tramp
@@ -2127,19 +2006,17 @@ C-q.
 ** Windmove
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "C-c w b") 'windmove-left)
-  (global-set-key (kbd "C-c w f") 'windmove-right)
-  (global-set-key (kbd "C-c w p") 'windmove-up)
-  (global-set-key (kbd "C-c w n") 'windmove-down)
-
-  (global-set-key (kbd "C-c w C-b") 'windmove-swap-states-left)
-  (global-set-key (kbd "C-c w C-f") 'windmove-swap-states-right)
-  (global-set-key (kbd "C-c w C-p") 'windmove-swap-states-up)
-  (global-set-key (kbd "C-c w C-n") 'windmove-swap-states-down)
-
-  (with-eval-after-load 'windmove
-    (setq windmove-wrap-around t)
-    (message "Lazy loaded windmove :-)"))
+  (use-package windmove
+    :config (setq windmove-wrap-around t)
+    :bind
+    ("C-c w b" . windmove-left)
+    ("C-c w f" . windmove-right)
+    ("C-c w p" . windmove-up)
+    ("C-c w n" . windmove-down)
+    ("C-c w C-b" . windmove-swap-states-left)
+    ("C-c w C-f" . windmove-swap-states-right)
+    ("C-c w C-p" . windmove-swap-states-up)
+    ("C-c w C-n" . windmove-swap-states-down))
 #+end_src
 
 ** Window Divider
@@ -2503,6 +2380,5 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 # Local Variables:
 # eval: (setq org-confirm-babel-evaluate 'nil)
 # eval: (setq init-file (expand-file-name "init.el" user-emacs-directory))
-# eval: (setq early-init (expand-file-name "early-init.el" user-emacs-directory))
 # eval: (add-hook 'after-save-hook 'org-babel-tangle nil t)
 # End:
