@@ -37,6 +37,12 @@ on it, so turn it on first.
 #+end_src
 
 * Settings
+** Auto-revert
+
+#+begin_src emacs-lisp
+  (add-hook 'after-init-hook 'global-auto-revert-mode) ;; reload if file changed on disk
+#+end_src
+
 ** Auto-save
 
 #+begin_src emacs-lisp
@@ -173,6 +179,28 @@ Only tangled on Windows.
 
 #+begin_src emacs-lisp
   (setq kill-do-not-save-duplicates t)
+#+end_src
+
+** Minibuffer
+*** Completion framework settings
+
+#+begin_src emacs-lisp
+  (setq completion-auto-help 'nil)
+  (setq completion-cycle-threshold 3)
+#+end_src
+
+*** Misc Minibuffer settings
+
+#+begin_src emacs-lisp
+  (setq enable-recursive-minibuffers t)
+  (setq file-name-shadow-mode 1)
+  (setq minibuffer-depth-indicate-mode 1)
+  (setq minibuffer-eldef-shorten-default t)
+  (setq minibuffer-electric-default-mode 1)
+  (setq read-answer-short t)
+  (setq read-buffer-completion-ignore-case t)
+  (setq read-file-name-completion-ignore-case t)
+  (setq resize-mini-windows t)
 #+end_src
 
 ** More extensive apropos
@@ -340,6 +368,20 @@ This variables are added to the end of this file.
 #+begin_src emacs-lisp
   (setq user-full-name "Toby Slight")
   (setq user-mail-address "tslight@pm.me")
+#+end_src
+
+** View mode
+
+Provide pager-like keybindings. Makes navigating read-only buffers a breeze.
+Move down and up with SPC and delete (backspace) or S-SPC, half a page down and
+up with d and u, and isearch with s.
+
+Prolific emacser Omar Antolin Camarena points out a built-in way to use
+view-mode in all read-only buffers, including ones you set read-only with C-x
+C-q.
+
+#+begin_src emacs-lisp
+  (setq view-read-only t)
 #+end_src
 
 ** Windows
@@ -642,6 +684,39 @@ Some handy functions to make aligning symbols less painful.
     "Force alignment commands to use spaces, not tabs."
     (let ((indent-tabs-mode nil))
       ad-do-it))
+#+end_src
+
+** Auto-fill
+
+This function only applies to comment blocks, comments, example blocks and
+paragraphs. Also, as a special case, re-align table when point is at one.
+
+#+begin_src emacs-lisp
+  (defun ts-fill-or-unfill ()
+    "Like `fill-paragraph', but unfill if used twice."
+    (interactive)
+    (let ((fill-column
+           (if (eq last-command 'ts-fill-or-unfill)
+               (progn (setq this-command nil)
+                      (point-max))
+             fill-column)))
+      (call-interactively #'fill-paragraph)))
+
+  (defun ts-unfill-region (beg end)
+    "Unfill the region from BEG to END.
+  Joining text paragraphs into a single logical line. This is
+  useful, e.g., for use with function `visual-line-mode'."
+    (interactive "*r")
+    (let ((fill-column (point-max)))
+      (fill-region beg end)))
+
+  (global-set-key [remap fill-paragraph] 'ts-fill-or-unfill)
+  (global-set-key (kbd "C-M-q") 'ts-unfill-region)
+
+  (setq-default fill-column 79)
+
+  (add-hook 'org-mode-hook 'auto-fill-mode)
+  (add-hook 'text-mode-hook 'auto-fill-mode)
 #+end_src
 
 ** Beginning of line
@@ -1157,43 +1232,6 @@ Make sure we show colors when we run commands with ~M-!~
              (ansi-color-apply-on-region (point-min) (point-max))))))
 #+end_src
 
-** Auto-fill
-
-#+begin_src emacs-lisp
-  (use-package auto-fill-mode
-    :config
-    (setq-default fill-column 79)
-    (defun ts-fill-or-unfill ()
-      "Like `fill-paragraph', but unfill if used twice."
-      (interactive)
-      (let ((fill-column
-             (if (eq last-command 'ts-fill-or-unfill)
-                 (progn (setq this-command nil)
-                        (point-max))
-               fill-column)))
-        (call-interactively #'fill-paragraph)))
-
-    (defun ts-unfill-region (beg end)
-      "Unfill the region from BEG to END.
-  Joining text paragraphs into a single logical line. This is
-  useful, e.g., for use with function `visual-line-mode'."
-      (interactive "*r")
-      (let ((fill-column (point-max)))
-        (fill-region beg end)))
-    :bind
-    ([remap fill-paragraph] . ts-fill-or-unfill)
-    ("C-M-q" . ts-unfill-region)
-    :hook
-    (org-mode . auto-fill-mode)
-    (text-mode . auto-fill-mode))
-#+end_src
-
-** Auto-revert
-
-#+begin_src emacs-lisp
-  (use-package auto-revert :hook (after-init . global-auto-revert-mode))
-#+end_src
-
 ** Column Number
 
 #+begin_src emacs-lisp
@@ -1616,38 +1654,6 @@ Don't bother using this on Windows as I can rather be bothered to install
   (add-hook 'sh-script-hook 'display-line-numbers-mode)
 #+end_src
 
-** Minibuffer
-*** Completion framework settings
-
-#+begin_src emacs-lisp
-  (setq completion-auto-help 'nil)
-  (setq completion-cycle-threshold 3)
-#+end_src
-
-*** Misc Minibuffer settings
-
-#+begin_src emacs-lisp
-  (setq enable-recursive-minibuffers t)
-  (setq file-name-shadow-mode 1)
-  (setq minibuffer-depth-indicate-mode 1)
-  (setq minibuffer-eldef-shorten-default t)
-  (setq minibuffer-electric-default-mode 1)
-  (setq read-answer-short t)
-  (setq read-buffer-completion-ignore-case t)
-  (setq read-file-name-completion-ignore-case t)
-  (setq resize-mini-windows t)
-#+end_src
-
-*** Save history mode
-
-#+begin_src emacs-lisp
-  (use-package savehist
-    :config
-    (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
-    (setq savehist-save-minibuffer-history 1)
-    :hook (after-init . savehist-mode))
-#+end_src
-
 ** Occur
 
 #+begin_src emacs-lisp
@@ -1711,27 +1717,21 @@ Don't bother using this on Windows as I can rather be bothered to install
        (sql . t)
        (sqlite . t)))
     (add-to-list 'org-latex-packages-alist '("" "minted"))
+    (add-to-list 'org-modules 'org-tempo t)
+    (setq org-structure-template-alist
+          (append org-structure-template-alist
+                  '(("cl" . "src common-lisp")
+                    ("el" . "src emacs-lisp")
+                    ("go" . "src go")
+                    ("ja" . "src java")
+                    ("js" . "src javascript")
+                    ("kr" . "src c")
+                    ("py" . "src python")
+                    ("sh" . "src shell")
+                    ("sq" . "src sql")
+                    ("tx" . "src text"))))
     :bind (:map org-mode-map ("C-c i" . org-goto))
     :hook (org-babel-post-tangle . emacs-lisp-byte-compile-and-load))
-#+end_src
-
-#+begin_src emacs-lisp
-  (use-package org-tempo
-    :after org
-    :commands (org-mode)
-    :custom
-    (org-structure-template-alist
-     (append org-structure-template-alist
-             '(("cl" . "src common-lisp")
-               ("el" . "src emacs-lisp")
-               ("go" . "src go")
-               ("ja" . "src java")
-               ("js" . "src javascript")
-               ("kr" . "src c")
-               ("py" . "src python")
-               ("sh" . "src shell")
-               ("sq" . "src sql")
-               ("tx" . "src text")))))
 #+end_src
 
 ** Pending delete
@@ -1873,6 +1873,16 @@ Don't bother using this on Windows as I can rather be bothered to install
     (after-init . recentf-mode))
 #+end_src
 
+** Save history mode
+
+#+begin_src emacs-lisp
+  (use-package savehist
+    :config
+    (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
+    (setq savehist-save-minibuffer-history 1)
+    :hook (after-init . savehist-mode))
+#+end_src
+
 ** Saveplace
 
 #+begin_src emacs-lisp
@@ -1892,29 +1902,27 @@ Don't bother using this on Windows as I can rather be bothered to install
 ** Shell Script
 
 #+begin_src emacs-lisp
-  (setq auto-mode-alist (append auto-mode-alist
-                                '(("\\.sh\\'" . shell-script-mode)
-                                  ("\\.bash.*\\'" . shell-script-mode)
-                                  ("\\.zsh.*\\'" . shell-script-mode)
-                                  ("\\.aliases\\'" . shell-script-mode)
-                                  ("\\.functions\\'" . shell-script-mode)
-                                  ("\\bashrc\\'" . shell-script-mode)
-                                  ("\\kshrc\\'" . shell-script-mode)
-                                  ("\\profile\\'" . shell-script-mode)
-                                  ("\\zshenv\\'" . shell-script-mode)
-                                  ("\\zprompt\\'" . shell-script-mode)
-                                  ("\\zshrc\\'" . shell-script-mode)
-                                  ("\\prompt_.*_setup\\'" . shell-script-mode))))
-
-  (setq interpreter-mode-alist (append interpreter-mode-alist
-                                       '(("bash" . shell-script-mode)
-                                         ("ksh" . shell-script-mode)
-                                         ("sh" . shell-script-mode)
-                                         ("zsh" . shell-script-mode))))
-
-  (with-eval-after-load 'sh-script
-    (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-    (message "Lazy loaded shell-script-mode :-)"))
+  (use-package sh-script
+    :mode
+    ("\\.sh\\'" . shell-script-mode)
+    ("\\.bash.*\\'" . shell-script-mode)
+    ("\\.zsh.*\\'" . shell-script-mode)
+    ("\\.aliases\\'" . shell-script-mode)
+    ("\\.functions\\'" . shell-script-mode)
+    ("\\bashrc\\'" . shell-script-mode)
+    ("\\kshrc\\'" . shell-script-mode)
+    ("\\profile\\'" . shell-script-mode)
+    ("\\zshenv\\'" . shell-script-mode)
+    ("\\zprompt\\'" . shell-script-mode)
+    ("\\zshrc\\'" . shell-script-mode)
+    ("\\prompt_.*_setup\\'" . shell-script-mode)
+    :interpreter
+    ("bash" . shell-script-mode)
+    ("ksh" . shell-script-mode)
+    ("sh" . shell-script-mode)
+    ("zsh" . shell-script-mode)
+    :hook
+    (after-save . executable-make-buffer-file-executable-if-script-p))
 #+end_src
 
 ** Show paren
@@ -1972,20 +1980,6 @@ Don't bother using this on Windows as I can rather be bothered to install
     (vc-make-backup-files t)
     (version-control t)
     :bind ("C-x v d" . vc-dir-root))
-#+end_src
-
-** View mode
-
-Provide pager-like keybindings. Makes navigating read-only buffers a breeze.
-Move down and up with SPC and delete (backspace) or S-SPC, half a page down and
-up with d and u, and isearch with s.
-
-Prolific emacser Omar Antolin Camarena points out a built-in way to use
-view-mode in all read-only buffers, including ones you set read-only with C-x
-C-q.
-
-#+begin_src emacs-lisp
-  (setq view-read-only t)
 #+end_src
 
 ** Whitespace
