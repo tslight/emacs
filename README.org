@@ -420,22 +420,22 @@ https://www.reddit.com/r/emacs/comments/l42oep/suppress_nativecomp_warnings_buff
 ** Buffers
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "C-x C-b") 'ibuffer)
+  (keymap-global-set "C-x C-b" 'ibuffer)
 #+end_src
 
 ** Editing
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "C-z") 'zap-up-to-char) ; suspend is still bound to C-x C-z
-  (global-set-key (kbd "M-z") 'zap-to-char)
+  (keymap-global-set "C-z" 'zap-up-to-char) ; suspend is still bound to C-x C-z
+  (keymap-global-set "M-z" 'zap-to-char)
 #+end_src
 
 Remap some default to saner options
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "M-;") 'comment-line)         ; comment-dwim by default
-  (global-set-key (kbd "C-M-;") 'comment-dwim)       ; unbound by default
-  (global-set-key (kbd "C-x C-;") 'comment-box)      ; comment-line by default
+  (keymap-global-set "M-;" 'comment-line)         ; comment-dwim by default
+  (keymap-global-set "C-M-;" 'comment-dwim)       ; unbound by default
+  (keymap-global-set "C-x C-;" 'comment-box)      ; comment-line by default
 #+end_src
 
 Always do what I mean!
@@ -449,30 +449,30 @@ Always do what I mean!
 ** Frames
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "C-<f10>") 'toggle-frame-maximized)
-  (global-set-key (kbd "C-<f11>") 'toggle-frame-fullscreen)
-  (global-set-key (kbd "C-s-f") 'toggle-frame-fullscreen)
-  (global-set-key (kbd "C-s-m") 'toggle-frame-maximized)
+  (keymap-global-set "C-<f10>" 'toggle-frame-maximized)
+  (keymap-global-set "C-<f11>" 'toggle-frame-fullscreen)
+  (keymap-global-set "C-s-f" 'toggle-frame-fullscreen)
+  (keymap-global-set "C-s-m" 'toggle-frame-maximized)
 #+end_src
 
 ** Menubar
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "S-<f10>") 'menu-bar-mode)
+  (keymap-global-set "S-<f10>" 'menu-bar-mode)
 #+end_src
 
 ** Special mode
 
 #+begin_src emacs-lisp
   ;; for help modes, and simple/special modes
-  (define-key special-mode-map "n" #'forward-button)
-  (define-key special-mode-map "p" #'backward-button)
-  (define-key special-mode-map "f" #'forward-button)
-  (define-key special-mode-map "b" #'backward-button)
-  (define-key special-mode-map "n" #'widget-forward)
-  (define-key special-mode-map "p" #'widget-backward)
-  (define-key special-mode-map "f" #'widget-forward)
-  (define-key special-mode-map "b" #'widget-backward)
+  (keymap-set special-mode-map "n" #'forward-button)
+  (keymap-set special-mode-map "p" #'backward-button)
+  (keymap-set special-mode-map "f" #'forward-button)
+  (keymap-set special-mode-map "b" #'backward-button)
+  (keymap-set special-mode-map "n" #'widget-forward)
+  (keymap-set special-mode-map "p" #'widget-backward)
+  (keymap-set special-mode-map "f" #'widget-forward)
+  (keymap-set special-mode-map "b" #'widget-backward)
 #+end_src
 
 * Theme/UI
@@ -555,7 +555,7 @@ Always do what I mean!
       (when (string-match "-\\(?:dos\\|mac\\)$" coding-str)
         (set-buffer-file-coding-system 'unix))))
 
-  (global-set-key (kbd "C-x RET u") 'ts-convert-to-unix-coding-system)
+  (keymap-global-set "C-x RET u" 'ts-convert-to-unix-coding-system)
 
   (defun ts-hide-dos-eol ()
     "Do not show ^M in files containing mixed UNIX and DOS line endings."
@@ -574,7 +574,7 @@ Always do what I mean!
     (interactive)
     (indent-region (point-min) (point-max)))
 
-  (global-set-key (kbd "M-i") 'ts-indent-buffer)
+  (keymap-global-set "M-i" 'ts-indent-buffer)
 #+end_src
 
 ** Kill this buffer
@@ -585,7 +585,7 @@ Always do what I mean!
     (interactive)
     (kill-buffer (current-buffer)))
 
-  (global-set-key (kbd "C-x k") 'ts-kill-this-buffer)
+  (keymap-global-set "C-x k" 'ts-kill-this-buffer)
 #+end_src
 
 ** Last buffer
@@ -596,7 +596,7 @@ Always do what I mean!
     (interactive)
     (switch-to-buffer (other-buffer (current-buffer) 1)))
 
-  (global-set-key (kbd "C-c b") 'ts-last-buffer)
+  (keymap-global-set "C-c b" 'ts-last-buffer)
 #+end_src
 
 ** Nuke buffers
@@ -612,7 +612,7 @@ Always do what I mean!
     (if current-prefix-arg
         (delete-other-windows)))
 
-  (global-set-key (kbd "C-c M-n") 'ts-nuke-buffers)
+  (keymap-global-set "C-c M-n" 'ts-nuke-buffers)
 #+end_src
 
 ** Remove stuff from a buffer
@@ -651,7 +651,7 @@ Always do what I mean!
     (interactive)
     (ts-remove-from-buffer "$"))
 
-  (global-set-key (kbd "C-c k") 'ts-remove-from-buffer)
+  (keymap-global-set "C-c k" 'ts-remove-from-buffer)
 #+end_src
 
 ** Save buffers silently
@@ -663,7 +663,7 @@ Always do what I mean!
     (save-some-buffers t)
     (message "Saved all buffers :-)"))
 
-  (global-set-key (kbd "C-c s") 'ts-save-buffers-silently)
+  (keymap-global-set "C-c s" 'ts-save-buffers-silently)
 #+end_src
 
 * Editing Functions
@@ -677,14 +677,14 @@ Some handy functions to make aligning symbols less painful.
     (interactive "r\nsEnter align symbol: ")
     (align-regexp begin end (concat "\\(\\s-*\\)" symbol) 1 1))
 
-  (global-set-key (kbd "C-c a") 'ts-align-symbol)
+  (keymap-global-set "C-c a" 'ts-align-symbol)
 
   (defun ts-align-numbers (begin end)
     "Align numbers in region (between BEGIN and END)."
     (interactive "r")
     (ts-align-symbol begin end "[0-9]+"))
 
-  (global-set-key (kbd "C-c #") 'ts-align-numbers)
+  (keymap-global-set "C-c #" 'ts-align-numbers)
 
   (defadvice align-regexp (around align-regexp-with-spaces activate)
     "Force alignment commands to use spaces, not tabs."
@@ -717,7 +717,7 @@ paragraphs. Also, as a special case, re-align table when point is at one.
       (fill-region beg end)))
 
   (global-set-key [remap fill-paragraph] 'ts-fill-or-unfill)
-  (global-set-key (kbd "C-M-q") 'ts-unfill-region)
+  (keymap-global-set "C-M-q" 'ts-unfill-region)
 
   (setq-default fill-column 79)
 
@@ -787,8 +787,8 @@ Increment or decrement numbers at the point.
                            (lambda () (interactive) (ts-change-number (abs inc))))))
            map)))))
 
-  (global-set-key (kbd "C-c +") 'ts-change-number)
-  (global-set-key (kbd "C-c -") 'ts-change-number)
+  (keymap-global-set "C-c +" 'ts-change-number)
+  (keymap-global-set "C-c -" 'ts-change-number)
 #+end_src
 
 ** Delete inside delimiters
@@ -808,7 +808,7 @@ Increment or decrement numbers at the point.
           (kill-region (- lstart 1) (+ (point) 1))
         (kill-region lstart (point)))))
 
-  (global-set-key (kbd "C-c d") 'ts-delete-inside-delimiters)
+  (keymap-global-set "C-c d" 'ts-delete-inside-delimiters)
 #+end_src
 
 ** Generate a numbered list
@@ -868,7 +868,7 @@ Increment or decrement numbers at the point.
     (kill-ring-save (point-min) (point-max))
     (message "Saved whole buffer to kill ring :-)"))
 
-  (global-set-key (kbd "C-c h") 'ts-kill-ring-save-whole-buffer)
+  (keymap-global-set "C-c h" 'ts-kill-ring-save-whole-buffer)
 #+end_src
 
 ** Moving lines
@@ -887,8 +887,8 @@ Increment or decrement numbers at the point.
     (interactive)
     (save-column (forward-line 1) (transpose-lines 1) (forward-line -1)))
 
-  (global-set-key (kbd "M-p") 'move-line-up)
-  (global-set-key (kbd "M-n") 'move-line-down)
+  (keymap-global-set "M-p" 'move-line-up)
+  (keymap-global-set "M-n" 'move-line-down)
 #+end_src
 
 ** Sort Words
@@ -926,7 +926,7 @@ Increment or decrement numbers at the point.
       (goto-char begin)
       (insert open)))
 
-  (global-set-key (kbd "M-s M-s") 'ts-surround)
+  (keymap-global-set "M-s M-s" 'ts-surround)
 #+end_src
 
 ** XML pretty print
@@ -953,7 +953,7 @@ Increment or decrement numbers at the point.
       (delete-file (buffer-file-name) t)
       (kill-this-buffer)))
 
-  (global-set-key (kbd "C-c f d") 'ts-delete-this-file)
+  (keymap-global-set "C-c f d" 'ts-delete-this-file)
 #+end_src
 
 ** Make backup of current file
@@ -994,7 +994,7 @@ Increment or decrement numbers at the point.
       (progn
         (ts-make-backup))))
 
-  (global-set-key (kbd "C-c f b") 'ts-make-backup-and-save)
+  (keymap-global-set "C-c f b" 'ts-make-backup-and-save)
 #+end_src
 
 ** Open current file as root
@@ -1008,7 +1008,7 @@ Increment or decrement numbers at the point.
                            (read-file-name "Find file (as root): ")))
       (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 
-  (global-set-key (kbd "C-c f s") 'ts-sudoedit)
+  (keymap-global-set "C-c f s" 'ts-sudoedit)
 #+end_src
 
 ** Rename file and buffer
@@ -1029,7 +1029,7 @@ Increment or decrement numbers at the point.
           (rename-buffer new-name)
           (set-visited-file-name new-name)))))
 
-  (global-set-key (kbd "C-c f r") 'ts-rename-this-file-and-buffer)
+  (keymap-global-set "C-c f r" 'ts-rename-this-file-and-buffer)
 #+end_src
 
 ** Yank current file contents to kill ring
@@ -1044,7 +1044,7 @@ Very useful for copying ssh public keys...
       (kill-new (buffer-substring-no-properties (point-min) (point-max))))
     (message "Copied contents of %s to the clipboard" file))
 
-  (global-set-key (kbd "C-c f h") 'ts-copy-file-contents-to-clipboard)
+  (keymap-global-set "C-c f h" 'ts-copy-file-contents-to-clipboard)
 #+end_src
 
 ** Yank current file name to kill ring
@@ -1067,7 +1067,7 @@ Very useful for copying ssh public keys...
         (kill-new filename)
         (message "Copied '%s' to the clipboard." filename))))
 
-  (global-set-key (kbd "C-c f w") 'ts-copy-file-name-to-clipboard)
+  (keymap-global-set "C-c f w" 'ts-copy-file-name-to-clipboard)
 #+end_src
 
 * Window Functions
@@ -1098,7 +1098,7 @@ This is better, since I don't need to send prefix to ~scroll-other-window~.
       (kill-this-buffer)
       (select-window current-window)))
 
-  (global-set-key (kbd "C-c w k") 'ts-kill-buffer-other-window)
+  (keymap-global-set "C-c w k" 'ts-kill-buffer-other-window)
 #+end_src
 
 ** Switch to the previous window
@@ -1111,7 +1111,7 @@ This is basically ~other-window~ backwards.
     (interactive)
     (other-window -1))
 
-  (global-set-key (kbd "C-x O") 'ts-prev-window)
+  (keymap-global-set "C-x O" 'ts-prev-window)
 #+end_src
 
 ** Toggle focus to last window
@@ -1127,7 +1127,7 @@ This is basically ~other-window~ backwards.
         (select-frame frame)
         (select-window win))))
 
-  (global-set-key (kbd "C-c w w") 'ts-last-window)
+  (keymap-global-set "C-c w w" 'ts-last-window)
 #+end_src
 
 ** Toggle maximize window
@@ -1142,7 +1142,7 @@ This is basically ~other-window~ backwards.
         (window-configuration-to-register '_)
         (delete-other-windows))))
 
-  (global-set-key (kbd "C-c z") 'ts-toggle-maximize-window)
+  (keymap-global-set "C-c z" 'ts-toggle-maximize-window)
 #+end_src
 
 ** Toggle vertical -> horizontal splits
@@ -1178,7 +1178,7 @@ This is basically ~other-window~ backwards.
                    (windmove-find-other-window neighbour-dir)
                    other-buf))))))))
 
-  (global-set-key (kbd "C-c w s") 'ts-toggle-split)
+  (keymap-global-set "C-c w s" 'ts-toggle-split)
 #+end_src
 
 ** Transpose windows
@@ -1205,7 +1205,7 @@ This is basically ~other-window~ backwards.
               (set-window-buffer-start-and-point w1 b2 s2 p2)
               (set-window-buffer-start-and-point w2 b1 s1 p1)))))))
 
-  (define-key ctl-x-4-map "t" 'ts-transpose-windows)
+  (keymap-set ctl-x-4-map "t" 'ts-transpose-windows)
 #+end_src
 
 * Emacs Packages
@@ -1565,8 +1565,8 @@ Don't bother using this on Windows as I can rather be bothered to install
     (interactive)
     (ts-hippie-complete-with 'hippie-expand))
 
-  (global-set-key (kbd "M-/") 'hippie-expand)
-  (global-set-key (kbd "C-M-/") 'ts-hippie-expand-completing-read)
+  (keymap-global-set "M-/" 'hippie-expand)
+  (keymap-global-set "C-M-/" 'ts-hippie-expand-completing-read)
 #+end_src
 
 ** Icomplete
@@ -1658,7 +1658,7 @@ Don't bother using this on Windows as I can rather be bothered to install
 
 #+begin_src emacs-lisp
   (add-hook 'occur-mode-hook 'hl-line-mode)
-  (define-key occur-mode-map "t" 'toggle-truncate-lines)
+  (keymap-set occur-mode-map "t" 'toggle-truncate-lines)
 #+end_src
 
 ** Org
@@ -2037,8 +2037,8 @@ Don't bother using this on Windows as I can rather be bothered to install
 
 #+begin_src emacs-lisp
   (add-hook 'window-setup-hook 'winner-mode)
-  (global-set-key (kbd "C-c w u") 'winner-undo)
-  (global-set-key (kbd "C-c w r") 'winner-redo)
+  (keymap-global-set "C-c w u" 'winner-undo)
+  (keymap-global-set "C-c w r" 'winner-redo)
 #+end_src
 
 * MELPA Packages
