@@ -1969,8 +1969,8 @@ I like to split up my "vanilla" Emacs configuration and custom functions from
 the customisations provided by third party libraries.
 
 If you want to go for a more vanilla setup, just prefix the ~COMMENT~ keyword
-to the tile above (or press =C-c ;= whilst under this heading), and re-tangle
-the file.
+to the tile above (or press =C-c ;= whilst under this heading), re-tangle and
+re-load the file, by simply saving it.
 
 This way it makes it very easy to run a semi-stock Emacs without ~package.el~
 or any third party libraries, but still have some saner defaults and some extra
