@@ -1694,18 +1694,6 @@ Don't bother using this on Windows as I can rather be bothered to install
     (org-src-fontify-natively t)
     (org-src-tab-acts-natively t)
     (org-src-window-setup 'current-window)
-    (org-modules '(org-tempo))
-    (org-structure-template-alist (append org-structure-template-alist
-                                          '(("cl" . "src common-lisp")
-                                            ("el" . "src emacs-lisp")
-                                            ("go" . "src go")
-                                            ("ja" . "src java")
-                                            ("js" . "src javascript")
-                                            ("kr" . "src c")
-                                            ("py" . "src python")
-                                            ("sh" . "src shell")
-                                            ("sq" . "src sql")
-                                            ("tx" . "src text"))))
     :config
     (org-babel-do-load-languages
      'org-babel-load-languages
@@ -1727,6 +1715,25 @@ Don't bother using this on Windows as I can rather be bothered to install
     :hook (org-babel-post-tangle . emacs-lisp-byte-compile-and-load))
 #+end_src
 
+#+begin_src emacs-lisp
+  (use-package org-tempo
+    :after org
+    :commands (org-mode)
+    :custom
+    (org-structure-template-alist
+     (append org-structure-template-alist
+             '(("cl" . "src common-lisp")
+               ("el" . "src emacs-lisp")
+               ("go" . "src go")
+               ("ja" . "src java")
+               ("js" . "src javascript")
+               ("kr" . "src c")
+               ("py" . "src python")
+               ("sh" . "src shell")
+               ("sq" . "src sql")
+               ("tx" . "src text")))))
+#+end_src
+
 ** Pending delete
 
 #+begin_src emacs-lisp
@@ -1746,7 +1753,6 @@ Don't bother using this on Windows as I can rather be bothered to install
 #+begin_src emacs-lisp
   (use-package project
     :custom
-    (ts-project-roots '("~"))
     (project-switch-commands
      '((?b "Buffer" project-switch-to-buffer)
        (?c "Compile" project-compile)
@@ -1759,6 +1765,7 @@ Don't bother using this on Windows as I can rather be bothered to install
        (?s "Search" project-search)
        (?v "VC dir" project-vc-dir)))
     :config
+    (setq ts-project-roots '("~"))
     (defun ts-project--git-repo-p (directory)
       "Return non-nil if there is a git repository in DIRECTORY."
       (and
@@ -2101,9 +2108,9 @@ functionality.
 
 #+begin_src emacs-lisp
   (use-package corfu :ensure
-    ;; :custom
-    ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-    ;; (corfu-auto t)                 ;; Enable auto completion
+    :custom
+    (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+    (corfu-auto t)                 ;; Enable auto completion
     ;; (corfu-separator ?\s)          ;; Orderless field separator
     ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
     ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
