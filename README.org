@@ -254,7 +254,7 @@ permissions to be compiled, for them you can run
 
 ** Passwords
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
   (setq password-cache t) ; enable password caching
   (setq password-cache-expiry 3600) ; for one hour (time in secs)
 #+end_src
@@ -615,7 +615,7 @@ Always do what I mean!
   (keymap-global-set "C-c M-n" 'ts-nuke-buffers)
 #+end_src
 
-** Remove stuff from a buffer
+** Remove from buffer
 
 #+begin_src emacs-lisp
   (defun ts-remove-from-buffer (string)
@@ -1817,7 +1817,7 @@ Don't bother using this on Windows as I can rather be bothered to install
 ** Semantic
 
 #+begin_src emacs-lisp
-  (add-hook 'prog-mode-hook 'semantic-mode)
+  ;; (add-hook 'prog-mode-hook 'semantic-mode)
   ;; https://github.com/abo-abo/lispy/issues/473
   (advice-add 'semantic-idle-scheduler-function :around #'ignore)
 #+end_src
@@ -1856,12 +1856,6 @@ Don't bother using this on Windows as I can rather be bothered to install
     (show-paren-when-point-in-periphery t)
     (show-paren-when-point-inside-paren t)
     :hook (after-init . show-paren-mode))
-#+end_src
-
-** Size Indication
-
-#+begin_src emacs-lisp :tangle no
-  (add-hook 'after-init-hook 'size-indication-mode)
 #+end_src
 
 ** Subword
