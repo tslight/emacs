@@ -741,56 +741,6 @@ paragraphs. Also, as a special case, re-align table when point is at one.
   (global-set-key [remap move-beginning-of-line] 'ts-move-beginning-of-line)
 #+end_src
 
-** Change numbers
-
-Increment or decrement numbers at the point.
-
-#+begin_src emacs-lisp
-  (defun ts--change-number (&optional arg)
-    "Increment the number forward from point by 'arg'."
-    (interactive "p*")
-    (save-excursion
-      (save-match-data
-        (let (inc-by field-width answer)
-          (setq inc-by (if arg arg 1))
-          (skip-chars-backward "0123456789")
-          (when (re-search-forward "[0-9]+" nil t)
-            (setq field-width (- (match-end 0) (match-beginning 0)))
-            (setq answer (+ (string-to-number (match-string 0) 10) inc-by))
-            (when (< answer 0)
-              (setq answer (+ (expt 10 field-width) answer)))
-            (replace-match (format (concat "%0" (int-to-string field-width) "d")
-                                   answer)))))))
-
-  (defun ts-change-number (inc)
-    "Adjust the height of the default face by INC.
-
-  INC may be passed as a numeric prefix argument."
-    (interactive "p")
-    (let ((ev last-command-event)
-          (echo-keystrokes nil))
-      (let* ((base (event-basic-type ev))
-             (step
-              (pcase base
-                ((or ?+ ?=) inc)
-                (?- (- inc))
-                (?0 0)
-                (_ inc))))
-        (ts--change-number step)
-        ;; (unless (zerop step)
-        (message "Use +,-,0 for further adjustment")
-        (set-transient-map
-         (let ((map (make-sparse-keymap)))
-           (dolist (mods '(() (control)))
-             (dolist (key '(?- ?+ ?= ?0)) ;; = is often unshifted +.
-               (define-key map (vector (append mods (list key)))
-                           (lambda () (interactive) (ts-change-number (abs inc))))))
-           map)))))
-
-  (keymap-global-set "C-c +" 'ts-change-number)
-  (keymap-global-set "C-c -" 'ts-change-number)
-#+end_src
-
 ** Delete inside delimiters
 
 #+begin_src emacs-lisp
