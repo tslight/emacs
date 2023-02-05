@@ -10,19 +10,24 @@
 #+EXPORT_FILE_NAME: index
 #+SETUPFILE: ./theme-readtheorg.setup
 
-A fairly standard [[https://en.wikipedia.org/wiki/Literate_programming][literate]] Emacs configuration using [[https://orgmode.org/][Org mode]]. *Emacs 29+ ONLY*.
+A fairly standard, vanilla & lightweight [[https://en.wikipedia.org/wiki/Literate_programming][literate]] *Emacs* configuration using
+[[https://orgmode.org/][Org mode]] & [[https://github.com/jwiegley/use-package#readme][Use Package]].
 
-To install, evaluate the code block below with ~C-c C-c~ in an Emacs buffer:
+*N.B. Emacs 29+ ONLY!*
+
+To install, open this file in *Emacs 29+* & evaluate the code block below, by
+placing the cursor in between the =#+begin_src= and =#+end_src= lines and then
+pressing =C-c C-c=.
 
 #+begin_src emacs-lisp :tangle no
   (org-babel-tangle) (load init-file)
 #+end_src
 
 This will tangle all the code blocks below into =~/.emacs.d/init.el=, compile
-that file and load it, installing a [[*MELPA Packages][plethora of packages]] along the way.
+that file into =~/.emacs.d/init.elc=, and then evaluate the resulting bytecode.
 
-Be sure to back up your current =~/.emacs.d= with something like ~mv
-~/.emacs.d{,.bak}~.
+Be sure to back up your current =~/.emacs.d= with something like =mv
+~/.emacs.d{,.bak}=, if there's anything you value in it.
 
 * Use Package
 
