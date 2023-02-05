@@ -97,6 +97,12 @@ on it, so turn it on first.
   (setq-default tab-always-indent 'complete)
 #+end_src
 
+** Column Number
+
+#+begin_src emacs-lisp
+  (add-hook 'after-init-hook 'column-number-mode)
+#+end_src
+
 ** Compilation Scroll Output
 
 Place point after complilation error
@@ -1230,12 +1236,6 @@ Make sure we show colors when we run commands with ~M-!~
            (string= (buffer-name buf) "*Shell Command Output*")
            (with-current-buffer buf
              (ansi-color-apply-on-region (point-min) (point-max))))))
-#+end_src
-
-** Column Number
-
-#+begin_src emacs-lisp
-  (use-package column-number-mode :hook (after-init . column-number-mode))
 #+end_src
 
 ** Dabbrev
