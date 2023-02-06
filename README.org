@@ -1493,8 +1493,8 @@ Don't bother using this on Windows as I can rather be bothered to install
     (interactive)
     (ts-hippie-complete-with 'hippie-expand))
 
-  (keymap-global-set "M-/" 'hippie-expand)
-  (keymap-global-set "C-M-/" 'ts-hippie-expand-completing-read)
+  (keymap-global-set "C-M-/" 'hippie-expand)
+  (keymap-global-set "M-/" 'ts-hippie-expand-completing-read)
 #+end_src
 
 ** Icomplete
