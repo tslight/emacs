@@ -1408,7 +1408,12 @@ https://microsoft.github.io/language-server-protocol/
 ** Flymake
 
 #+begin_src emacs-lisp
-  (add-hook 'prog-mode-hook 'flymake-mode)
+  (use-package flymake-mode
+    :hook
+    (prog-mode . flymake-mode)
+    (json-mode . flymake-mode)
+    (yaml-mode . flymake-mode)
+    (shell-script-mode . flymake-mode))
 #+end_src
 
 ** Flyspell
