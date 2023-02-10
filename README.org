@@ -426,6 +426,7 @@ https://www.reddit.com/r/emacs/comments/l42oep/suppress_nativecomp_warnings_buff
 
 #+begin_src emacs-lisp
   (keymap-global-set "C-x C-b" 'ibuffer)
+  (keymap-global-set "C-c f r" 'rename-visited-file)
 #+end_src
 
 ** Editing
@@ -964,27 +965,6 @@ paragraphs. Also, as a special case, re-align table when point is at one.
       (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 
   (keymap-global-set "C-c f s" 'ts-sudoedit)
-#+end_src
-
-** Rename file and buffer
-
-#+begin_src emacs-lisp
-  (defun ts-rename-this-file-and-buffer (new-name)
-    "Renames both current buffer and file it's visiting to NEW-NAME."
-    (interactive "FNew name: ")
-    (let ((name (buffer-name))
-          (filename (buffer-file-name)))
-      (unless filename
-        (error "Buffer '%s' is not visiting a file!" name))
-      (if (get-buffer new-name)
-          (message "A buffer named '%s' already exists!" new-name)
-        (progn
-          (when (file-exists-p filename)
-            (rename-file filename new-name 1))
-          (rename-buffer new-name)
-          (set-visited-file-name new-name)))))
-
-  (keymap-global-set "C-c f r" 'ts-rename-this-file-and-buffer)
 #+end_src
 
 ** Yank current file contents to kill ring
