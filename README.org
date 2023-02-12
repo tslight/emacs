@@ -2134,25 +2134,14 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
     "\\.html?\\'"
     "\\.php?\\'"
     "\\.css?\\'"
-    :hook
-    (web-mode . js2-minor-mode)
+    :hook (web-mode . js2-minor-mode)
     :config
-    (setq web-mode-content-type "jsx"
-          web-mode-enable-auto-quoting nil
-          web-mode-code-indent-offset 2
+    (setq web-mode-code-indent-offset 2
           web-mode-markup-indent-offset 2
           web-mode-attr-indent-offset 2
           web-mode-css-indent-offset 2
           web-mode-code-indent-offset 2
-          web-mode-enable-auto-pairing t
-          web-mode-enable-css-colorization t
-          web-mode-enable-block-face t
-          web-mode-enable-part-face t
-          web-mode-enable-comment-keywords t)
-    (add-to-list 'web-mode-indentation-params '("lineup-args" . nil))
-    (add-to-list 'web-mode-indentation-params '("lineup-calls" . nil))
-    (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
-    (add-to-list 'web-mode-indentation-params '("lineup-ternary" . nil)))
+          web-mode-enable-auto-pairing t))
 #+end_src
 
 ** Which Key
