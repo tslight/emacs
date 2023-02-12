@@ -1347,6 +1347,8 @@ https://microsoft.github.io/language-server-protocol/
 
 #+begin_src emacs-lisp
   (use-package eshell
+    :custom
+    (shell-kill-buffer-on-exit t)
     :config
     (defun ts-eshell-prompt ()
       "Custom eshell prompt."
