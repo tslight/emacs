@@ -127,8 +127,6 @@ Place point after complilation error
 
 ** Emacsclient executable
 
-Only tangled on Windows.
-
 #+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) init-file "no")
   ;; https://emacs.stackexchange.com/a/31061
   (when (equal system-type 'windows-nt)
@@ -171,7 +169,7 @@ Only tangled on Windows.
 ** History
 
 #+begin_src emacs-lisp
-  (setq history-length t)
+  (setq history-length t) ; no truncation
   (setq history-delete-duplicates t)
 #+end_src
 
@@ -201,7 +199,7 @@ Only tangled on Windows.
 ** More extensive apropos
 
 #+begin_src emacs-lisp
-  (setq apropos-do-all t) ;; doesn't seem to be documented anywhere..
+  (setq apropos-do-all t)
 #+end_src
 
 ** More Messages
@@ -256,8 +254,6 @@ permissions to be compiled, for them you can run
 
 ** Prefer newer over compiled
 
-If init.elc is older, use newer ~init.el~.
-
 #+begin_src emacs-lisp
   (setq load-prefer-newer t) ;; if init.elc is older, use newer init.el
 #+end_src
@@ -301,8 +297,6 @@ This variables are added to the end of this file.
           (eval add-hook 'after-save-hook 'org-twbs-export-to-pdf nil t)
           (eval add-hook 'after-save-hook 'org-babel-tangle nil t)
           (eval add-hook 'after-save-hook (lambda nil (org-export-to-file 'html "index.html") (org-latex-export-to-pdf)) nil t)
-          (after-save-hook : (lambda nil (org-export-to-file 'html "index.html") (org-latex-export-to-pdf)))
-          (after-save-hook (lambda nil (org-export-to-file 'html "index.html") (org-latex-export-to-pdf)))
           (org-html-validation-link)))
 #+end_src
 
@@ -367,16 +361,8 @@ This variables are added to the end of this file.
 
 ** View mode
 
-Provide pager-like keybindings. Makes navigating read-only buffers a breeze.
-Move down and up with SPC and delete (backspace) or S-SPC, half a page down and
-up with d and u, and isearch with s.
-
-Prolific emacser Omar Antolin Camarena points out a built-in way to use
-view-mode in all read-only buffers, including ones you set read-only with C-x
-C-q.
-
 #+begin_src emacs-lisp
-  (setq view-read-only t)
+  (setq view-read-only t) ; scroll with SPC & S-SPC
 #+end_src
 
 ** Windows
@@ -618,8 +604,7 @@ Some handy functions to make aligning symbols less painful.
 
   (defadvice align-regexp (around align-regexp-with-spaces activate)
     "Force alignment commands to use spaces, not tabs."
-    (let ((indent-tabs-mode nil))
-      ad-do-it))
+    (let ((indent-tabs-mode nil)) ad-do-it))
 #+end_src
 
 ** Auto-fill
@@ -771,22 +756,6 @@ paragraphs. Also, as a special case, re-align table when point is at one.
   (keymap-global-set "M-n" 'move-line-down)
 #+end_src
 
-** Sort Words
-
-#+begin_src emacs-lisp
-  (defun ts-sort-words (reverse beg end)
-    "Sort words in region alphabetically, in REVERSE if negative.
-
-  Prefixed with negative \\[universal-argument], sorts in reverse.
-
-  The variable `sort-fold-case' determines whether alphabetic case
-  affects the sort order.
-
-  See `sort-regexp-fields'."
-    (interactive "*P\nr")
-    (sort-regexp-fields reverse "\\w+" "\\&" beg end))
-#+end_src
-
 ** XML pretty print
 
 #+begin_src emacs-lisp
@@ -926,8 +895,6 @@ Very useful for copying ssh public keys...
 #+end_src
 
 ** Switch to the previous window
-
-This is basically ~other-window~ backwards.
 
 #+begin_src emacs-lisp
   (defun ts-prev-window ()
