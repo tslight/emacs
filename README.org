@@ -1006,19 +1006,6 @@ Very useful for copying ssh public keys...
 #+end_src
 
 * Window Functions
-** Better scrolling of other windows
-
-This is better, since I don't need to send prefix to ~scroll-other-window~.
-
-#+begin_src emacs-lisp
-  (defun ts-scroll-other-window (arg)
-    "Scroll up other window when called with prefix."
-    (interactive "P")
-    (if arg (scroll-other-window-down) (scroll-other-window)))
-
-  (global-set-key [remap scroll-other-window] 'ts-scroll-other-window)
-#+end_src
-
 ** Kill buffer other window
 
 #+begin_src emacs-lisp
