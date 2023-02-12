@@ -193,25 +193,11 @@ Only tangled on Windows.
 #+end_src
 
 ** Minibuffer
-*** Completion framework settings
 
 #+begin_src emacs-lisp
-  (setq completion-auto-help 'nil)
-  (setq completion-cycle-threshold 3)
-#+end_src
-
-*** Misc Minibuffer settings
-
-#+begin_src emacs-lisp
-  (setq enable-recursive-minibuffers t)
-  (setq file-name-shadow-mode 1)
-  (setq minibuffer-depth-indicate-mode 1)
-  (setq minibuffer-eldef-shorten-default t)
-  (setq minibuffer-electric-default-mode 1)
   (setq read-answer-short t)
   (setq read-buffer-completion-ignore-case t)
   (setq read-file-name-completion-ignore-case t)
-  (setq resize-mini-windows t)
 #+end_src
 
 ** More extensive apropos
@@ -1419,6 +1405,10 @@ Don't bother using this on Windows as I can rather be bothered to install
 #+end_src
 
 ** Icomplete
+
+#+begin_src emacs-lisp
+  (setq completion-auto-help 'nil) ;; to stop duplicate completions
+#+end_src
 
 #+begin_src emacs-lisp
   (use-package icomplete
