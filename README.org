@@ -1914,26 +1914,7 @@ functionality.
 
 #+begin_src emacs-lisp
   (use-package ansible :ensure :hook (yaml-mode . ansible))
-#+end_src
-
-#+begin_src emacs-lisp
   (use-package ansible-doc :ensure :hook (yaml-mode . ansible-doc-mode))
-#+end_src
-
-** Async
-
-#+begin_src emacs-lisp
-  (use-package async :ensure :defer 5
-    :commands (async-byte-compile-file
-               async-bytecomp-package-mode)
-    :init
-    (unless (equal system-type 'windows-nt)
-      (setq async-bytecomp-allowed-packages '(all)))
-    :config
-    (if (equal system-type 'windows-nt)
-        (async-bytecomp-package-mode -1)
-      (async-bytecomp-package-mode 1))
-    :hook (dired-mode-hook . dired-async-mode))
 #+end_src
 
 ** Blacken
@@ -1947,15 +1928,8 @@ functionality.
 #+begin_src emacs-lisp
   (use-package corfu :ensure
     :custom
-    (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-    (corfu-auto t)                 ;; Enable auto completion
-    ;; (corfu-separator ?\s)          ;; Orderless field separator
-    ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-    ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
-    ;; (corfu-preview-current nil)    ;; Disable current candidate preview
-    ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
-    ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
-    ;; (corfu-scroll-margin 5)        ;; Use scroll margin
+    (corfu-cycle t)
+    (corfu-auto t)
     :hook
     (prog-mode . corfu-mode)
     (shell-mode . corfu-mode)
@@ -1970,24 +1944,6 @@ https://github.com/purcell/default-text-scale
 
 #+begin_src emacs-lisp
   (use-package default-text-scale :ensure :defer 7 :config (default-text-scale-mode))
-#+end_src
-
-** Diminish
-
-#+begin_src emacs-lisp
-  (use-package diminish :ensure :defer 2
-    :diminish abbrev-mode
-    :diminish auto-fill-function ;; wtf?!
-    :diminish eldoc-mode
-    :diminish hs-minor-mode
-    :diminish highlight-changes-mode
-    :diminish ts-key-mode
-    :diminish org-indent-mode
-    :diminish org-src-mode
-    :diminish subword-mode
-    :hook
-    (org-indent-mode . (lambda () (diminish 'org-indent-mode)))
-    (hs-minor-mode . (lambda () (diminish 'hs-minor-mode))))
 #+end_src
 
 ** Docker
@@ -2125,7 +2081,6 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 #+end_src
 
 ** Org
-*** htmlize
 
 #+begin_src emacs-lisp
   (use-package htmlize :ensure)
@@ -2206,22 +2161,10 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
   (use-package which-key :ensure :defer 5 :config (which-key-mode))
 #+end_src
 
-** Writeable Grep
-
-#+begin_src emacs-lisp
-  (use-package wgrep :ensure :commands wgrep
-    :bind (:map grep-mode-map
-                ("e" . wgrep-change-to-wgrep-mode)
-                ("C-x C-q" . wgrep-change-to-wgrep-mode)))
-#+end_src
-
 ** YAML
 
 #+begin_src emacs-lisp
   (use-package highlight-indentation :ensure)
-#+end_src
-
-#+begin_src emacs-lisp
   (use-package yaml-mode :ensure
     :hook
     (yaml-mode . highlight-indentation-mode)
@@ -2233,13 +2176,7 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 
 #+begin_src emacs-lisp
   (use-package yasnippet :ensure :hook (prog-mode . yas-minor-mode))
-#+end_src
-
-#+begin_src emacs-lisp
   (use-package yasnippet-classic-snippets :ensure)
-#+end_src
-
-#+begin_src emacs-lisp
   (use-package yasnippet-snippets :ensure)
 #+end_src
 
