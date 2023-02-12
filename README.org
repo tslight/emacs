@@ -1252,7 +1252,7 @@ Don't bother using this on Windows as I can rather be bothered to install
     (add-hook 'prog-mode-hook 'flyspell-prog-mode))
 #+end_src
 
-** Gnus
+** COMMENT Gnus
 
 #+begin_src emacs-lisp
   (use-package gnus
@@ -1267,8 +1267,7 @@ Don't bother using this on Windows as I can rather be bothered to install
     ;; (setq gnus-secondary-select-methods '((nntp "news.gnus.org")))
     (gnus-summary-thread-gathering-function 'gnus-gather-threads-by-subject)
     (gnus-thread-hide-subtree t)
-    (gnus-thread-ignore-subject t)
-    :commands (gnus))
+    (gnus-thread-ignore-subject t))
 #+end_src
 
 ** Hide/Show
