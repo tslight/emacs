@@ -2048,13 +2048,13 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
     "\\.php?\\'"
     "\\.css?\\'"
     :hook (web-mode . js2-minor-mode)
-    :config
-    (setq web-mode-code-indent-offset 2
-          web-mode-markup-indent-offset 2
-          web-mode-attr-indent-offset 2
-          web-mode-css-indent-offset 2
-          web-mode-code-indent-offset 2
-          web-mode-enable-auto-pairing t))
+    :custom
+    (web-mode-code-indent-offset 2)
+    (web-mode-markup-indent-offset 2)
+    (web-mode-attr-indent-offset 2)
+    (web-mode-css-indent-offset 2)
+    (web-mode-code-indent-offset 2)
+    (web-mode-enable-auto-pairing t))
 #+end_src
 
 ** Which Key
