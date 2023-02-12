@@ -10,10 +10,7 @@
 #+EXPORT_FILE_NAME: index
 #+SETUPFILE: ./theme-readtheorg.setup
 
-A fairly standard, vanilla & lightweight [[https://en.wikipedia.org/wiki/Literate_programming][literate]] *Emacs* configuration using
-[[https://orgmode.org/][Org mode]] & [[https://github.com/jwiegley/use-package#readme][Use Package]].
-
-*N.B. Emacs 29+ ONLY!*
+A lightweight, [[https://en.wikipedia.org/wiki/Literate_programming][literate]] *Emacs 29+ ONLY* configuration.
 
 To install, open this file in *Emacs 29+* & evaluate the code block below, by
 placing the cursor in between the =#+begin_src= and =#+end_src= lines and then
@@ -23,11 +20,11 @@ pressing =C-c C-c=.
   (org-babel-tangle) (load init-file)
 #+end_src
 
-This will tangle all the code blocks below into =~/.emacs.d/init.el=, compile
-that file into =~/.emacs.d/init.elc=, and then evaluate the resulting bytecode.
+This will "tangle" all the code blocks below into =~/.emacs.d/init.el= and then
+evaluate it.
 
 Be sure to back up your current =~/.emacs.d= with something like =mv
-~/.emacs.d{,.bak}=, if there's anything you value in it.
+~/.emacs.d{,.bak}=.
 
 * Use Package
 
@@ -195,6 +192,7 @@ Only tangled on Windows.
 ** Minibuffer
 
 #+begin_src emacs-lisp
+  (setq minibuffer-eldef-shorten-default t) ; help at point
   (setq read-answer-short t)
   (setq read-buffer-completion-ignore-case t)
   (setq read-file-name-completion-ignore-case t)
@@ -1019,12 +1017,6 @@ This is basically ~other-window~ backwards.
   (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 #+end_src
 
-#+begin_src emacs-lisp
-  (defun ts-display-ansi-colors ()
-    (interactive)
-    (ansi-color-apply-on-region (point-min) (point-max)))
-#+end_src
-
 Make sure we show colors when we run commands with ~M-!~
 
 #+begin_src emacs-lisp
@@ -1045,15 +1037,8 @@ Make sure we show colors when we run commands with ~M-!~
     (setq abbrev-file-name (concat user-emacs-directory "abbrevs"))
     (setq save-abbrevs 'silently)
     (setq abbrev-suggest t)
-    (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
-    (setq dabbrev-abbrev-skip-leading-regexp "[$*/=']")
-    (setq dabbrev-backward-only nil)
-    (setq dabbrev-case-distinction 'case-replace)
-    (setq dabbrev-case-fold-search t)
-    (setq dabbrev-case-replace 'case-replace)
     (setq dabbrev-check-other-buffers t)
-    (setq dabbrev-eliminate-newlines t)
-    (setq dabbrev-upcase-means-case-search t))
+    (setq dabbrev-eliminate-newlines t))
 #+end_src
 
 ** Dired
@@ -1214,7 +1199,6 @@ https://microsoft.github.io/language-server-protocol/
 
 #+begin_src emacs-lisp
   (add-hook 'after-init-hook 'electric-indent-mode)
-  ;; (add-hook 'text-mode-hook 'electric-quote-mode)
   (add-hook 'after-init-hook 'electric-pair-mode)
 #+end_src
 
@@ -1851,12 +1835,14 @@ I like to split up my "vanilla" Emacs configuration and custom functions from
 the customisations provided by third party libraries.
 
 If you want to go for a more vanilla setup, just prefix the ~COMMENT~ keyword
-to the tile above (or press =C-c ;= whilst under this heading), re-tangle and
-re-load the file, by simply saving it.
+to the tile above (or press =C-c ;= whilst under this heading).
+
+Then, re-tangle and re-load the file, by simply saving it.
 
 This way it makes it very easy to run a semi-stock Emacs without ~package.el~
-or any third party libraries, but still have some saner defaults and some extra
-functionality.
+or any third party libraries.
+
+Yet still have some saner defaults and some extra functionality.
 
 #+begin_src emacs-lisp
   ;; Allow loading from the package cache.
