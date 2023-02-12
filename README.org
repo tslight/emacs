@@ -426,6 +426,7 @@ https://www.reddit.com/r/emacs/comments/l42oep/suppress_nativecomp_warnings_buff
 
 #+begin_src emacs-lisp
   (keymap-global-set "C-x C-b" 'ibuffer)
+  (keymap-global-set "C-x k" 'kill-this-buffer)
   (keymap-global-set "C-c f r" 'rename-visited-file)
 #+end_src
 
@@ -581,17 +582,6 @@ Always do what I mean!
     (indent-region (point-min) (point-max)))
 
   (keymap-global-set "M-i" 'ts-indent-buffer)
-#+end_src
-
-** Kill this buffer
-
-#+begin_src emacs-lisp
-  (defun ts-kill-this-buffer ()
-    "Kill the current buffer - `kill-this-buffer' is unreliable."
-    (interactive)
-    (kill-buffer (current-buffer)))
-
-  (keymap-global-set "C-x k" 'ts-kill-this-buffer)
 #+end_src
 
 ** Last buffer
