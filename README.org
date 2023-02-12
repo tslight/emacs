@@ -626,27 +626,6 @@ Always do what I mean!
             (replace-match "" nil nil))
           (message (format "%d %s removed from buffer." count string))))))
 
-  (defun ts-remove-character-number (number)
-    "Remove all occurences of a control character NUMBER.
-    Excluding ^I (tabs) and ^J (newline)."
-    (if (and (>= number 0) (<= number 31)
-             (not (= number 9)) (not (= number 10)))
-        (let ((character (string number)))
-          (ts-remove-from-buffer character))))
-
-  (defun ts-remove-all-ctrl-characters ()
-    "Remove all occurences of all control characters.
-    Excluding ^I (tabs) and ^J (newlines)."
-    (interactive)
-    (mapcar (lambda (n)
-              (ts-remove-character-number n))
-            (number-sequence 0 31)))
-
-  (defun ts-remove-ctrl-m ()
-    "Remove all ^M occurrences from EOL in a buffer."
-    (interactive)
-    (ts-remove-from-buffer "$"))
-
   (keymap-global-set "C-c k" 'ts-remove-from-buffer)
 #+end_src
 
