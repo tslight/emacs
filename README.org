@@ -469,14 +469,6 @@ Always do what I mean!
 #+end_src
 
 * Theme/UI
-** Disable themes
-
-#+begin_src emacs-lisp
-  (defadvice load-theme (before theme-dont-propagate activate)
-    "Disable theme before loading new one."
-    (mapc #'disable-theme custom-enabled-themes))
-#+end_src
-
 ** Maximize on startup
 
 #+begin_src emacs-lisp
@@ -489,40 +481,19 @@ Always do what I mean!
 ** Setup Frame for Emacsclient
 
 #+begin_src emacs-lisp
-  (defun ts-setup-emacs-nw ()
-    "Change some settings to make Emacs more terminal friendly."
-    (xterm-mouse-mode 1)
-    (mouse-avoidance-mode 'banish)
-    (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
-    (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
-    (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
-    (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
-    (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1))))
-#+end_src
-
-#+begin_src emacs-lisp
-  (defun ts-setup-emacs-gui ()
-    "Change some settings that are only applicable to graphical Emacs."
-    (cond ((eq system-type 'windows-nt) (set-frame-font "Cascadia Mono 11" nil t))
-          ((eq system-type 'darwin) (set-frame-font "Monaco 12" nil t))
-          ((eq system-type 'gnu/linux) (set-frame-font "Monospace 11" nil t))
-          (t (set-frame-font "Monospace 11" nil t))))
-#+end_src
-
-#+begin_src emacs-lisp
   (defun ts-after-make-frame (frame)
     "Add custom settings after making the FRAME."
     (select-frame frame)
     (load-theme 'modus-vivendi)
     (if (display-graphic-p)
-        (ts-setup-emacs-gui)
-      (ts-setup-emacs-nw)))
-#+end_src
+        (cond ((eq system-type 'windows-nt) (set-frame-font "Cascadia Mono 11" nil t))
+              ((eq system-type 'darwin) (set-frame-font "Monaco 12" nil t))
+              ((eq system-type 'gnu/linux) (set-frame-font "Monospace 11" nil t))
+              (t (set-frame-font "Monospace 11" nil t)))))
 
-#+begin_src emacs-lisp
   (if (daemonp)
-      (add-hook 'after-make-frame-functions #'ts-after-make-frame(selected-frame))
-    (ts-after-make-frame(selected-frame)))
+      (add-hook 'after-make-frame-functions #'ts-after-make-frame (selected-frame))
+    (ts-after-make-frame (selected-frame)))
 #+end_src
 
 ** Turn off UI elements
