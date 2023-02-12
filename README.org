@@ -863,28 +863,6 @@ paragraphs. Also, as a special case, re-align table when point is at one.
     (sort-regexp-fields reverse "\\w+" "\\&" beg end))
 #+end_src
 
-** Surround stuff
-
-#+begin_src emacs-lisp
-  (defun ts-surround (begin end open close)
-    "Put OPEN at BEGIN and CLOSE at END of the region.
-  If you omit CLOSE, it will reuse OPEN, unless OPEN is a (,{,<,[,
-  in which case CLOSE will be the matching pair."
-    (interactive  "r\nsStart: \nsEnd: ")
-    (save-excursion
-      (goto-char end)
-      (cond ((string= open "(") (insert ")"))
-            ((string= open "[") (insert "]"))
-            ((string= open "<") (insert ">"))
-            ((string= open "{") (insert "}"))
-            ((string= open "") (insert open))
-            (t (insert close)))
-      (goto-char begin)
-      (insert open)))
-
-  (keymap-global-set "M-s M-s" 'ts-surround)
-#+end_src
-
 ** XML pretty print
 
 #+begin_src emacs-lisp
