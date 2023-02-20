@@ -113,6 +113,30 @@ Place point after complilation error
   (setq compilation-scroll-output 'first-error)
 #+end_src
 
+** Completions
+
+#+begin_src emacs-lisp
+  ;; I'm using icomplete for my completions, and so set this to nil to avoid
+  ;; duplicate completions. Set this to true if not using an alternative for
+  ;; completions. ie) icomplete, ido, vertico, ivy, helm, etc
+  (setq completion-auto-help nil)
+  (setq completion-show-help nil) ; refers to the msg at the top of the buffer
+  (setq completion-auto-wrap t)
+  (setq completion-auto-select nil) ; means focus doesn't go to the buffer
+  (setq completions-format 'one-column)
+  (setq completions-header-format nil) ; remove the rest of the header msg
+  (setq completions-max-height 20)
+  (setq completion-styles '(initials flex partial-completion substring basic))
+  (keymap-set completion-in-region-mode-map "C-p" #'minibuffer-previous-completion)
+  (keymap-set completion-in-region-mode-map "C-n" #'minibuffer-next-completion)
+#+end_src
+
+#+begin_src emacs-lisp
+  (setq read-answer-short t)
+  (setq read-buffer-completion-ignore-case t)
+  (setq read-file-name-completion-ignore-case t)
+#+end_src
+
 ** Customize settings file
 
 #+begin_src emacs-lisp
@@ -191,9 +215,8 @@ Place point after complilation error
 
 #+begin_src emacs-lisp
   (setq minibuffer-eldef-shorten-default t) ; help at point
-  (setq read-answer-short t)
-  (setq read-buffer-completion-ignore-case t)
-  (setq read-file-name-completion-ignore-case t)
+  (keymap-set minibuffer-local-map "C-p" #'minibuffer-previous-completion)
+  (keymap-set minibuffer-local-map "C-n" #'minibuffer-next-completion)
 #+end_src
 
 ** More extensive apropos
@@ -1328,29 +1351,17 @@ Don't bother using this on Windows as I can rather be bothered to install
 ** Icomplete
 
 #+begin_src emacs-lisp
-  (setq completion-auto-help 'nil) ;; to stop duplicate completions
-#+end_src
-
-#+begin_src emacs-lisp
   (use-package icomplete
+    :custom
+    (fido-vertical-mode t)
     :config
-    (icomplete-vertical-mode)
     (defun ts-icomplete-styles ()
       (setq-local completion-styles '(initials flex partial-completion substring basic)))
     :hook
-    (after-init . fido-mode)
     (icomplete-minibuffer-setup . ts-icomplete-styles)
-    :bind (:map icomplete-minibuffer-map
-                ("C-j" . icomplete-fido-exit)
-                ("M-j" . exit-minibuffer)
-                ("C-n" . icomplete-forward-completions)
-                ("C-p" . icomplete-backward-completions)
-                ("C-s" . icomplete-forward-completions)
-                ("C-r" . icomplete-backward-completions)
-                ("<up>" . icomplete-backward-completions)
-                ("<down>" . icomplete-forward-completions)
-                ("<left>" . icomplete-backward-completions)
-                ("<right>" . icomplete-forward-completions)))
+    :bind (:map icomplete-fido-mode-map
+                ("C-<tab>" . icomplete-force-complete-and-exit)
+                ("M-j" . exit-minibuffer)))
 #+end_src
 
 ** COMMENT Ido
