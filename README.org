@@ -2004,6 +2004,12 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
     :init (setq markdown-command "multimarkdown"))
 #+end_src
 
+** Nix
+
+#+begin_src emacs-lisp
+  (use-package nix-mode :ensure)
+#+end_src
+
 ** Org
 
 #+begin_src emacs-lisp
