@@ -1536,7 +1536,7 @@ Don't bother using this on Windows as I can rather be bothered to install
        (?s "Search" project-search)
        (?v "VC dir" project-vc-dir)))
     :config
-    (setq ts-project-roots '("~"))
+    (setq ts-project-roots '("~/src"))
     (defun ts-project--git-repo-p (directory)
       "Return non-nil if there is a git repository in DIRECTORY."
       (and
