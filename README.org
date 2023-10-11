@@ -390,9 +390,13 @@ This variables are added to the end of this file.
 
 ** Windows
 
+https://stackoverflow.com/a/7998271
+https://emacs.stackexchange.com/a/52721
+https://emacs.stackexchange.com/q/39034
+
 #+begin_src emacs-lisp
-  (setq split-width-threshold 200)
-  (setq split-height-threshold 100)
+  (setq split-width-threshold nil)
+  ;; (setq split-window-preferred-function 'split-window-really-sensibly)
   (setq auto-window-vscroll nil)
 #+end_src
 
