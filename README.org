@@ -1845,6 +1845,15 @@ Yet still have some saner defaults and some extra functionality.
   (use-package ansible-doc :ensure :hook (yaml-mode . ansible-doc-mode))
 #+end_src
 
+** Async
+
+#+begin_src emacs-lisp
+  (use-package async :ensure t)
+
+  (use-package dired-async :after (dired async)
+    :hook (dired-mode . dired-async-mode))
+#+end_src
+
 ** Blacken
 
 #+begin_src emacs-lisp
