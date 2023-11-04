@@ -1860,6 +1860,15 @@ Yet still have some saner defaults and some extra functionality.
   (use-package blacken :ensure :hook (python-mode . blacken-mode))
 #+end_src
 
+** Blamer
+
+#+begin_src emacs-lisp
+  (use-package blamer :ensure
+    :hook
+    (prog-mode . blamer-mode)
+    (org-mode . blamer-mode))
+#+end_src
+
 ** Corfu
 
 #+begin_src emacs-lisp
