@@ -1864,6 +1864,10 @@ Yet still have some saner defaults and some extra functionality.
 
 #+begin_src emacs-lisp
   (use-package blamer :ensure :defer 20
+    :custom
+    (blamer-idle-time 0.5)
+    (blamer-min-offset 20)
+    (blamer-max-commit-message-length 50)
     :config (global-blamer-mode 1))
 #+end_src
 
