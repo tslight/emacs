@@ -1863,10 +1863,8 @@ Yet still have some saner defaults and some extra functionality.
 ** Blamer
 
 #+begin_src emacs-lisp
-  (use-package blamer :ensure
-    :hook
-    (prog-mode . blamer-mode)
-    (org-mode . blamer-mode))
+  (use-package blamer :ensure :defer 20
+    :config (global-blamer-mode 1))
 #+end_src
 
 ** Corfu
