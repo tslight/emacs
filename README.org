@@ -1834,8 +1834,9 @@ Yet still have some saner defaults and some extra functionality.
   (setq package-native-compile t)
   ;; Setup up archives
   (setq package-archives
-        '(("melpa" . "https://melpa.org/packages/")
-          ("gnu" . "https://elpa.gnu.org/packages/")))
+        '(("gnu" . "https://elpa.gnu.org/packages/")
+          ("melpa" . "https://melpa.org/packages/")
+          ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 #+end_src
 
 ** Ansible
@@ -2032,6 +2033,7 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 
 #+begin_src emacs-lisp
   (use-package nix-mode :ensure)
+  (use-package nixpkgs-fmt :ensure :hook (nix-mode . nixpkgs-fmt-on-save))
 #+end_src
 
 ** Org
