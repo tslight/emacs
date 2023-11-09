@@ -1123,7 +1123,7 @@ Make sure we show colors when we run commands with ~M-!~
 ** Doc View
 
 #+begin_src emacs-lisp
-  (use-package doc-view-mode
+  (use-package doc-view-mode :defer 30
     :config
     (setq doc-view-continuous t)
     (setq doc-view-resolution 300))
