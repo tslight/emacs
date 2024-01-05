@@ -1576,9 +1576,10 @@ Don't bother using this on Windows as I can rather be bothered to install
     (defun ts-project--list-projects ()
       "Produce list of projects in `ts-project-roots'."
       (let ((cands (delete-dups (mapcan (lambda (directory)
-                                          (ts-project--git-repos-recursive
-                                           (expand-file-name directory)
-                                           10))
+                                          (if (file-directory-p directory)
+                                              (ts-project--git-repos-recursive
+                                               (expand-file-name directory)
+                                               10)))
                                         ts-project-roots))))
         ;; needs to be a list of lists
         (mapcar (lambda (d)
