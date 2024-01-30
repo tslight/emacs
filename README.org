@@ -1840,6 +1840,16 @@ Yet still have some saner defaults and some extra functionality.
           ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 #+end_src
 
+** Ace Window
+
+#+begin_src emacs-lisp
+  (use-package ace-window :ensure
+    :bind*
+    ("M-o" . ace-window)
+    :config
+    (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+#+end_src
+
 ** Ansible
 
 #+begin_src emacs-lisp
