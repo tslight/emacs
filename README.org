@@ -425,8 +425,9 @@ https://www.reddit.com/r/emacs/comments/l42oep/suppress_nativecomp_warnings_buff
 
 #+begin_src emacs-lisp
   (keymap-global-set "C-x C-b" 'ibuffer)
-  (keymap-global-set "C-x k" 'kill-this-buffer)
+  ;; (keymap-global-set "C-x k" 'kill-this-buffer)
   (keymap-global-set "C-c f r" 'rename-visited-file)
+  (bind-key "k" (lambda () (interactive) (kill-buffer (current-buffer))) ctl-x-map)
 #+end_src
 
 ** Editing
@@ -450,6 +451,10 @@ Always do what I mean!
   (global-set-key [remap capitalize-word] 'capitalize-dwim)
   (global-set-key [remap downcase-word] 'downcase-dwim)
   (global-set-key [remap upcase-word] 'upcase-dwim)
+#+end_src
+
+#+begin_src emacs-lisp
+  (keymap-global-set "C-c f p" 'find-file-at-point)
 #+end_src
 
 ** Frames
@@ -1919,7 +1924,7 @@ https://github.com/purcell/default-text-scale
 Don't tangle this block if ~system-type~ is ~windows-nt~.
 
 #+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) "no" init-file)
-  (use-package exec-path-from-shell :ensure :defer 10
+  (use-package exec-path-from-shell :ensure
     :unless (eq system-type 'windows-nt)
     :commands exec-path-from-shell-initialize
     :init
@@ -2042,23 +2047,10 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
     :init (setq markdown-command "multimarkdown"))
 #+end_src
 
-** Nix
-
-#+begin_src emacs-lisp
-  (use-package nix-mode :ensure)
-  (use-package nixpkgs-fmt :ensure :hook (nix-mode . nixpkgs-fmt-on-save))
-#+end_src
-
 ** Org
 
 #+begin_src emacs-lisp
   (use-package htmlize :ensure)
-#+end_src
-
-** Powershell
-
-#+begin_src emacs-lisp
-  (use-package powershell :ensure :mode (("\\.ps1\\'" . powershell-mode)))
 #+end_src
 
 ** Restclient
@@ -2067,24 +2059,10 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
   (use-package restclient :ensure)
 #+end_src
 
-** systemd
-
-Don't tangle this block if ~system-type~ is ~windows-nt~.
-
-#+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) "no" init-file)
-  (use-package systemd :ensure :unless (equal system-type 'windows-nt))
-#+end_src
-
 ** Terraform
 
 #+begin_src emacs-lisp
   (use-package terraform-mode :ensure)
-#+end_src
-
-** Trashed
-
-#+begin_src emacs-lisp
-  (use-package trashed :ensure :bind ("C-c f t" . trashed))
 #+end_src
 
 ** Web Mode
