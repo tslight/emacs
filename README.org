@@ -1512,8 +1512,13 @@ Don't bother using this on Windows as I can rather be bothered to install
                     ("sh" . "src shell")
                     ("sq" . "src sql")
                     ("tx" . "src text"))))
+    (defun ts-compile-and-load ()
+      (interactive)
+      (when (file-name-extension (buffer-file-name (current-buffer)) "el")
+        (byte-compile-file (buffer-file-name (current-buffer)))
+        (load (buffer-file-name (current-buffer)))))
     :bind (:map org-mode-map ("C-c i" . org-goto))
-    :hook (org-babel-post-tangle . emacs-lisp-byte-compile-and-load))
+    :hook (org-babel-post-tangle . ts-compile-and-load))
 #+end_src
 
 ** Pending delete
@@ -2005,9 +2010,17 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 
 ** Go mode
 
+
 #+begin_src emacs-lisp
   (use-package go-mode :ensure
+    :init
+    (setenv "GOPATH" (concat (getenv "HOME") "/go"))
+    (add-to-list 'exec-path (concat (getenv "GOPATH") "/bin"))
     :config
+                                          ; Customize compile command to run go build
+    (if (not (string-match "go" compile-command))
+        (set (make-local-variable 'compile-command)
+             "go build -v && go test -v && go vet"))
     (defun ts-go-indent ()
       (setq indent-tabs-mode 1)
       (setq tab-width 2))
