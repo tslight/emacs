@@ -2010,6 +2010,12 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 
 ** Go mode
 
+#+begin_src shell :tangle no
+  go install golang.org/x/tools/cmd/godoc@latest
+  go install github.com/rogpeppe/godef@latest
+  go install golang.org/x/tools/gopls@latest
+  go install golang.org/x/tools/cmd/goimports@latest
+#+end_src
 
 #+begin_src emacs-lisp
   (use-package go-mode :ensure
@@ -2017,10 +2023,12 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
     (setenv "GOPATH" (concat (getenv "HOME") "/go"))
     (add-to-list 'exec-path (concat (getenv "GOPATH") "/bin"))
     :config
-                                          ; Customize compile command to run go build
-    (if (not (string-match "go" compile-command))
-        (set (make-local-variable 'compile-command)
-             "go build -v && go test -v && go vet"))
+    ;; Use goimports instead of go-fmt
+    (setq gofmt-command "goimports")
+    ;; Customize compile command to run go build
+    ;; (if (not (string-match "go" compile-command))
+    ;;     (set (make-local-variable 'compile-command)
+    ;;          "go build -v && go test -v && go vet"))
     (defun ts-go-indent ()
       (setq indent-tabs-mode 1)
       (setq tab-width 2))
