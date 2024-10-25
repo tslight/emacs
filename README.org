@@ -1176,13 +1176,22 @@ https://microsoft.github.io/language-server-protocol/
 #+begin_src shell :tangle no
   pip install python-lsp-server
   go install golang.org/x/tools/gopls@latest
-  npm install -g typescript-language-server typescript
   npm install -g bash-language-server
   npm install -g dockerfile-language-server-nodejs
 #+end_src
 
 #+begin_src emacs-lisp
   (use-package eglot
+    :custom
+    (fset #'jsonrpc--log-event #'ignore)
+    (eglot-events-buffer-size 0)
+    (eglot-sync-connect nil)
+    (eglot-connect-timeout nil)
+    (eglot-autoshutdown t)
+    (eglot-send-changes-idle-time 3)
+    (flymake-no-changes-timeout 5)
+    (eldoc-echo-area-use-multiline-p nil)
+    (setq eglot-ignored-server-capabilities '( :documentHighlightProvider))
     :hook
     (prog-mode . eglot-ensure)
     (shell-script-mode . eglot-ensure))
