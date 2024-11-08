@@ -1523,7 +1523,7 @@ Don't bother using this on Windows as I can rather be bothered to install
                     ("tx" . "src text"))))
     (defun ts-compile-and-load ()
       (interactive)
-      (when (file-name-extension (buffer-file-name (current-buffer)) "el")
+      (when (string-match "emacs" (buffer-file-name (current-buffer)))
         (byte-compile-file (buffer-file-name (current-buffer)))
         (load (buffer-file-name (current-buffer)))))
     :bind (:map org-mode-map ("C-c i" . org-goto))
