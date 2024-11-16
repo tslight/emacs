@@ -1174,15 +1174,26 @@ source code.
 https://microsoft.github.io/language-server-protocol/
 
 #+begin_src shell :tangle no
-  sudo apt install golang python3-pip npm python3-pylsp-*
+  sudo apt install golang python3-pip npm python3-pylsp-* clangd
   # pip install python-lsp-server
-  go install golang.org/x/tools/gopls@latest
-  sudo npm install -g bash-language-server
-  sudo npm install -g vscode-langservers-extracted
-  sudo npm install -g dockerfile-language-server-nodejs
-  sudo npm install -g typescript-language-server typescript
-  sudo npm install -g yaml-language-server
-  sudo apt install clangd
+
+  # pip install python-lsp-server
+  go install \
+     github.com/rogpeppe/godef@latest \
+     github.com/tslight/lazygit.go/cmd/github@latest \
+     golang.org/x/tools/cmd/godoc@latest \
+     golang.org/x/tools/cmd/goimports@latest \
+     golang.org/x/tools/gopls@latest \
+      && echo "Finished installing Go packages :-)"
+
+  sudo npm install -g \
+       bash-language-server \
+       dockerfile-language-server-nodejs \
+       typescript \
+       typescript-language-server \
+       vscode-langservers-extracted \
+       yaml-language-server \
+      && echo "Finished installing Node LSP packages :-)"
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2025,10 +2036,13 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 ** Go mode
 
 #+begin_src shell :tangle no
-  go install golang.org/x/tools/cmd/godoc@latest
-  go install github.com/rogpeppe/godef@latest
-  go install golang.org/x/tools/gopls@latest
-  go install golang.org/x/tools/cmd/goimports@latest
+  go install \
+     github.com/rogpeppe/godef@latest \
+     github.com/tslight/lazygit.go/cmd/github@latest \
+     golang.org/x/tools/cmd/godoc@latest \
+     golang.org/x/tools/cmd/goimports@latest \
+     golang.org/x/tools/gopls@latest \
+      && echo "Finished installing Go packages :-)"
 #+end_src
 
 #+begin_src emacs-lisp
