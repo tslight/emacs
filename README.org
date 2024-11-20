@@ -1054,6 +1054,11 @@ Make sure we show colors when we run commands with ~M-!~
     (dired-recursive-copies 'always)
     (dired-recursive-deletes 'always)
     :config
+    (defun ts-dired-do-delete-skip-trash (&optional arg)
+      (interactive "P")
+      (let ((delete-by-moving-to-trash nil))
+        (dired-do-delete arg)))
+
     (defun ts-dired-get-size ()
       "Get cumlative size of marked or current item."
       (interactive)
@@ -1130,7 +1135,7 @@ Make sure we show colors when we run commands with ~M-!~
 ** Doc View
 
 #+begin_src emacs-lisp
-  (use-package doc-view-mode :defer 30
+  (use-package doc-view-mode :defer t
     :config
     (setq doc-view-continuous t)
     (setq doc-view-resolution 300))
