@@ -1462,8 +1462,10 @@ Don't bother using this on Windows as I can rather be bothered to install
 
 #+begin_src emacs-lisp
   (setq display-line-numbers 'relative)
+  (setq display-line-numbers-type 'relative)
   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
   (add-hook 'sh-script-hook 'display-line-numbers-mode)
+  (add-hook 'org-mode-hook 'display-line-numbers-mode)
 #+end_src
 
 ** Occur
@@ -1952,6 +1954,60 @@ https://github.com/purcell/default-text-scale
 
 #+begin_src emacs-lisp
   (use-package dockerfile-mode :ensure)
+#+end_src
+
+** Evil
+
+#+begin_src emacs-lisp
+  (use-package evil :ensure
+    :init (setq evil-want-keybinding nil)
+    :config
+    (evil-mode 1)
+    (setq evil-undo-system 'undo-redo)
+    ;;; esc always quits
+    (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
+    (define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
+    (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
+    (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
+    (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
+    (global-set-key [escape] 'keyboard-quit))
+
+  (use-package evil-collection :ensure
+    :after evil
+    :config (evil-collection-init))
+
+  (use-package evil-surround :ensure
+    :config (global-evil-surround-mode 1))
+#+end_src
+| Key | Behavior                                  |
+|-----+-------------------------------------------|
+| H   | Move backward by sexp                     |
+| L   | Move forward by sexp                      |
+| M-h | Move to the beginning of a top-level form |
+| M-l | Move to the end of the top-level form     |
+| (   | Move backward up a sexp.                  |
+| )   | Move forward up a sexp.                   |
+| [   | Move to the previous opening parentheses  |
+| ]   | Move to the next closing parentheses      |
+| {   | Move to the next opening parentheses      |
+| }   | Move to the previous closing parentheses  |
+#+begin_src emacs-lisp
+  (use-package evil-cleverparens :ensure)
+#+end_src
+
+#+begin_src emacs-lisp
+  (use-package general
+    :ensure t
+    :config
+    (general-evil-setup)
+    ;; * Global Keybindings
+    ;; all keywords arguments are still supported
+    ;; these are just wrappers around `general-def' that set a default :states
+    (general-nmap
+      :prefix "SPC"
+      "b" 'switch-to-buffer
+      "f" 'find-file
+      "s" 'save-buffer))
 #+end_src
 
 ** Exec path from shell
