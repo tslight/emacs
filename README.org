@@ -1996,28 +1996,30 @@ https://github.com/purcell/default-text-scale
 #+end_src
 
 #+begin_src emacs-lisp
-    (use-package general
-      :ensure t
-      :init
-      (setq general-override-states '(insert
-                                      emacs
-                                      hybrid
-                                      normal
-                                      visual
-                                      motion
-                                      operator
-                                      replace))
-      :config
-      (general-evil-setup)
-      ;; * Global Keybindings
-      ;; all keywords arguments are still supported
-      ;; these are just wrappers around `general-def' that set a default :states
-      (general-nmap
-        :prefix "SPC"
-        "b" 'switch-to-buffer
-        "f" 'find-file
-        "s" 'save-buffer
-        "g" 'magit))
+  (use-package general
+    :ensure t
+    :init
+    (setq general-override-states '(insert
+                                    emacs
+                                    hybrid
+                                    normal
+                                    visual
+                                    motion
+                                    operator
+                                    replace))
+    :config
+    (general-evil-setup)
+    ;; * Global Keybindings
+    ;; all keywords arguments are still supported
+    ;; these are just wrappers around `general-def' that set a default :states
+    (general-nmap
+      :prefix "SPC"
+      "b" 'switch-to-buffer
+      "k" 'kill-this-buffer
+      "f" 'find-file
+      "s" 'save-buffer
+      "p" 'project-switch-project
+      "g" 'magit))
 #+end_src
 
 ** Exec path from shell
