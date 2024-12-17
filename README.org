@@ -1981,7 +1981,10 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
     :config
     (exec-path-from-shell-initialize)
     (exec-path-from-shell-copy-env "DEVPATH")
-    (exec-path-from-shell-copy-env "PYTHONPATH"))
+    (exec-path-from-shell-copy-env "PYTHONPATH")
+    (exec-path-from-shell-copy-env "GOPATH")
+    :hook
+    (prog-mode . exec-path-from-shell-initialize))
 #+end_src
 
 ** Flycheck
