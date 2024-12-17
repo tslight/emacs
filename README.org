@@ -1964,6 +1964,10 @@ https://github.com/purcell/default-text-scale
     ;; emacs bindings in insert mode
     (setq evil-disable-insert-state-bindings t)
     :config
+    (evil-set-leader 'normal (kbd "SPC"))
+    (evil-define-key 'normal 'global (kbd "<leader>s") 'save-buffer)
+    (evil-define-key 'normal 'global (kbd "<leader>k") 'kill-buffer)
+    (evil-define-key 'normal 'global (kbd "<leader>b") 'switch-to-buffer)
     (evil-set-initial-state 'dired-mode 'emacs)
     (evil-mode 1))
 #+end_src
