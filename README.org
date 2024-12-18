@@ -1894,7 +1894,7 @@ Yet still have some saner defaults and some extra functionality.
     (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 #+end_src
 
-** Ansible
+** COMMENT Ansible
 
 #+begin_src emacs-lisp
   (use-package ansible :ensure :hook (yaml-mode . ansible))
@@ -1965,8 +1965,9 @@ https://github.com/purcell/default-text-scale
     (setq evil-disable-insert-state-bindings t)
     :config
     (evil-set-leader 'normal (kbd "SPC"))
-    (evil-define-key 'normal 'global (kbd "<leader>s") 'save-buffer)
-    (evil-define-key 'normal 'global (kbd "<leader>k") 'kill-buffer)
+    (evil-define-key 'normal 'global (kbd "<leader>f") 'find-file)
+    (evil-define-key 'normal 'global (kbd "<leader>w") 'save-buffer)
+    (evil-define-key 'normal 'global (kbd "<leader>d") 'kill-buffer)
     (evil-define-key 'normal 'global (kbd "<leader>b") 'switch-to-buffer)
     (evil-set-initial-state 'dired-mode 'emacs)
     (evil-mode 1))
