@@ -1958,17 +1958,22 @@ https://github.com/purcell/default-text-scale
 ** Evil
 
 #+begin_src emacs-lisp
-  (use-package evil :ensure
+  (use-package evil :ensure :defer 1
     :init
     ;; emacs bindings in insert mode
     (setq evil-disable-insert-state-bindings t)
     :config
     (evil-set-leader 'normal (kbd "SPC"))
-    (evil-define-key 'normal 'global (kbd "<leader>e") 'find-file)
-    (evil-define-key 'normal 'global (kbd "<leader>w") 'save-buffer)
+    (evil-define-key 'normal 'global (kbd "<leader>f") 'find-file)
+    (evil-define-key 'normal 'global (kbd "<leader>w") 'ts-save-buffers-silently)
+    (evil-define-key 'normal 'global (kbd "<leader>q") 'save-buffers-kill-terminal)
     (evil-define-key 'normal 'global (kbd "<leader>d") 'kill-buffer)
     (evil-define-key 'normal 'global (kbd "<leader>b") 'switch-to-buffer)
     (evil-define-key 'normal 'global (kbd "<leader>g") 'magit-status)
+    (evil-define-key 'normal 'global (kbd "<leader>l") 'ts-last-buffer)
+    (evil-define-key 'normal 'global (kbd "<leader>n") 'next-buffer)
+    (evil-define-key 'normal 'global (kbd "<leader>p") 'previous-buffer)
+    (evil-define-key 'normal 'global (kbd "<leader>i") 'ts-indent-buffer)
     (evil-set-initial-state 'dired-mode 'emacs)
     (evil-mode 1)
     :hook
