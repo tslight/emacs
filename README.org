@@ -1905,7 +1905,6 @@ Yet still have some saner defaults and some extra functionality.
 
 #+begin_src emacs-lisp
   (use-package async :ensure t)
-
   (use-package dired-async :after (dired async)
     :hook (dired-mode . dired-async-mode))
 #+end_src
@@ -1965,10 +1964,11 @@ https://github.com/purcell/default-text-scale
     (setq evil-disable-insert-state-bindings t)
     :config
     (evil-set-leader 'normal (kbd "SPC"))
-    (evil-define-key 'normal 'global (kbd "<leader>f") 'find-file)
+    (evil-define-key 'normal 'global (kbd "<leader>e") 'find-file)
     (evil-define-key 'normal 'global (kbd "<leader>w") 'save-buffer)
     (evil-define-key 'normal 'global (kbd "<leader>d") 'kill-buffer)
     (evil-define-key 'normal 'global (kbd "<leader>b") 'switch-to-buffer)
+    (evil-define-key 'normal 'global (kbd "<leader>g") 'magit-status)
     (evil-set-initial-state 'dired-mode 'emacs)
     (evil-mode 1))
 #+end_src
@@ -1986,8 +1986,8 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
     :config
     (exec-path-from-shell-initialize)
     (exec-path-from-shell-copy-env "DEVPATH")
-    (exec-path-from-shell-copy-env "PYTHONPATH")
     (exec-path-from-shell-copy-env "GOPATH")
+    (exec-path-from-shell-copy-env "PYTHONPATH")
     :hook
     (prog-mode . exec-path-from-shell-initialize))
 #+end_src
@@ -2006,7 +2006,7 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 #+end_src
 
 ** Git
-*** Gitlab CI
+*** COMMENT Gitlab CI
 
 #+begin_src emacs-lisp
   (use-package gitlab-ci-mode :ensure
