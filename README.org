@@ -1977,7 +1977,8 @@ https://github.com/purcell/default-text-scale
     (evil-set-initial-state 'dired-mode 'emacs)
     (evil-mode 1)
     :hook
-    (with-editor-mode . evil-insert-state))
+    ;; (with-editor-mode . evil-insert-state))
+    (git-commit-mode . evil-insert-state))
 #+end_src
 
 ** Exec path from shell
