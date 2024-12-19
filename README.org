@@ -1970,7 +1970,9 @@ https://github.com/purcell/default-text-scale
     (evil-define-key 'normal 'global (kbd "<leader>b") 'switch-to-buffer)
     (evil-define-key 'normal 'global (kbd "<leader>g") 'magit-status)
     (evil-set-initial-state 'dired-mode 'emacs)
-    (evil-mode 1))
+    (evil-mode 1)
+    :hook
+    (with-editor-mode . evil-insert-state))
 #+end_src
 
 ** Exec path from shell
