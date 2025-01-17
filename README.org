@@ -211,6 +211,10 @@ Place point after complilation error
   (setq kill-do-not-save-duplicates t)
 #+end_src
 
+** Mac Command Modifier
+#+begin_src emacs-lisp
+  (setq mac-command-modifier 'control)
+#+end_src
 ** Minibuffer
 
 #+begin_src emacs-lisp
@@ -1963,22 +1967,33 @@ https://github.com/purcell/default-text-scale
     ;; emacs bindings in insert mode
     (setq evil-disable-insert-state-bindings t)
     :config
-    (evil-set-leader 'normal (kbd "SPC"))
-    (evil-define-key 'normal 'global (kbd "<leader>f") 'find-file)
-    (evil-define-key 'normal 'global (kbd "<leader>w") 'ts-save-buffers-silently)
-    (evil-define-key 'normal 'global (kbd "<leader>q") 'save-buffers-kill-terminal)
-    (evil-define-key 'normal 'global (kbd "<leader>d") 'kill-buffer)
-    (evil-define-key 'normal 'global (kbd "<leader>b") 'switch-to-buffer)
-    (evil-define-key 'normal 'global (kbd "<leader>g") 'magit-status)
-    (evil-define-key 'normal 'global (kbd "<leader>l") 'ts-last-buffer)
-    (evil-define-key 'normal 'global (kbd "<leader>n") 'next-buffer)
-    (evil-define-key 'normal 'global (kbd "<leader>p") 'previous-buffer)
-    (evil-define-key 'normal 'global (kbd "<leader>i") 'ts-indent-buffer)
+    (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
     (evil-set-initial-state 'dired-mode 'emacs)
     (evil-mode 1)
     :hook
     ;; (with-editor-mode . evil-insert-state))
     (git-commit-mode . evil-insert-state))
+
+  (use-package general :ensure :defer 1 :after (evil)
+    :config
+    (general-evil-setup t)
+    (mmap "SPC" nil)
+    (mmap :prefix "SPC" :keymaps 'override
+          ;; prefixes SPC-c, SPC-h, SPC-x generate C-c, C-h, C-x
+          "x" (general-simulate-key "C-x" :docstring "Simulate C-x with SPC x" :which-key "ctrl-x")
+          "h" (general-simulate-key "C-h" :docstring "Simulate C-h with SPC h" :which-key "ctrl-h")
+          "c" (general-simulate-key "C-c" :docstring "Simulate C-c with SPC c" :which-key "ctrl-c")
+          ;; general operations
+          "SPC" #'execute-extended-command
+          "b"   #'switch-to-buffer
+          "w"   #'save-buffer
+          "W"   #'ts-save-buffers-silently
+          "d"   #'kill-buffer
+          "g"   #'magit-status
+          "l"   #'ts-last-buffer
+          "q"   #'save-buffers-kill-emacs
+          "p"   #'project-switch-project
+          "r"   #'ts-recentf-find-file))
 #+end_src
 
 ** Exec path from shell
