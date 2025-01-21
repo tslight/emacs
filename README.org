@@ -1962,52 +1962,51 @@ https://github.com/purcell/default-text-scale
 ** Evil
 
 #+begin_src emacs-lisp
-      (use-package evil :ensure
-        :init
-        (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
-        (setq evil-want-keybinding nil) ;; for evil-collection to work properly...
-        ;; emacs bindings in insert mode
-        (setq evil-disable-insert-state-bindings t)
-        :config
-        (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
-        (evil-mode 1)
-        :bind (:map dired-mode-map
-                    ("h" . ts-dired-up-directory)
-                    ("l" . 'dired-find-alternate-file))
-        :hook
-        (after-init . evil-mode)
-        ;; (with-editor-mode . evil-insert-state))
-        (git-commit-mode . evil-insert-state))
+  (use-package evil :ensure
+    :init
+    (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+    (setq evil-want-keybinding nil) ;; for evil-collection to work properly...
+    ;; emacs bindings in insert mode
+    (setq evil-disable-insert-state-bindings t)
+    :config
+    (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
+    (evil-define-key 'normal dired-mode-map (kbd "l") #'dired-find-alternate-file)
+    (evil-define-key 'normal dired-mode-map (kbd "h") #'ts-dired-up-directory)
+    (evil-mode 1)
+    :hook
+    (after-init . evil-mode)
+    ;; (with-editor-mode . evil-insert-state))
+    (git-commit-mode . evil-insert-state))
 
-      (use-package evil-collection :after evil :ensure
-        :custom (evil-collection-key-blacklist '("SPC"))
-        :config (evil-collection-init)
-        :hook (after-init . evil-mode))
+  (use-package evil-collection :after evil :ensure
+    :custom (evil-collection-key-blacklist '("SPC"))
+    :config (evil-collection-init)
+    :hook (after-init . evil-mode))
 
-      (use-package general :ensure :defer 1 :after evil
-        :config
-        (general-evil-setup t)
-        (mmap "SPC" nil)
-        (mmap :prefix "SPC" :keymaps 'override
-          ;; prefixes SPC-c, SPC-h, SPC-x generate C-c, C-h, C-x
-          "x" (general-simulate-key "C-x" :docstring "Simulate C-x with SPC x" :which-key "ctrl-x")
-          "h" (general-simulate-key "C-h" :docstring "Simulate C-h with SPC h" :which-key "ctrl-h")
-          "c" (general-simulate-key "C-c" :docstring "Simulate C-c with SPC c" :which-key "ctrl-c")
-          "SPC" #'execute-extended-command
-          "b"   #'switch-to-buffer
-          "d"   #'kill-buffer
-          "f"   #'find-file
-          "g"   #'magit-status
-          "i"   #'ts-indent-buffer
-          "j"   #'next-buffer
-          "k"   #'previous-buffer
-          "l"   #'ts-last-buffer
-          "p"   #'project-switch-project
-          "q"   #'save-buffers-kill-emacs
-          "r"   #'ts-recentf-find-file
-          "w"   #'save-buffer
-          "W"   #'ts-save-buffers-silently
-          ))
+  (use-package general :ensure :defer 1
+    :config
+    (general-evil-setup t)
+    (mmap "SPC" nil)
+    (mmap :prefix "SPC" :keymaps 'override
+      ;; prefixes SPC-c, SPC-h, SPC-x generate C-c, C-h, C-x
+      "x" (general-simulate-key "C-x" :docstring "Simulate C-x with SPC x" :which-key "ctrl-x")
+      "h" (general-simulate-key "C-h" :docstring "Simulate C-h with SPC h" :which-key "ctrl-h")
+      "c" (general-simulate-key "C-c" :docstring "Simulate C-c with SPC c" :which-key "ctrl-c")
+      "SPC" #'execute-extended-command
+      "b"   #'switch-to-buffer
+      "d"   #'kill-buffer
+      "f"   #'find-file
+      "g"   #'magit-status
+      "i"   #'ts-indent-buffer
+      "j"   #'next-buffer
+      "k"   #'previous-buffer
+      "l"   #'ts-last-buffer
+      "p"   #'project-switch-project
+      "q"   #'save-buffers-kill-emacs
+      "r"   #'ts-recentf-find-file
+      "w"   #'save-buffer
+      "W"   #'ts-save-buffers-silently
+      ))
 #+end_src
 
 ** Exec path from shell
