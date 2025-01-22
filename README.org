@@ -1984,6 +1984,15 @@ https://github.com/purcell/default-text-scale
     :hook (after-init . evil-mode))
 
   (use-package general :ensure :defer 1
+    :init
+    (setq general-override-states '(insert
+                                    emacs
+                                    hybrid
+                                    normal
+                                    visual
+                                    motion
+                                    operator
+                                    replace))
     :config
     (general-evil-setup t)
     (mmap "SPC" nil)
