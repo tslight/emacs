@@ -1988,13 +1988,14 @@ https://github.com/purcell/default-text-scale
     (general-evil-setup t)
     (mmap "SPC" nil)
     (mmap :prefix "SPC" :keymaps 'override
-      ;; prefixes SPC-c, SPC-h, SPC-x generate C-c, C-h, C-x
-      "x" (general-simulate-key "C-x" :docstring "Simulate C-x with SPC x" :which-key "ctrl-x")
       "h" (general-simulate-key "C-h" :docstring "Simulate C-h with SPC h" :which-key "ctrl-h")
       "c" (general-simulate-key "C-c" :docstring "Simulate C-c with SPC c" :which-key "ctrl-c")
+      "w" (general-simulate-key "C-w" :docstring "Simulate C-w with SPC w" :which-key "ctrl-w")
+      "x" (general-simulate-key "C-x" :docstring "Simulate C-x with SPC x" :which-key "ctrl-x")
       "SPC" #'execute-extended-command
       "b"   #'switch-to-buffer
-      "d"   #'kill-buffer
+      "k"   #'kill-buffer
+      "d"   #'dired-jump
       "f"   #'find-file
       "g"   #'magit-status
       "i"   #'ts-indent-buffer
@@ -2004,8 +2005,8 @@ https://github.com/purcell/default-text-scale
       "p"   #'project-switch-project
       "q"   #'save-buffers-kill-emacs
       "r"   #'ts-recentf-find-file
-      "w"   #'save-buffer
-      "W"   #'ts-save-buffers-silently
+      "s"   #'save-buffer
+      "S"   #'ts-save-buffers-silently
       ))
 #+end_src
 
