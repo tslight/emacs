@@ -2027,6 +2027,7 @@ https://github.com/purcell/default-text-scale
      "h" (general-simulate-key "C-h" :docstring "Simulate C-h with SPC h" :which-key "Help")
      "c" (general-simulate-key "C-c" :docstring "Simulate C-c with SPC c" :which-key "CTRL-C")
      "^" (general-simulate-key "C-c ^" :docstring "Simulate C-c ^ with SPC ^" :which-key "CTRL-C ^")
+     "@" (general-simulate-key "C-c @" :docstring "Simulate C-c @ with SPC @" :which-key "CTRL-C @")
      "C" (general-simulate-key "C-c C-c" :docstring "Simulate C-c C-c with SPC C" :which-key "CTRL-C x 2")
      "w" (general-simulate-key "C-w" :docstring "Simulate C-w with SPC w" :which-key "Windows")
      "x" (general-simulate-key "C-x" :docstring "Simulate C-x with SPC x" :which-key "CTRL-X")
@@ -2034,8 +2035,6 @@ https://github.com/purcell/default-text-scale
      "5" (general-simulate-key "C-x 5" :docstring "Simulate C-x 4 with SPC 4" :which-key "CTRL-X 5")
      "p" (general-simulate-key "C-x p" :docstring "Simulate C-x p with SPC p" :which-key "Projects")
      "SPC" 'execute-extended-command
-     "a" '(:ignore t :which-key "Applications")
-     "ap" 'proced
      "b" '(:ignore t :which-key "Buffers")
      "bb" 'switch-to-buffer
      "bi" 'ts-indent-buffer
