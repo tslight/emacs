@@ -211,10 +211,16 @@ Place point after complilation error
   (setq kill-do-not-save-duplicates t)
 #+end_src
 
-** Mac Command Modifier
+** COMMENT Mac Command Modifier
+
+This is great if you want to use Emacs bindings, as it means you can have
+symmetrical control keys on your thumbs, but I'm trying to go back to Vi style
+bindings with Evil so commenting for now to force my muscle memory to adjust...
+
 #+begin_src emacs-lisp
   (setq mac-command-modifier 'control)
 #+end_src
+
 ** Minibuffer
 
 #+begin_src emacs-lisp
@@ -1966,20 +1972,29 @@ https://github.com/purcell/default-text-scale
     :init
     (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
     (setq evil-want-keybinding nil) ;; for evil-collection to work properly...
-    ;; emacs bindings in insert mode
-    (setq evil-disable-insert-state-bindings t)
+    (setq evil-disable-insert-state-bindings t) ;; emacs bindings in insert mode
     :config
     (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
     (evil-define-key 'normal dired-mode-map (kbd "l") #'dired-find-alternate-file)
     (evil-define-key 'normal dired-mode-map (kbd "h") #'ts-dired-up-directory)
+    ;;; esc quits
+    (defun minibuffer-keyboard-quit ()
+      "Abort recursive edit.
+  In Delete Selection mode, if the mark is active, just deactivate it;
+  then it takes a second \\[keyboard-quit] to abort the minibuffer."
+      (interactive)
+      (if (and delete-selection-mode transient-mark-mode mark-active)
+          (setq deactivate-mark  t)
+        (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
+        (abort-recursive-edit)))
     (define-key evil-normal-state-map [escape] 'keyboard-quit)
     (define-key evil-visual-state-map [escape] 'keyboard-quit)
     (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
     (define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
     (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
     (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
-    (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
-    (global-set-key [escape] 'evil-exit-emacs-state)
+    (with-eval-after-load 'magit-log
+      (define-key magit-log-mode-map (kbd "<space>") nil))
     (evil-mode 1)
     :hook
     (after-init . evil-mode)
@@ -2003,28 +2018,40 @@ https://github.com/purcell/default-text-scale
                                     replace))
     :config
     (general-evil-setup t)
-    (mmap "SPC" nil)
-    (mmap :prefix "SPC" :keymaps 'override
-      "h" (general-simulate-key "C-h" :docstring "Simulate C-h with SPC h" :which-key "ctrl-h")
-      "c" (general-simulate-key "C-c" :docstring "Simulate C-c with SPC c" :which-key "ctrl-c")
-      "w" (general-simulate-key "C-w" :docstring "Simulate C-w with SPC w" :which-key "ctrl-w")
-      "x" (general-simulate-key "C-x" :docstring "Simulate C-x with SPC x" :which-key "ctrl-x")
-      "SPC" #'execute-extended-command
-      "b"   #'switch-to-buffer
-      "k"   #'kill-buffer
-      "d"   #'dired-jump
-      "f"   #'find-file
-      "g"   #'magit-status
-      "i"   #'ts-indent-buffer
-      "j"   #'next-buffer
-      "k"   #'previous-buffer
-      "l"   #'ts-last-buffer
-      "p"   #'project-switch-project
-      "q"   #'save-buffers-kill-emacs
-      "r"   #'ts-recentf-find-file
-      "s"   #'save-buffer
-      "S"   #'ts-save-buffers-silently
-      ))
+    (general-define-key
+     :states '(normal visual insert emacs)
+     :prefix "SPC"
+     :non-normal-prefix "C-SPC"
+     :keymaps 'override
+     "h" (general-simulate-key "C-h" :docstring "Simulate C-h with SPC h" :which-key "Help")
+     "c" (general-simulate-key "C-c" :docstring "Simulate C-c with SPC c" :which-key "CTRL-C")
+     "w" (general-simulate-key "C-w" :docstring "Simulate C-w with SPC w" :which-key "Windows")
+     "x" (general-simulate-key "C-x" :docstring "Simulate C-x with SPC x" :which-key "CTRL-X")
+     "p" (general-simulate-key "C-x p" :docstring "Simulate C-x p with SPC p" :which-key "Projects")
+     "SPC" 'execute-extended-command
+     "a" '(:ignore t :which-key "Applications")
+     "ap" 'proced
+     "b" '(:ignore t :which-key "Buffers")
+     "bb" 'switch-to-buffer
+     "bi" 'ts-indent-buffer
+     "bk" 'kill-buffer
+     "bl" 'ts-last-buffer
+     "bn" 'next-buffer
+     "bp" 'previous-buffer
+     "d" '(:ignore t :which-key "Dired")
+     "dd" 'dired
+     "dj" 'dired-jump
+     "f" '(:ignore t :which-key "Files")
+     "ff" 'find-file
+     "fr" 'ts-recentf-find-file
+     "g" '(:ignore t :which-key "Git")
+     "gg" 'magit-status
+     "gl" 'magit-list-repositories
+     "s" '(:ignore t :which-key "Saving")
+     "sa" 'ts-save-buffers-silently
+     "sq" 'save-buffers-kill-emacs
+     "ss" 'save-buffer
+     ))
 #+end_src
 
 ** Exec path from shell
