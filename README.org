@@ -1970,6 +1970,7 @@ https://github.com/purcell/default-text-scale
 #+begin_src emacs-lisp
   (use-package evil :ensure
     :init
+    (setq evil-want-C-u-scroll t)
     (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
     (setq evil-want-keybinding nil) ;; for evil-collection to work properly...
     (setq evil-disable-insert-state-bindings t) ;; emacs bindings in insert mode
@@ -2025,9 +2026,12 @@ https://github.com/purcell/default-text-scale
      :keymaps 'override
      "h" (general-simulate-key "C-h" :docstring "Simulate C-h with SPC h" :which-key "Help")
      "c" (general-simulate-key "C-c" :docstring "Simulate C-c with SPC c" :which-key "CTRL-C")
-     "C" (general-simulate-key "C-c C-c" :docstring "Simulate C-c C-c with SPC C" :which-key "CTRL-C CTRL-C")
+     "^" (general-simulate-key "C-c ^" :docstring "Simulate C-c ^ with SPC ^" :which-key "CTRL-C ^")
+     "C" (general-simulate-key "C-c C-c" :docstring "Simulate C-c C-c with SPC C" :which-key "CTRL-C x 2")
      "w" (general-simulate-key "C-w" :docstring "Simulate C-w with SPC w" :which-key "Windows")
      "x" (general-simulate-key "C-x" :docstring "Simulate C-x with SPC x" :which-key "CTRL-X")
+     "4" (general-simulate-key "C-x 4" :docstring "Simulate C-x 4 with SPC 4" :which-key "CTRL-X 4")
+     "5" (general-simulate-key "C-x 5" :docstring "Simulate C-x 4 with SPC 4" :which-key "CTRL-X 5")
      "p" (general-simulate-key "C-x p" :docstring "Simulate C-x p with SPC p" :which-key "Projects")
      "SPC" 'execute-extended-command
      "a" '(:ignore t :which-key "Applications")
@@ -2044,6 +2048,9 @@ https://github.com/purcell/default-text-scale
      "dj" 'dired-jump
      "f" '(:ignore t :which-key "Files")
      "ff" 'find-file
+     "fw" 'find-file-other-window
+     "ft" 'find-file-other-tab
+     "fF" 'find-file-other-frame
      "fr" 'ts-recentf-find-file
      "g" '(:ignore t :which-key "Git")
      "gg" 'magit-status
