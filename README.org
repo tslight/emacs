@@ -2025,6 +2025,7 @@ https://github.com/purcell/default-text-scale
      :keymaps 'override
      "h" (general-simulate-key "C-h" :docstring "Simulate C-h with SPC h" :which-key "Help")
      "c" (general-simulate-key "C-c" :docstring "Simulate C-c with SPC c" :which-key "CTRL-C")
+     "C" (general-simulate-key "C-c C-c" :docstring "Simulate C-c C-c with SPC C" :which-key "CTRL-C CTRL-C")
      "w" (general-simulate-key "C-w" :docstring "Simulate C-w with SPC w" :which-key "Windows")
      "x" (general-simulate-key "C-x" :docstring "Simulate C-x with SPC x" :which-key "CTRL-X")
      "p" (general-simulate-key "C-x p" :docstring "Simulate C-x p with SPC p" :which-key "Projects")
