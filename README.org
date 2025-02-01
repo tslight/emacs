@@ -2009,8 +2009,10 @@ https://github.com/purcell/default-text-scale
 
   (use-package general :after evil :defer 0 :ensure
     :init
+    ;; https://github.com/noctuid/evil-guide#why-dont-keys-defined-with-evil-define-key-work-immediately
     ;; https://emacs.stackexchange.com/a/70717
     ;; https://github.com/noctuid/general.el/issues/493
+    ;; https://github.com/noctuid/general.el/issues/190
     (general-add-hook 'after-init-hook
                       (lambda (&rest _)
                         (when-let ((messages-buffer (get-buffer "*Messages*")))
