@@ -2011,6 +2011,13 @@ https://github.com/noctuid/general.el/blob/master/README.org
     :custom (evil-collection-key-blacklist '("SPC"))
     :config (evil-collection-init))
 
+  (use-package ranger :ensure
+    :config
+    (setq ranger-cleanup-eagerly t)
+    (setq ranger-cleanup-on-disable t)
+    (setq ranger-excluded-extensions '("mkv" "iso" "mp4"))
+    (setq ranger-show-literal t))
+
   (use-package general :after evil :defer 0 :ensure
     :init
     ;; https://github.com/noctuid/evil-guide#why-dont-keys-defined-with-evil-define-key-work-immediately
@@ -2049,9 +2056,11 @@ https://github.com/noctuid/general.el/blob/master/README.org
      "4" (general-simulate-key "C-x 4" :docstring "Simulate C-x 4 with SPC 4" :which-key "CTRL-X 4")
      "5" (general-simulate-key "C-x 5" :docstring "Simulate C-x 4 with SPC 4" :which-key "CTRL-X 5")
      "p" (general-simulate-key "C-x p" :docstring "Simulate C-x p with SPC p" :which-key "Projects")
+     "e" (general-simulate-key "C-x C-e" :docstring "Simulate C-x C-e with SPC e" :which-key "Execute")
      "SPC" 'execute-extended-command
      "a" '(:ignore t :which-key "Applications")
      "ad" 'dired-jump
+     "ar" 'ranger
      "ae" 'erc
      "ap" 'proced
      "b" '(:ignore t :which-key "Buffers")
