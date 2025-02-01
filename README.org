@@ -2016,7 +2016,8 @@ https://github.com/noctuid/general.el/blob/master/README.org
     (setq ranger-cleanup-eagerly t)
     (setq ranger-cleanup-on-disable t)
     (setq ranger-excluded-extensions '("mkv" "iso" "mp4"))
-    (setq ranger-show-literal t))
+    (setq ranger-max-preview-size 1024)
+    (setq ranger-show-literal nil))
 
   (use-package general :after evil :defer 0 :ensure
     :init
