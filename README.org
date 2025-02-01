@@ -1978,11 +1978,11 @@ https://github.com/purcell/default-text-scale
     (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
     (evil-define-key 'normal dired-mode-map (kbd "l") #'dired-find-alternate-file)
     (evil-define-key 'normal dired-mode-map (kbd "h") #'ts-dired-up-directory)
-    ;;; esc quits
+     ;;; esc quits
     (defun minibuffer-keyboard-quit ()
       "Abort recursive edit.
-  In Delete Selection mode, if the mark is active, just deactivate it;
-  then it takes a second \\[keyboard-quit] to abort the minibuffer."
+   In Delete Selection mode, if the mark is active, just deactivate it;
+   then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (interactive)
       (if (and delete-selection-mode transient-mark-mode mark-active)
           (setq deactivate-mark  t)
@@ -2002,13 +2002,21 @@ https://github.com/purcell/default-text-scale
     ;; (with-editor-mode . evil-insert-state))
     (git-commit-mode . evil-insert-state))
 
-  (use-package evil-collection :after evil :ensure
+  (use-package evil-collection :after evil :defer 0 :ensure
     :custom (evil-collection-key-blacklist '("SPC"))
     :config (evil-collection-init)
     :hook (after-init . evil-mode))
 
-  (use-package general :ensure :defer 1
+  (use-package general :after evil :defer 0 :ensure
     :init
+    ;; https://emacs.stackexchange.com/a/70717
+    ;; https://github.com/noctuid/general.el/issues/493
+    (general-add-hook 'after-init-hook
+                      (lambda (&rest _)
+                        (when-let ((messages-buffer (get-buffer "*Messages*")))
+                          (with-current-buffer messages-buffer
+                            (evil-normalize-keymaps))))
+                      nil nil t)
     (setq general-override-states '(insert
                                     emacs
                                     hybrid
@@ -2028,6 +2036,7 @@ https://github.com/purcell/default-text-scale
      "c" (general-simulate-key "C-c" :docstring "Simulate C-c with SPC c" :which-key "CTRL-C")
      "^" (general-simulate-key "C-c ^" :docstring "Simulate C-c ^ with SPC ^" :which-key "CTRL-C ^")
      "@" (general-simulate-key "C-c @" :docstring "Simulate C-c @ with SPC @" :which-key "CTRL-C @")
+     "'" (general-simulate-key "C-c '" :docstring "Simulate C-c ' with SPC '" :which-key "CTRL-C '")
      "C" (general-simulate-key "C-c C-c" :docstring "Simulate C-c C-c with SPC C" :which-key "CTRL-C x 2")
      "w" (general-simulate-key "C-w" :docstring "Simulate C-w with SPC w" :which-key "Windows")
      "x" (general-simulate-key "C-x" :docstring "Simulate C-x with SPC x" :which-key "CTRL-X")
@@ -2035,16 +2044,20 @@ https://github.com/purcell/default-text-scale
      "5" (general-simulate-key "C-x 5" :docstring "Simulate C-x 4 with SPC 4" :which-key "CTRL-X 5")
      "p" (general-simulate-key "C-x p" :docstring "Simulate C-x p with SPC p" :which-key "Projects")
      "SPC" 'execute-extended-command
+     "a" '(:ignore t :which-key "Applications")
+     "ad" 'dired-jump
+     "ae" 'erc
+     "ap" 'proced
      "b" '(:ignore t :which-key "Buffers")
      "bb" 'switch-to-buffer
      "bi" 'ts-indent-buffer
-     "bk" 'kill-buffer
      "bl" 'ts-last-buffer
      "bn" 'next-buffer
      "bp" 'previous-buffer
-     "d" '(:ignore t :which-key "Dired")
-     "dd" 'dired
-     "dj" 'dired-jump
+     "d" '(:ignore t :which-key "Deleting Buffers")
+     "dd" '(lambda () (interactive) (kill-buffer (current-buffer)))
+     "dD" 'kill-buffer
+     "do" 'ts-kill-buffer-other-window
      "f" '(:ignore t :which-key "Files")
      "ff" 'find-file
      "fw" 'find-file-other-window
@@ -2056,8 +2069,10 @@ https://github.com/purcell/default-text-scale
      "gl" 'magit-list-repositories
      "s" '(:ignore t :which-key "Saving")
      "sa" 'ts-save-buffers-silently
-     "sq" 'save-buffers-kill-emacs
      "ss" 'save-buffer
+     "q" '(:ignore t :which-key "Quitting")
+     "qq" 'save-buffers-kill-emacs
+     "qQ" 'kill-emacs
      ))
 #+end_src
 
