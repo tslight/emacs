@@ -1967,6 +1967,11 @@ https://github.com/purcell/default-text-scale
 
 ** Evil
 
+https://sam217pa.github.io/2016/09/02/how-to-build-your-own-spacemacs/
+https://www.youtube.com/watch?v=6INMXmsCCC8
+https://github.com/suyashbire1/emacs.d
+https://github.com/noctuid/general.el/blob/master/README.org
+
 #+begin_src emacs-lisp
   (use-package evil :ensure
     :init
@@ -2004,8 +2009,7 @@ https://github.com/purcell/default-text-scale
 
   (use-package evil-collection :after evil :defer 0 :ensure
     :custom (evil-collection-key-blacklist '("SPC"))
-    :config (evil-collection-init)
-    :hook (after-init . evil-mode))
+    :config (evil-collection-init))
 
   (use-package general :after evil :defer 0 :ensure
     :init
