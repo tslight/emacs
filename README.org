@@ -2019,6 +2019,8 @@ https://github.com/noctuid/general.el/blob/master/README.org
     (setq ranger-max-preview-size 1024)
     (setq ranger-show-literal nil))
 
+  (use-package evil-surround :ensure :config (global-evil-surround-mode 1))
+
   (use-package general :after evil :defer 0 :ensure
     :init
     ;; https://github.com/noctuid/evil-guide#why-dont-keys-defined-with-evil-define-key-work-immediately
@@ -2044,7 +2046,7 @@ https://github.com/noctuid/general.el/blob/master/README.org
     (general-define-key
      :states '(normal visual insert emacs)
      :prefix "SPC"
-     :non-normal-prefix "C-SPC"
+     :non-normal-prefix "C-S-SPC"
      :keymaps 'override
      "h" (general-simulate-key "C-h" :docstring "Simulate C-h with SPC h" :which-key "Help")
      "c" (general-simulate-key "C-c" :docstring "Simulate C-c with SPC c" :which-key "CTRL-C")
