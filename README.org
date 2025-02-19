@@ -2046,7 +2046,7 @@ https://github.com/noctuid/general.el/blob/master/README.org
     (general-define-key
      :states '(normal visual insert emacs)
      :prefix "SPC"
-     :non-normal-prefix "C-S-SPC"
+     :non-normal-prefix "M-S-SPC"
      :keymaps 'override
      "h" (general-simulate-key "C-h" :docstring "Simulate C-h with SPC h" :which-key "Help")
      "c" (general-simulate-key "C-c" :docstring "Simulate C-c with SPC c" :which-key "CTRL-C")
