@@ -2055,12 +2055,13 @@ https://github.com/noctuid/general.el/blob/master/README.org
      "w" (general-simulate-key "C-w" :docstring "Simulate C-w with SPC w" :which-key "Windows")
      "x" (general-simulate-key "C-x" :docstring "Simulate C-x with SPC x" :which-key "CTRL-X")
      "4" (general-simulate-key "C-x 4" :docstring "Simulate C-x 4 with SPC 4" :which-key "CTRL-X 4")
-     "5" (general-simulate-key "C-x 5" :docstring "Simulate C-x 4 with SPC 4" :which-key "CTRL-X 5")
+     "5" (general-simulate-key "C-x 5" :docstring "Simulate C-x 5 with SPC 5" :which-key "CTRL-X 5")
      "p" (general-simulate-key "C-x p" :docstring "Simulate C-x p with SPC p" :which-key "Projects")
      "e" (general-simulate-key "C-x C-e" :docstring "Simulate C-x C-e with SPC e" :which-key "Execute")
      "SPC" 'execute-extended-command
      "a" '(:ignore t :which-key "Applications")
-     "ad" 'dired-jump
+     "ad" 'dired
+     "aj" 'dired-jump
      "ar" 'ranger
      "ae" 'erc
      "ap" 'proced
@@ -2071,7 +2072,7 @@ https://github.com/noctuid/general.el/blob/master/README.org
      "bn" 'next-buffer
      "bp" 'previous-buffer
      "d" '(:ignore t :which-key "Deleting Buffers")
-     "dd" '(lambda () (interactive) (kill-buffer (current-buffer)))
+     "dd" '((lambda () (interactive) (kill-buffer (current-buffer))) :which-key "Kill this buffer")
      "dD" 'kill-buffer
      "do" 'ts-kill-buffer-other-window
      "f" '(:ignore t :which-key "Files")
