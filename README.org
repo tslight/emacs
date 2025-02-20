@@ -2055,6 +2055,7 @@ https://github.com/noctuid/general.el/blob/master/README.org
      "'" (general-simulate-key "C-c '" :docstring "Simulate C-c ' with SPC '" :which-key "CTRL-C '")
      "C" (general-simulate-key "C-c C-c" :docstring "Simulate C-c C-c with SPC C" :which-key "CTRL-C x 2")
      "w" (general-simulate-key "C-w" :docstring "Simulate C-w with SPC w" :which-key "Windows")
+     "W" (general-simulate-key "C-w C-w" :docstring "Simulate C-w C-w with SPC W" :which-key "Windows")
      "x" (general-simulate-key "C-x" :docstring "Simulate C-x with SPC x" :which-key "CTRL-X")
      "4" (general-simulate-key "C-x 4" :docstring "Simulate C-x 4 with SPC 4" :which-key "CTRL-X 4")
      "5" (general-simulate-key "C-x 5" :docstring "Simulate C-x 5 with SPC 5" :which-key "CTRL-X 5")
