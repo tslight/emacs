@@ -2049,23 +2049,25 @@ https://github.com/noctuid/general.el/blob/master/README.org
      :prefix "SPC"
      :non-normal-prefix "M-S-SPC"
      :keymaps 'override
-     "h" (general-simulate-key "C-h" :docstring "Simulate C-h with SPC h" :which-key "Help")
-     "c" (general-simulate-key "C-c" :docstring "Simulate C-c with SPC c" :which-key "CTRL-C")
-     "^" (general-simulate-key "C-c ^" :docstring "Simulate C-c ^ with SPC ^" :which-key "CTRL-C ^")
-     "@" (general-simulate-key "C-c @" :docstring "Simulate C-c @ with SPC @" :which-key "CTRL-C @")
+     "SPC" 'execute-extended-command
+     "4" (general-simulate-key "C-x 4" :docstring "Simulate C-x 4 with SPC 4" :which-key "CTRL-X 4")
+     "5" (general-simulate-key "C-x 5" :docstring "Simulate C-x 5 with SPC 5" :which-key "CTRL-X 5")
      "'" (general-simulate-key "C-c '" :docstring "Simulate C-c ' with SPC '" :which-key "CTRL-C '")
+     "@" (general-simulate-key "C-c @" :docstring "Simulate C-c @ with SPC @" :which-key "CTRL-C @")
+     "^" (general-simulate-key "C-c ^" :docstring "Simulate C-c ^ with SPC ^" :which-key "CTRL-C ^")
+     "c" (general-simulate-key "C-c" :docstring "Simulate C-c with SPC c" :which-key "CTRL-C")
      "C" (general-simulate-key "C-c C-c" :docstring "Simulate C-c C-c with SPC C" :which-key "CTRL-C x 2")
+     "e" (general-simulate-key "C-x C-e" :docstring "Simulate C-x C-e with SPC e" :which-key "Execute")
+     "h" (general-simulate-key "C-h" :docstring "Simulate C-h with SPC h" :which-key "Help")
+     "k" (general-simulate-key "C-x C-k" :docstring "Simulate C-x C-k with SPC k" :which-key "Kmacros")
+     "n" (general-simulate-key "C-x n" :docstring "Simulate C-x n with SPC n" :which-key "Narrowing")
+     "p" (general-simulate-key "C-x p" :docstring "Simulate C-x p with SPC p" :which-key "Projects")
+     "r" (general-simulate-key "C-x r" :docstring "Simulate C-x r with SPC r" :which-key "Registers")
+     "t" (general-simulate-key "C-x t" :docstring "Simulate C-x t with SPC t" :which-key "Tabs")
      "w" (general-simulate-key "C-w" :docstring "Simulate C-w with SPC w" :which-key "Windows")
      "W" (general-simulate-key "C-w C-w" :docstring "Simulate C-w C-w with SPC W" :which-key "CTRL-W x 2")
      "x" (general-simulate-key "C-x" :docstring "Simulate C-x with SPC x" :which-key "CTRL-X")
      "X" (general-simulate-key "C-x C-x" :docstring "Simulate C-x C-x with SPC X" :which-key "CTRL-X x 2")
-     "4" (general-simulate-key "C-x 4" :docstring "Simulate C-x 4 with SPC 4" :which-key "CTRL-X 4")
-     "5" (general-simulate-key "C-x 5" :docstring "Simulate C-x 5 with SPC 5" :which-key "CTRL-X 5")
-     "p" (general-simulate-key "C-x p" :docstring "Simulate C-x p with SPC p" :which-key "Projects")
-     "t" (general-simulate-key "C-x t" :docstring "Simulate C-x t with SPC t" :which-key "Tabs")
-     "r" (general-simulate-key "C-x r" :docstring "Simulate C-x r with SPC r" :which-key "Registers")
-     "e" (general-simulate-key "C-x C-e" :docstring "Simulate C-x C-e with SPC e" :which-key "Execute")
-     "SPC" 'execute-extended-command
      "a" '(:ignore t :which-key "Applications")
      "ad" 'dired
      "aj" 'dired-jump
