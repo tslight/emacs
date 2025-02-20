@@ -10,7 +10,8 @@
 #+EXPORT_FILE_NAME: index
 #+SETUPFILE: ./theme-readtheorg.setup
 
-A lightweight, [[https://en.wikipedia.org/wiki/Literate_programming][literate]] *Emacs 29+ ONLY* configuration.
+A lightweight, [[https://en.wikipedia.org/wiki/Literate_programming][literate]] *Emacs 29+ ONLY* configuration. Recently become
+slightly less lightweight and slightly more space-faring and evil...
 
 To install, open this file in *Emacs 29+* & evaluate the code block below, by
 placing the cursor in between the =#+begin_src= and =#+end_src= lines and then
