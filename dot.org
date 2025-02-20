@@ -1,0 +1,904 @@
+#+TITLE: *NIX AGNOSTIC CONFIGURATION (dot)FILES
+#+PROPERTY: header-args :cache yes
+#+PROPERTY: header-args+ :mkdirp yes
+#+PROPERTY: header-args+ :padline no
+#+PROPERTY: header-args+ :results silent
+#+PROPERTY: header-args+ :tangle-mode (identity #o600)
+
+These blocks/this file is suitable for tangling on any Unix-like system.
+
+#+begin_src emacs-lisp :tangle no
+  (org-babel-tangle)
+#+end_src
+
+* GIT
+** CONFIG
+#+BEGIN_SRC conf :tangle ~/.config/git/config
+  [color]
+  ui = true
+  [push]
+  default = current
+  [alias]
+  a = add
+  b = branch
+  c = commit
+  cl = clone
+  cm = commit -m
+  co = checkout
+  l = log --graph --decorate --pretty=oneline --abbrev-commit
+  m = merge
+  P = pull
+  p = push
+  rb = rebase
+  rv = revert
+  r = remote
+  s = status
+  [core]
+  autocrlf = false
+  whitespace = trailing-space,space-before-tab
+  [pull]
+  rebase = false
+  [init]
+  defaultBranch = main
+  [user]
+  name = tslight
+  email = tslight@pm.com
+#+END_SRC
+** IGNORE
+#+BEGIN_SRC conf :tangle ~/.config/git/ignore
+  .DS_Store
+  .localized
+  desktop.ini
+  ,*.swp
+  ,*~
+  #*#
+  #*
+  TAGS
+  tags
+#+END_SRC
+* KITTY
+#+BEGIN_SRC conf :tangle ~/.config/kitty/kitty.conf
+  font_size 12.0
+  scrollback_lines 10000
+  copy_on_select yes
+  strip_trailing_spaces smart
+  terminal_select_modifiers ctrl
+  hide_window_decorations yes
+  clipboard_control write-clipboard write-primary no-append
+  # term xterm-kitty
+  term xterm-256color
+  macos_option_as_alt yes
+  map ctrl+Tab        next_tab
+  map kitty_mod+Tab   previous_tab
+  map ctrl+Escape goto_tab -1
+  map ctrl+equal      change_font_size all +2.0
+  map ctrl+minus      change_font_size all -2.0
+  map kitty_mod+equal change_font_size all 0
+#+END_SRC
+* NEOVIM
+#+BEGIN_SRC conf :tangle ~/.config/nvim/init.vim
+  set autochdir                             "silently change directory for each file
+  set autoindent                            "retain indentation on next lines
+  set autoread                              "reload when ext changes detected
+  set autowriteall                          "auto save when switching buffers
+  set backspace=indent,eol,start            "allow backspace past indent & eol
+  set backup                                "turn backups on
+  set backupdir=~/.cache                    "set backup directory
+  set clipboard=unnamedplus                 "allow copy/pasting to clipboard
+  set directory=~/.cache                    "set swap file directory
+  set expandtab                             "make tabs spaces
+  set history=4242                          "increase history
+  set hlsearch                              "highlight all matches
+  set ignorecase                            "ignore case in all searches...
+  set incsearch                             "lookahead as search is specified
+  set nohlsearch                            "turn off search highlight
+  set nomousehide                           "stop cursor from disappearing
+  set nowrap                                "turn line wrap off
+  set relativenumber                        "relative line numbers are awesome
+  set ruler                                 "turn on line & column numbers
+  set scrolloff=5                           "scroll when 5 lines from bottom
+  set shiftround                            "always indent to nearest tabstop
+  set shiftwidth=4                          "backtab size
+  set showcmd                               "display incomplete commands
+  set smartcase                             "unless uppercase letters used
+  set smartindent                           "turn on autoindenting of blocks
+  set smarttab                              "use shiftwidths only at left margin
+  set softtabstop=4                         "soft space size of tabs
+  set spelllang=en_gb                       "spellcheck language
+  set tabstop=4                             "space size of tabs
+  set undodir=~/.cache                      "set undo file directory
+  set undofile                              "turn undos on
+  set undolevels=4242                       "how far back to go
+  set wildchar=<tab> wildmenu wildmode=full "more verbose command tabbing
+  set wildcharm=<c-z>                       "plus awesome wildcard matching
+
+  let mapleader = " "
+
+  cmap w!! w !sudo tee %<cr>
+  map <leader>bl :b#<cr>
+  map <leader>bb :b<space>
+  map <leader>dd :bd<cr>
+  map <leader>bi ggVG=<c-o><c-o>
+  map <leader>bn :bn<cr>
+  map <leader>bp :bp<cr>
+  map <leader>ff :e<space>
+  map <leader>ss :wall<cr>
+  map <leader>qq :q!<cr>
+  map <leader>tc :tabnew<cr>
+#+END_SRC
+* SHELLS
+** ALIASES
+#+BEGIN_SRC sh :tangle ~/.aliases
+  case "$OSTYPE" in
+      darwin*)
+          alias bye="sudo shutdown -h now"
+          alias cpu="sysctl -n machdep.cpu.brand_string"
+          alias enabled_services='sudo launchctl list'
+          alias grep='grep --color=always'
+          alias l='ls -Gh'
+          alias ll='ls -laGh'
+          alias lsblk='diskutil list'
+          alias rb='sudo reboot'
+          alias srch='sudo /usr/libexec/locate.updatedb && locate -i'
+          command -v brew >/dev/null 2>&1 && alias update='brew update && brew upgrade --greedy && softwareupdate -i --all'
+          command -v osx-cpu-temp >/dev/null 2>&1 && alias temp='osx-cpu-temp -c -g -f'
+          alias zzz='pmset sleepnow'
+          ;;
+      freebsd*)
+          alias bye="sudo shutdown -p now"
+          alias rb='sudo reboot'
+          alias l='ls -Gh'
+          alias ll='ls -laGh'
+          alias grep='grep --color=always'
+          alias lsblk='geom disk list'
+          alias update='sudo pkg update && sudo pkg upgrade'
+          ;;
+      linux*)
+          alias bye="systemctl poweroff"
+          alias powertune='sudo powertop --auto-tune'
+          alias enabled_services='systemctl list-unit-files --state=enabled'
+          alias ipa="ip -brief -color -pretty address | grep -v lo | grep UP"
+          alias ls='ls --color=always'
+          alias l='ls -F'
+          alias la='ls -aF'
+          alias ll='ls -Fhl'
+          alias lla='ls -aFhl'
+          alias rb='systemctl reboot'
+          alias srch='sudo updatedb && locate -i'
+          alias zzz='systemctl suspend'
+          alias ZZZ='systemctl hibernate'
+          if command -v lsb_release &> /dev/null; then
+              case "$(lsb_release -is)" in
+                  Debian)
+                      alias update="sudo apt -t $(lsb_release -cs)-backports update -y && sudo apt -t $(lsb_release -cs)-backports dist-upgrade -y"
+                      alias install="sudo apt -t $(lsb_release -cs)-backports -y"
+                      ;;
+                  Ubuntu)
+                      alias update="sudo apt update -y && sudo apt dist-upgrade -y"
+                      alias install="sudo apt install -y"
+                      ;;
+                  Debian|Ubuntu)
+                      alias clean="sudo apt autoremove -y && sudo apt autoclean -y && sudo apt clean -y"
+                      alias purge="sudo apt purge -y"
+                      alias bat="batcat"
+                      ;;
+                  CentOS|Fedora)
+                      alias clean="sudo dnf autoremove"
+                      alias update="sudo dnf upgrade"
+                      alias install="sudo dnf install"
+                      alias remove="sudo dnf remove"
+                      ;;
+                  Arch*|Manjaro*)
+                      alias clean="sudo pacman -Rcns $(pacman -Qtdq)"
+                      alias update="sudo pacman --sync --refresh --sysupgrade"
+                      alias install="sudo pacman --sync --needed"
+                      alias remove="sudo pacman --remove --nosave --recursive --cascade"
+                      ;;
+              esac
+          fi
+          ;;
+      netbsd*)
+          alias battery='envstat -d acpibat0'
+          alias bye='shutdown -p now'
+          alias l='ls -F'
+          alias l='ls -F'
+          alias la='ls -aF'
+          alias ll='ls -Fhl'
+          alias lla='ls -aFhl'
+          alias pkg='pkgin'
+          alias spkg='sudo pkgin'
+          alias rb='shutdown -r now'
+          alias zzz='sudo sysctl -w hw.acpi.sleep.state=3'
+          ;;
+      openbsd*)
+          alias battery='sysctl -a | grep bat'
+          alias bye='shutdown -p now'
+          alias killall='zap -f'
+          alias l='ls -F'
+          alias la='ls -aF'
+          alias ll='ls -Fhl'
+          alias lla='ls -aFhl'
+          alias lock='lock -np' # no timeout & use user's password
+          alias pkg_search='pkg_info -Q'
+          alias sensors='sysctl hw.sensors'
+          alias srch='doas /usr/libexec/locate.updatedb && locate -i'
+          alias temp='sysctl hw.sensors | egrep -i "fan|temp"'
+          ;;
+  esac
+
+  alias add="awk '{s+=\$1} END {print s}'" # adds columns of numbers via stdin
+  alias cp='cp -i'
+  alias d='docker'
+  alias d2d='for f in *; do mv "$f" "${f// - /-}"; done' # convert ' - ' to '-'
+  alias df='df -h'
+  alias dh='dirs -v'
+  alias du='du -h'
+  alias fuck='sudo $(history -p \!\!)'
+  alias h='history'
+  alias ha='history 0'
+  alias j='jobs -l'
+  alias lc='grep -cv "^$"' # line count ignoring empty lines
+  alias m='make'
+  alias mc='make clean'
+  alias mi='make install clean'
+  alias mkdir='mkdir -p'
+  alias mv='mv -i'
+  alias p='pwd'
+  alias path="echo "$PATH" | tr -s : \\\n"
+  alias pg='pgrep -ail'
+  alias ping4='ping -c 4'
+  alias pingg='ping -c 4 8.8.8.8'
+  alias pip='pip3'
+  alias python='python3'
+  alias py='python3'
+  alias rm='rm -i'
+  alias s2us='for f in *; do mv "$f" "${f// /_}"; done' # convert ' ' to '_'
+  alias sshaa='eval $(ssh-agent) && ssh-add'
+  alias uc='grep -Ev "^#|^\s+#|^\t+#|^$"' # uncomment
+  alias up='uptime'
+
+  command -v bat >/dev/null 2>&1 && alias cat='bat'
+  command -v colordiff >/dev/null 2>&1 && alias diff='colordiff'
+  command -v emacs &>/dev/null && alias e='emacs -nw'
+  command -v emacsclient &>/dev/null && alias ec='emacsclient -c -a "" -nw'
+  command -v exa &>/dev/null && \
+      { \
+        alias l='exa'; \
+        alias la='exa --all'; \
+        alias ll='exa --long --group --git'; \
+      }
+  command -v git &>/dev/null && alias g='git'
+  command -v sudo &>/dev/null && alias se='sudoedit'
+
+  if command -v tmux &>/dev/null; then
+      # https://github.com/areina/stumpwm.d/blob/master/applications.lisp
+      tmux_create_or_attach () {
+          [ -z "$TMUX" ] && \
+              { tmux -q has-session && tmux attach -d || tmux -u; } || \
+                  { tmux new-session -d \; choose-tree -Zs; }
+      }
+      alias t='tmux_create_or_attach'
+  fi
+
+  if command -v vim &>/dev/null; then
+      alias vi="vim"
+  elif command -v nvim &> /dev/null; then
+      alias vi="nvim"
+  elif command -v elvis &> /dev/null; then
+      alias vi="elvis"
+  fi
+
+  if command -v kubectl &>/dev/null; then
+      alias k="kubectl"
+      alias kl="kubectl logs"
+      alias kx="kubectl exec --stdin --tty"
+      complete -F __start_kubectl k
+      complete -F __start_kubectl kl
+      complete -F __start_kubectl kx
+  fi
+#+END_SRC
+** BASH
+*** BASH PROFILE
+#+BEGIN_SRC sh :tangle ~/.bash_profile
+  #shellcheck disable=SC2155,SC1090,SC2093
+  [ -f "$HOME"/etc/profile ] && source "$HOME"/etc/profile
+  [ -f "$HOME"/.profile ] && source "$HOME"/.profile
+
+  export BLOCK_SIZE=human-readable
+  export EDITOR="emacsclient -c -nw"
+  export ALTERNATE_EDITOR=""
+  export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+  export PAGER="$(type -P less || type -P more)"
+  export GTK_THEME=Emacs
+
+  # Colorfull manpages (works with less as a pager)
+  # https://www.tecmint.com/view-colored-man-pages-in-linux/
+  export LESS_TERMCAP_mb=$'\e[1;32m'
+  export LESS_TERMCAP_md=$'\e[1;32m'
+  export LESS_TERMCAP_me=$'\e[0m'
+  export LESS_TERMCAP_se=$'\e[0m'
+  export LESS_TERMCAP_so=$'\e[01;33m'
+  export LESS_TERMCAP_ue=$'\e[0m'
+  export LESS_TERMCAP_us=$'\e[1;4;31m'
+
+  PATH="/snap/bin:${PATH}"
+  PATH="${HOME}/bin:${PATH}"
+  PATH="${HOME}/.local/bin:${PATH}"
+  [ -d /usr/local/Caskroom/miniconda/base/bin ] && \
+      PATH="/usr/local/Caskroom/miniconda/base/bin:$PATH"
+  PIPPATH="$(python3 -m site --user-base)"
+  PATH="$PIPPATH/bin:${PATH}"
+  [ -d "$HOME/go" ] && export GOPATH="$HOME/go"
+  [ -d "/usr/local/go" ] && export GOROOT="/usr/local/go"
+  command -v brew &> /dev/null && export GOROOT="$(brew --prefix golang)/libexec"
+  [ -n "$GOROOT" ] && PATH="$GOROOT/bin:${PATH}"
+  [ -n "$GOPATH" ] && PATH="$GOPATH/bin:${PATH}"
+  export PATH
+
+  MANPATH="${HOME}/.local/share/man:${MANPATH}"
+  MANPATH="${HOME}/opt/share/man:${MANPATH}"
+  export MANPATH
+
+  export EMPLOYER="oe"
+  export DEVPATH="$HOME/$EMPLOYER"
+
+  # https://wiki.archlinux.org/index.php/SSH_keys#Keychain
+  # command -v keychain &>/dev/null && eval $(keychain --eval --quiet id_rsa)
+
+  umask 022
+
+  [ -f "$HOME"/.bashrc ] && source "$HOME"/.bashrc
+
+  # startx on tty1 and logout when it xsession exits
+  [[ -z $DISPLAY && $XDG_VTNR -eq 1 && ! "$TERM" =~ ^screen.*$ && -z "$TMUX" ]] && \
+      { exec ttyinit; }
+
+  # this makes X410 applications work
+  # grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null && \
+      #     export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}'):0.0
+#+END_SRC
+
+*** BASHRC
+#+BEGIN_SRC sh :tangle ~/.bashrc
+  export HISTCONTROL=ignoreboth:erasedups
+  export HISTFILESIZE=999999
+  export HISTSIZE=999999
+  export HISTIGNORE="h:history:[bf]g:exit:^ll$:^lla$:^ls$"
+  export HISTTIMEFORMAT="%h %d %H:%M:%S "
+
+  [ -z "$PS1" ] && return # If not running interactively, don't do anything
+  [ -f /etc/bash.bashrc ] && source /etc/bash.bashrc
+  [ -f /usr/share/bash-completion/bash_completion ] && \
+      source /usr/share/bash-completion/bash_completion
+
+  # https://bugzilla.redhat.com/show_bug.cgi?id=878428
+  [ -f  /usr/share/git-core/contrib/completion/git-prompt.sh ] && \
+      . /usr/share/git-core/contrib/completion/git-prompt.sh
+  # https://stackoverflow.com/a/17508424
+  [ -f  /usr/share/git/completion/git-prompt.sh ] && \
+      . /usr/share/git/completion/git-prompt.sh
+
+  export RED="\\[\\e[1;31m\\]"
+  export GRN="\\[\\e[1;32m\\]"
+  export YEL="\\[\\e[1;33m\\]"
+  export MAG="\\[\\e[1;35m\\]"
+  export CYN="\\[\\e[1;36m\\]"
+  export OFF="\\[\\e[0m\\]"
+
+  export GIT_PS1_SHOWDIRTYSTATE=yes
+  export GIT_PS1_SHOWSTASHSTATE=yes
+  export GIT_PS1_SHOWUNTRACKEDFILES=true
+  export GIT_PS1_SHOWUPSTREAM=yes
+
+  if [ "$(id -u)" -eq 0 ]; then
+      export PS1="${RED}\\u${YEL}@${RED}\\h${YEL}:${MAG}\\W \\n${YEL}\$? \$ ${OFF}"
+  else
+      export PS1="${GRN}\\u${YEL}@${GRN}\\h${YEL}:${MAG}\\W \\n${YEL}\$? \$ ${OFF}"
+  fi
+
+  if [[ "${BASH_VERSINFO[0]}" -ge 4 ]]; then
+      shopt -s autocd       # cd without cd. who knew?
+      shopt -s checkjobs    # don't exit if we still have jobs running
+      shopt -s dirspell     # correct directory spelling
+      shopt -s globstar     # pattern match ** in filename context
+  fi
+
+  shopt -s cdspell      # correct minor cd spelling errors
+  shopt -s checkwinsize # update lines and columns when resizing
+  shopt -s cmdhist      # save multi line cmds as one entry
+  shopt -s dotglob      # show dotfiles when expanding
+  shopt -s extglob      # enable extended pattern matching
+  shopt -s histappend   # don't overwrite history file on exit
+  shopt -s nocaseglob   # match filename case insensitively
+  complete -cf sudo     # completion after sudo
+  complete -cf man      # same, but for man
+
+  [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+  stty -ixon # disable ctrl-s/q flow control
+
+  [ -f "$HOME"/.aliases ] && source "$HOME"/.aliases
+  [ -f "$HOME"/.functions ] && source "$HOME"/.functions
+
+  if command -v kubectl &>/dev/null; then
+      source <(kubectl completion bash)
+  fi
+#+END_SRC
+*** INPUTRC
+#+BEGIN_SRC sh :tangle ~/.inputrc
+  $include /etc/inputrc
+
+  set bell-style none
+  set show-all-if-ambiguous on
+  set show-all-if-unmodified on
+  set completion-ignore-case on
+
+  #menu-complete-display-prefix on
+  # TAB: menu-complete
+  # "\e[Z": menu-complete-backward
+
+  "\en": history-search-forward
+  "\ep": history-search-backward
+  "\em": "\C-a\eb\ed\C-y\e#man \C-y\C-m\C-p\C-p\C-a\C-d\C-e"
+  "\eh": "\C-a\eb\ed\C-y\e#man \C-y\C-m\C-p\C-p\C-a\C-d\C-e"
+
+  set keyseq-timeout 1200
+  set colored-stats on
+  set colored-completion-prefix on
+#+END_SRC
+
+** FUNCTIONS
+#+BEGIN_SRC sh :tangle ~/.functions
+  if echo "$0" | grep -q bash; then
+      if [ -d "$HOME"/bin/lib/bash ]; then
+          for f in "$HOME"/bin/lib/bash/*; do
+              source "$f"
+          done
+      fi
+  fi
+
+  ansi() {
+      for i in {30..38}; do
+          echo -e "\033[0;${i}m Normal: (0;$i); \033[1;${i}m Light: (1;$i)"
+      done
+  }
+
+  bzipr () {
+      for dir in "$1"; do
+          base=$(basename "$dir")
+          tar cvjf "${base}.tar.bz2" "$dir"
+      done
+  }
+
+  # cd () {
+  #     builtin cd "$@"
+  #     if [ -f "Pipfile" ] ; then
+  #         pipenv shell
+  #     fi
+  # }
+
+  ddpp() {
+      sudo dd if="$1" of=/dev/"$2" conv=fsync status=progress bs=4M && sudo sync
+  }
+
+  cdot () {
+      for x in $(seq "$1"); do
+          cd ..
+      done
+  }
+
+  calc () {
+      echo "scale=3;$@" | bc -l
+  }
+
+  cheat () {
+      curl cheat.sh/${1:-cheat};
+  }
+
+  countdown() {
+      clear
+      for i in $(seq "${1-10}" -1 0); do
+          printf "%04d\n" "${i}" |figlet |lolcat
+          sleep 1
+          clear
+      done
+      play -q -n synth .8 sine 4100 fade q 0.1 .3 0.1 repeat 3
+  }
+
+  dos2unix_recursive () {
+      find "$1" -type f\
+           -exec grep -Ilq "" {} \; \
+           -exec dos2unix {} \;
+  }
+
+  dusort () {
+      # d1 = depth 1, sort -hr = human-readable & reverse
+      du -hd1 "$1" | sort -hr
+  }
+
+  emojis() {
+      for (( x = 2600; x <= 2700; x++ )); do
+          echo -n -e " \u${x}"
+      done
+      echo
+  }
+
+  f() {
+      find . -iname "*$1*" -exec ls -1rt "{}" +
+  } 2>/dev/null
+
+  fixperms () {
+      local path=$(eval echo "${3//>}") # santize input so find doesn't break on spaces or ~
+      local -i fileperms="$2" dirperms="$1"
+      find "$path" -type d -exec chmod "$dirperms" {} \;
+      find "$path" -type f -exec chmod "$fileperms" {} \;
+  }
+
+  memsum() {
+      ps -eo size,pid,user,command --sort -size | \
+          awk '{ hr=$1/1024 ; printf("%13.2f Mb ",hr) } { for ( x=4 ; x<=NF ; x++ ) { printf("%s ",$x) } print "" }' | \
+          cut -d "" -f2 | \
+          cut -d "-" -f1| \
+          grep "${1}" | grep -v grep
+  }
+
+  memusage() {
+      #Report Total Used and Available mem in human readable format
+      total=$(head -1 /proc/meminfo |awk '{print $2}')
+      avail=$(head -2 /proc/meminfo |tail -1 |awk '{print $2}')
+      used=$(( total - avail ))
+      totalMB=$(( total / 1024 ))
+      availMB=$(( avail / 1024 ))
+      usedMB=$(( used / 1024 ))
+      echo -ne "${totalMB} MB total, ${usedMB} MB used, ${availMB} MB free.\n"
+  }
+
+  mkcd () {
+      mkdir -p "$1" && cd "$1"
+  }
+
+  mtail () {
+      trap 'kill $(jobs -p)' EXIT
+      for file in "$@"; do
+          tail -f "$file" &
+      done
+      wait
+  }
+
+  peek () {
+      tmux split-window -h -p 48 "$PAGER" "$@" || exit
+  }
+
+  pgrepkill () {
+      if pid=($(pgrep -i "$1")); then
+          for p in "${pid[@]}"; do
+              if ps -p "$p" &> /dev/null; then
+                  echo "Killing $1 process: $p"
+                  sudo kill -9 "$p"
+              fi
+          done
+      else
+          echo "No $1 processes found."
+      fi
+  }
+
+  psee () {
+      tput setaf 3
+      printf "\nYou should probably be using $(tput setaf 6)pgrep -ail$(tput setaf 3)...\n\n"
+      tput sgr0
+      local char="${1:0:1}" rest="${1:1}"
+      ps aux | grep -i "[$char]$rest" | awk '{printf ("%s %i %s %s\n", $1, $2, $9, $11)}'
+      echo
+  }
+
+  rgrep() {
+      # https://stackoverflow.com/questions/16956810/how-do-i-find-all-files-containing-specific-text-on-linux
+      grep -rnw "${2}" -e "${1}"
+  }
+
+  rwc() {
+      find "$1" -iname "$2" -exec wc -l {} +
+  }
+
+  rssget () {
+      curl "$1" | grep -E "http.*\.$2" | sed "s/.*\(http.*\.$2\).*/\1/" | xargs wget -nc
+  }
+
+  tv() {
+      tmux new-session \; \
+           split-window -v ranger\; \
+           split-window -v htop\; \
+           select-pane -t 1 \; \
+           split-window -v pwsh\; \
+           split-window -h ipython\; \
+           select-pane -t 1 \; \
+           split-window -h\;
+  }
+
+  th() {
+      tmux new-session \; \
+           split-window -h ipython3\; \
+           split-window -v\; \
+           select-pane -t 1 \; \
+           split-window -v node\; \
+           new-window -n fm ranger\; \
+           select-window -t 1\; \
+           select-pane -t 1
+  }
+
+  weather() {
+      # https://twitter.com/igor_chubin # Try wttr moon
+      curl "https://wttr.in/${1:-London}"
+  }
+
+  moon() {
+      # https://twitter.com/igor_chubin # Try wttr moon
+      curl "https://wttr.in/${1:-moon}"
+  }
+#+END_SRC
+** ZSH
+*** ZSHENV
+#+BEGIN_SRC sh :tangle ~/.zshenv
+  export HISTFILE=$HOME/.zsh_history
+  export HISTSIZE=100000
+  export SAVEHIST=$HISTSIZE
+  export EDITOR="emacsclient -nw -c"
+  export ALTERNATE_EDITOR=""
+  export PAGER=less
+  export GTK_THEME=Emacs
+  export BLOCK_SIZE=human-readable
+  export DIRSTACKSIZE=12
+  export KEYTIMEOUT=1
+  export EMPLOYER="oe-developers"
+  export DEVPATH="$HOME/$EMPLOYER"
+
+  WORDCHARS=${WORDCHARS/\-} # adds - to word delimiter
+  WORDCHARS=${WORDCHARS/\.} # adds . to word delimiter
+  WORDCHARS=${WORDCHARS/\/} # adds / to word delimiter
+  WORDCHARS=${WORDCHARS/\\} # adds \ to word delimiter
+  WORDCHARS=${WORDCHARS/\=} # adds = to word delimiter
+  WORDCHARS=${WORDCHARS/\_} # adds _ to word delimiter
+  export WORDCHARS
+
+  [ -d "$HOME/go" ] && export GOPATH="$HOME/go"
+  command -v brew &> /dev/null && export GOROOT="$(brew --prefix golang)/libexec"
+  [ -d "/usr/local/go" ] && export GOROOT="/usr/local/go"
+
+  typeset -U CDPATH cdpath
+  # https://superuser.com/a/1054825
+  cdpath=(
+      $HOME
+      $HOME/src
+      "$HOME/$EMPLOYER"
+      $cdpath
+  )
+
+  typeset -U PATH path
+  path=(
+      $HOME/bin
+      $HOME/.local/bin
+      $GOPATH/bin
+      $GOROOT/bin
+      $path
+  )
+
+  if [[ "$(uname)" == "Darwin" ]]; then
+      if [[ "$(arch)" == "i386" ]]; then
+          alias ibrew='arch -x86_64 /usr/local/homebrew/bin/brew'
+          if [[ -d /usr/local/homebrew/bin ]]; then
+              path=(/usr/local/homebrew/bin $path)
+          fi
+          if [[ -d /usr/local/homebrew/Caskroom/miniconda/base/bin ]]; then
+              path=(/usr/local/homebrew/Caskroom/miniconda/base/bin $path)
+          fi
+      elif [[ "$(arch)" == "arm64" &&  -d  /opt/homebrew/Caskroom/miniconda/base/bin ]]; then
+          path=(/opt/homebrew/Caskroom/miniconda/base/bin $path)
+      fi
+  fi
+
+  PIPPATH="$(python3 -m site --user-base)"
+  [ -d "$PIPPATH/bin" ] && path=($PIPPATH/bin $path)
+
+  export PATH
+
+  umask 022
+#+END_SRC
+
+*** ZSHRC
+#+BEGIN_SRC sh :tangle ~/.zshrc
+  zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*' # case insensitivity
+  zstyle ':completion:*' menu select # arrow select
+  zstyle ':completion:*' rehash true # auto add new commands
+  zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;32'
+  zstyle ':completion:*:default' list-colors "${(@s.:.)LS_COLORS}"
+  zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,user,%cpu,tty,cputime,cmd'
+  zstyle ':completion:*:make:*:targets' call-command true # make target completions
+  zstyle ':completion:*:make::' tag-order targets variables # show targets before variables
+  zstyle ':completion:*:processes' command 'ps -au $USER'
+  zstyle ':completion:*:processes-names' command 'ps -e -o comm='
+
+  autoload -Uz compinit && compinit -u      # completion library
+  autoload -Uz bashcompinit && bashcompinit # bash completions too please
+  autoload -Uz colors && colors             # colour library
+  autoload -Uz zmv                          # batch rename library
+  # autoload -Uz promptinit && promptinit && prompt vcs
+
+  setopt auto_name_dirs         # absolute name becomes dir
+  setopt autocd                 # cd without typing cd. omg.
+  setopt chaselinks             # follow links in cd.
+  setopt complete_in_word       # complete unique matches
+  setopt correct                # allow me to be slack
+  setopt extended_glob          # set awesome to max
+  setopt hist_expire_dups_first # trim duplicates from file first
+  setopt hist_find_no_dups      # when searching don't find duplicates
+  setopt hist_ignore_all_dups   # don't store duplicates
+  setopt hist_ignore_space      # don't store cmds that start with a space
+  setopt hist_no_store          # don't store history cmds
+  setopt inc_append_history     # immediately write cmd after enter
+  setopt longlistjobs           # display PID when suspending processes as well
+  setopt list_ambiguous         # complete until it gets ambiguous
+  setopt magic_equal_subst      # expand inside equals
+  setopt nobeep                 # stop harassing me
+  setopt nonomatch              # try to avoid the 'zsh: no matches found...'
+  setopt prompt_subst           # param expansion, cmd substitution, &  math
+  unsetopt flow_control         # stty ixon doesn't work, but this does.
+  unsetopt completealiases      # supposedly allows aliases to be completed, but
+  # I turn it off because it breaks mine..
+  ttyctl -f                     # avoid having to manually reset the terminal
+
+  bindkey -v # vi style bindings
+  exit_zsh() { exit }
+  zle -N exit_zsh
+  bindkey '^D' exit_zsh
+
+  bindkey '^[[Z' reverse-menu-complete # shift-tab cycles backwards
+  bindkey \^U backward-kill-line # ctrl-u (whole-line by default)
+
+  # Alt-n & Alt-p to search history using current input
+  autoload -Uz history-search-end
+  zle -N history-beginning-search-backward-end history-search-end
+  zle -N history-beginning-search-forward-end history-search-end
+  bindkey '\ep' history-beginning-search-backward-end
+  bindkey '\en' history-beginning-search-forward-end
+
+  # Arrow keys to do history search
+  autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
+  zle -N up-line-or-beginning-search
+  zle -N down-line-or-beginning-search
+  bindkey "^[[A" up-line-or-beginning-search
+  bindkey "^[[B" down-line-or-beginning-search
+
+  [[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ ' # emacs tramp workaround
+
+  # Directory shortcuts
+  hash -d src=$HOME/src
+  hash -d wrk="$HOME/$EMPLOYER"
+
+  command -v kubectl &>/dev/null && source <(kubectl completion zsh)
+
+  prompt_vcs_setup() {
+      zstyle ':vcs_info:*' enable git svn
+      zstyle ':vcs_info:git:*' formats '%B%F{cyan}(%b)%f'
+
+      autoload -Uz vcs_info
+
+      precmd_vcs_info() { vcs_info; }
+      precmd_functions+=( precmd_vcs_info )
+
+      setopt prompt_subst
+
+      local user_at_host="%B%F{green}%n%B%F{yellow}@%B%F{green}%m%b%f"
+      local cwd="%B%F{yellow}:%F{magenta}%1~%b%f"
+      local git_branch=\$vcs_info_msg_0_
+      local exit_status="%B%(?.%F{yellow}√.%F{red}%?)"
+      local priv="%B%F{yellow}%#%b%f"
+
+      PS1="${user_at_host}${cwd} ${git_branch}"$'\n'"${exit_status} ${priv} "
+      PS2="> "
+
+      prompt_opts=( cr percent )
+  }
+
+  prompt_vcs_setup "$@"
+
+  [ -f $HOME/.aliases ] && . $HOME/.aliases
+  [ -f $HOME/.functions ] && . $HOME/.functions
+#+END_SRC
+* TMUX
+#+BEGIN_SRC conf :tangle ~/.tmux.conf
+  ## RE-BIND PREFIX
+  # set -g prefix C-j
+  # unbind-key C-b
+  # bind C-j send-prefix
+
+  ## MISC
+  set -g base-index 1
+  set -g pane-base-index 1
+  set -g history-limit 42420
+  set -g renumber-windows on
+  set -g set-titles on
+  set -g set-titles-string "#T: [#S] #I: #W: #P"
+  set -g display-panes-time 4000 # I'm slow and indecisive!
+  set -g default-terminal "screen-256color"
+  set -g escape-time 0 # default is 500ms which feels like forever..
+  #set -g mode-keys vi
+
+  ## STATUS BAR
+  set-option -g status-interval 5
+  set-option -g automatic-rename on
+  set-option -g automatic-rename-format '#{b:pane_current_path}'
+
+  ## COLORS
+  set -g message-style bg=default,fg=brightgreen
+  set -g mode-style bg=default,fg=brightgreen
+  set -g status-style bg=default,fg=brightgreen
+  set -g window-status-style bold
+  set -g window-status-current-style underscore,fg=brightyellow
+
+  ## STATUS
+  set -g status-interval 60
+  set -g status-left "[#S] "
+  set -g status-left-length 50
+  set -g status-right "%H:%M %a %d/%m/%y"
+  set -g status-right-length 50
+  set -g window-status-current-format "#I: #W.#P*"
+
+  ## MOUSE
+  set -g mouse on
+  bind -n MouseDown2Status copy-mode
+
+  ## KEYS
+  # bind -n C-tab next
+  # bind -n C-S-tab prev
+  bind C-l switch-client -l
+  bind C-c new-session
+  # bind C-x kill-session
+  bind v split-window -h
+  bind h split-window -v
+  bind C-r source-file ~/.tmux.conf \; display-message "~/.tmux.conf reloaded"
+  bind e neww -n emacs 'emacsclient -nw -c -a ""'
+  bind C-e neww -n emacs 'emacs -nw'
+  bind C-h neww -n htop htop
+  bind r neww -n fm ranger
+  bind C-r neww -n sfm 'sudo ranger'
+  bind M-r neww -n dl rtorrent
+  bind C-s neww -n su 'sudo -s'
+  bind t splitw -h -p 42 top
+  # bind u copy-mode
+  # bind -n C-Space copy-mode
+  # bind -n M-Space display-panes
+  bind -n M-Up select-pane -U
+  bind -n M-Down select-pane -D
+  bind -n M-Left select-pane -L
+  bind -n M-Right select-pane -R
+  bind -n C-Up resize-pane -U 5
+  bind -n C-Down resize-pane -D 5
+  bind -n C-Left resize-pane -L 5
+  bind -n C-Right resize-pane -R 5
+  # copy to system clipboard using xsel
+  bind -T copy-mode C-w send -X copy-pipe "xsel -i -b"
+  bind -T copy-mode w send -X copy-pipe "xsel -i -b"
+  bind -T copy-mode MouseDragEnd1Pane send -X copy-pipe-and-cancel "xsel -i -b"
+  bind -T copy-mode Space send -X begin-selection
+  bind -T copy-mode k send -X copy-end-of-line "xsel -i -b"
+  # copy mode motion
+  bind -T copy-mode b send -X cursor-left
+  bind -T copy-mode f send -X cursor-right
+  bind -T copy-mode n send -X cursor-down
+  bind -T copy-mode p send -X cursor-up
+  bind -T copy-mode a send -X start-of-line
+  bind -T copy-mode e send -X end-of-line
+  bind -T copy-mode [ send -X previous-paragraph
+  bind -T copy-mode ] send -X next-paragraph
+  bind -T copy-mode C-< send -X top-line
+  bind -T copy-mode C-> send -X bottom-line
+  bind -T copy-mode < send -X history-top
+  bind -T copy-mode > send -X history-bottom
+  # search pane
+  bind -T copy-mode r command-prompt -i -I "#{pane_search_string}" -p "(search up)" "send -X search-backward-incremental \"%%%\""
+  bind -T copy-mode s command-prompt -i -I "#{pane_search_string}" -p "(search down)" "send -X search-forward-incremental \"%%%\""
+#+END_SRC
+* COMMENT Local Variables                                  :NOEXPORT:ARCHIVE:
+# Local Variables:
+# eval: (add-hook 'after-save-hook 'org-babel-tangle nil t)
+# End:
