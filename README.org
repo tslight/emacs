@@ -2062,6 +2062,8 @@ https://github.com/noctuid/general.el/blob/master/README.org
      "4" (general-simulate-key "C-x 4" :docstring "Simulate C-x 4 with SPC 4" :which-key "CTRL-X 4")
      "5" (general-simulate-key "C-x 5" :docstring "Simulate C-x 5 with SPC 5" :which-key "CTRL-X 5")
      "p" (general-simulate-key "C-x p" :docstring "Simulate C-x p with SPC p" :which-key "Projects")
+     "t" (general-simulate-key "C-x t" :docstring "Simulate C-x t with SPC t" :which-key "Tabs")
+     "r" (general-simulate-key "C-x r" :docstring "Simulate C-x r with SPC r" :which-key "Registers")
      "e" (general-simulate-key "C-x C-e" :docstring "Simulate C-x C-e with SPC e" :which-key "Execute")
      "SPC" 'execute-extended-command
      "a" '(:ignore t :which-key "Applications")
