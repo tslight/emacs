@@ -150,6 +150,12 @@ Place point after complilation error
   (setq backward-delete-char-untabify-method 'all)
 #+end_src
 
+** Dictionary
+
+#+begin_src emacs-lisp
+  (setopt dictionary-server "dict.org")
+#+end_src
+
 ** Emacsclient executable
 
 #+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) init-file "no")
