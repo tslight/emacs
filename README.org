@@ -2009,7 +2009,7 @@ https://github.com/noctuid/general.el/blob/master/README.org
     (with-eval-after-load 'magit-log
       (define-key magit-log-mode-map (kbd "<space>") nil))
     (evil-mode 1)
-    :hook
+    :HOOK
     (after-init . evil-mode)
     ;; (with-editor-mode . evil-insert-state))
     (git-commit-mode . evil-insert-state))
