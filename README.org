@@ -1972,7 +1972,7 @@ https://github.com/purcell/default-text-scale
   (use-package dockerfile-mode :ensure)
 #+end_src
 
-** Evil
+** COMMENT Evil
 
 https://sam217pa.github.io/2016/09/02/how-to-build-your-own-spacemacs/
 https://www.youtube.com/watch?v=6INMXmsCCC8
@@ -1985,6 +1985,7 @@ https://github.com/noctuid/general.el/blob/master/README.org
     (setq evil-want-C-u-scroll t)
     (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
     (setq evil-want-keybinding nil) ;; for evil-collection to work properly...
+    (setq evil-disable-insert-bindings 't)
     (setq evil-disable-insert-state-bindings t) ;; emacs bindings in insert mode
     :config
     (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
@@ -2009,7 +2010,7 @@ https://github.com/noctuid/general.el/blob/master/README.org
     (with-eval-after-load 'magit-log
       (define-key magit-log-mode-map (kbd "<space>") nil))
     (evil-mode 1)
-    :HOOK
+    :hook
     (after-init . evil-mode)
     ;; (with-editor-mode . evil-insert-state))
     (git-commit-mode . evil-insert-state))
@@ -2017,6 +2018,8 @@ https://github.com/noctuid/general.el/blob/master/README.org
   (use-package evil-collection :after evil :defer 0 :ensure
     :custom (evil-collection-key-blacklist '("SPC"))
     :config (evil-collection-init))
+
+  (use-package evil-commentary :after evil :defer 0 :ensure)
 
   (use-package ranger :ensure
     :config
