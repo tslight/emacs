@@ -441,6 +441,9 @@ https://www.reddit.com/r/emacs/comments/l42oep/suppress_nativecomp_warnings_buff
 ** Buffers
 
 #+begin_src emacs-lisp
+  (keymap-global-set "C-<" 'beginning-of-buffer)
+  (keymap-global-set "C->" 'end-of-buffer)
+  (keymap-global-set "C-%" 'query-replace-regexp)
   (keymap-global-set "C-x C-b" 'ibuffer)
   ;; (keymap-global-set "C-x k" 'kill-this-buffer)
   (keymap-global-set "C-c f r" 'rename-visited-file)
