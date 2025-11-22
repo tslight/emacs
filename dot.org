@@ -94,7 +94,8 @@ THEN try running Kanata like so: ~sudo kanata --cfg your-config.kbd~
 
   (defsrc
     esc f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12
-    caps a s d f j k l ;
+    bspc
+    caps a s d f j k l ; ret
     lsft rsft
     fn lctl lalt lmet rmet ralt
   )
@@ -118,14 +119,16 @@ THEN try running Kanata like so: ~sudo kanata --cfg your-config.kbd~
 
   (deflayer base
     caps brdn brup _ _ _ _ prev pp next mute vold volu
-    esc @a @s @d @f @j @k @l @;
+    XX
+    esc @a @s @d @f @j @k @l @; XX
     XX XX
     @fnl XX XX bspc ret XX
   )
 
   (deflayer fn
     caps f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12
-    esc _ _ _ _ _ _ _ _
+    _
+    esc _ _ _ _ _ _ _ _ _
     _ _
     fn _ _ _ _ _
   )
