@@ -3,7 +3,7 @@
 #+PROPERTY: header-args+ :mkdirp yes
 #+PROPERTY: header-args+ :padline no
 #+PROPERTY: header-args+ :results silent
-#+PROPERTY: header-args+ :tangle-mode (identity #o600)
+#+PROPERTY: header-args+ :tangle-mode (identity #o644)
 
 These blocks/this file is suitable for tangling on any Unix-like system.
 
@@ -58,38 +58,48 @@ These blocks/this file is suitable for tangling on any Unix-like system.
 #+END_SRC
 * KANATA
 
-#+begin_src :tangle /sudo::/opt/homebrew/etc/kanata.kbd
-;; defsrc is still necessary
-(defcfg
-  process-unmapped-keys yes
-)
+#+begin_src lisp :tangle /sudo::/opt/homebrew/etc/kanata.kbd
+  (defcfg
+    process-unmapped-keys yes
+  )
 
-(defsrc
-  caps esc a s d f j k l ;
-)
+  (defsrc
+    esc f1   f2   f3   f4   f5   f6   f7   f8   f9   f10   f11   f12
+    caps a s d f j k l ;
+    fn
+  )
 
-(defvar
-  tap-time 200
-  hold-time 200
-)
+  (defvar
+    tap-time 200
+    hold-time 200
+  )
 
-(defalias
-  a (tap-hold $tap-time $hold-time a lsft)
-  s (tap-hold $tap-time $hold-time s lmet)
-  d (tap-hold $tap-time $hold-time d lalt)
-  f (tap-hold $tap-time $hold-time f lctl)
-  j (tap-hold $tap-time $hold-time j rctl)
-  k (tap-hold $tap-time $hold-time k ralt)
-  l (tap-hold $tap-time $hold-time l rmet)
-  ; (tap-hold $tap-time $hold-time ; rsft)
-)
+  (defalias
+    a (tap-hold $tap-time $hold-time a lsft)
+    s (tap-hold $tap-time $hold-time s lmet)
+    d (tap-hold $tap-time $hold-time d lalt)
+    f (tap-hold $tap-time $hold-time f lctl)
+    j (tap-hold $tap-time $hold-time j rctl)
+    k (tap-hold $tap-time $hold-time k ralt)
+    l (tap-hold $tap-time $hold-time l rmet)
+    ; (tap-hold $tap-time $hold-time ; rsft)
+    fnl (tap-hold 200 200 fn (layer-toggle fn))
+  )
 
-(deflayer base
-  esc caps @a @s @d @f @j @k @l @;
-)
+  (deflayer base
+    caps brdn  brup  _    _    _    _   prev  pp  next  mute  vold  volu
+    esc @a @s @d @f @j @k @l @;
+    @fnl
+  )
+
+  (deflayer fn
+    caps f1   f2   f3   f4   f5   f6   f7   f8   f9   f10   f11   f12
+    esc _ _ _ _ _ _ _ _
+    fn
+  )
 #+end_src
 
-#+begin_src xml :tangle /sudo::/Library/LaunchDaemons/com.example.kanata.kbd
+#+begin_src xml :tangle /sudo::/Library/LaunchDaemons/com.example.kanata.plist
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -807,7 +817,7 @@ These blocks/this file is suitable for tangling on any Unix-like system.
   # bindkey -v # vi style bindings
   exit_zsh() { exit }
   zle -N exit_zsh
-  bindkey '^D' exit_zsh
+  # bindkey '^D' exit_zsh
 
   bindkey '^[[Z' reverse-menu-complete # shift-tab cycles backwards
   bindkey \^U backward-kill-line # ctrl-u (whole-line by default)
