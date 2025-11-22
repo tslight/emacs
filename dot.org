@@ -57,8 +57,7 @@ These blocks/this file is suitable for tangling on any Unix-like system.
   tags
 #+END_SRC
 * KANATA
-
-#+begin_src lisp :tangle /sudo::/opt/homebrew/etc/kanata.kbd
+#+begin_src lisp :tangle (if (eq system-type 'darwin) "/sudo::/opt/homebrew/etc/kanata.kbd" "no")
   (defcfg
     process-unmapped-keys yes
   )
@@ -66,7 +65,8 @@ These blocks/this file is suitable for tangling on any Unix-like system.
   (defsrc
     esc f1   f2   f3   f4   f5   f6   f7   f8   f9   f10   f11   f12
     caps a s d f j k l ;
-    fn
+    lsft rsft
+    fn lctl lalt lmet rmet ralt
   )
 
   (defvar
@@ -89,17 +89,18 @@ These blocks/this file is suitable for tangling on any Unix-like system.
   (deflayer base
     caps brdn  brup  _    _    _    _   prev  pp  next  mute  vold  volu
     esc @a @s @d @f @j @k @l @;
-    @fnl
+    XX XX
+    @fnl XX XX XX XX XX
   )
 
   (deflayer fn
     caps f1   f2   f3   f4   f5   f6   f7   f8   f9   f10   f11   f12
     esc _ _ _ _ _ _ _ _
-    fn
+    _ _
+    fn _ _ _ _ _
   )
 #+end_src
-
-#+begin_src xml :tangle /sudo::/Library/LaunchDaemons/com.example.kanata.plist
+#+begin_src xml :tangle (if (eq system-type 'darwin) "/sudo::/Library/LaunchDaemons/com.example.kanata.plist" "no")
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
