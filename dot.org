@@ -56,6 +56,64 @@ These blocks/this file is suitable for tangling on any Unix-like system.
   TAGS
   tags
 #+END_SRC
+* KANATA
+
+#+begin_src :tangle /sudo::/opt/homebrew/etc/kanata.kbd
+;; defsrc is still necessary
+(defcfg
+  process-unmapped-keys yes
+)
+
+(defsrc
+  caps esc a s d f j k l ;
+)
+
+(defvar
+  tap-time 200
+  hold-time 200
+)
+
+(defalias
+  a (tap-hold $tap-time $hold-time a lsft)
+  s (tap-hold $tap-time $hold-time s lmet)
+  d (tap-hold $tap-time $hold-time d lalt)
+  f (tap-hold $tap-time $hold-time f lctl)
+  j (tap-hold $tap-time $hold-time j rctl)
+  k (tap-hold $tap-time $hold-time k ralt)
+  l (tap-hold $tap-time $hold-time l rmet)
+  ; (tap-hold $tap-time $hold-time ; rsft)
+)
+
+(deflayer base
+  esc caps @a @s @d @f @j @k @l @;
+)
+#+end_src
+
+#+begin_src xml :tangle /sudo::/Library/LaunchDaemons/com.example.kanata.kbd
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.example.kanata</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/opt/homebrew/bin/kanata</string>
+        <string>-c</string>
+        <string>/opt/homebrew/etc/kanata.kbd</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/Library/Logs/Kanata/kanata.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Library/Logs/Kanata/kanata.err.log</string>
+</dict>
+</plist>
+#+end_src
+
 * KITTY
 #+BEGIN_SRC conf :tangle ~/.config/kitty/kitty.conf
   font_size 12.0
@@ -811,6 +869,9 @@ These blocks/this file is suitable for tangling on any Unix-like system.
   # unbind-key C-b
   # bind C-j send-prefix
 
+  set -g allow-passthrough on
+  set -ga update-environment TERM
+  set -ga update-environment TERM_PROGRAM
   ## MISC
   set -g base-index 1
   set -g pane-base-index 1
@@ -819,7 +880,7 @@ These blocks/this file is suitable for tangling on any Unix-like system.
   set -g set-titles on
   set -g set-titles-string "#T: [#S] #I: #W: #P"
   set -g display-panes-time 4000 # I'm slow and indecisive!
-  set -g default-terminal "screen-256color"
+  # set -g default-terminal "screen-256color"
   set -g escape-time 0 # default is 500ms which feels like forever..
   #set -g mode-keys vi
 
