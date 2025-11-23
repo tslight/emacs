@@ -62,6 +62,9 @@ https://precondition.github.io/home-row-mods
 
 [[./hrm.jpg]]
 
+https://www.reddit.com/r/ErgoMechKeyboards/comments/1bquz7q/kanata_or_kmonad/
+https://github.com/jtroo/kanata/discussions/1656
+
 ** MACOS
 
 Install the full Karabiner Elements, and carefully follow all of the prompts
@@ -165,9 +168,18 @@ THEN try running Kanata like so: ~sudo kanata --cfg your-config.kbd~
 </plist>
 #+end_src
 
-#+begin_src sh :tangle "no"
+Start the service:
+
+#+begin_src sh /sudo:: :tangle "no"
   sudo launchctl load /Library/LaunchDaemons/com.example.kanata.plist
   sudo launchctl start com.example.kanata
+#+end_src
+
+Stop the service:
+
+#+begin_src sh /sudo:: :tangle "no"
+  sudo launchctl stop com.example.kanata
+  sudo launchctl unload /Library/LaunchDaemons/com.example.kanata.plist
 #+end_src
 
 * KITTY
@@ -257,6 +269,8 @@ THEN try running Kanata like so: ~sudo kanata --cfg your-config.kbd~
           command -v brew >/dev/null 2>&1 && alias update='brew update && brew upgrade --greedy && softwareupdate -i --all'
           command -v osx-cpu-temp >/dev/null 2>&1 && alias temp='osx-cpu-temp -c -g -f'
           alias zzz='pmset sleepnow'
+          alias kanataStart="sudo launchctl load /Library/LaunchDaemons/com.example.kanata.plist && sudo launchctl start com.example.kanata"
+          alias kanataStop="sudo launchctl stop com.example.kanata && sudo launchctl unload /Library/LaunchDaemons/com.example.kanata.plist"
           ;;
       freebsd*)
           alias bye="sudo shutdown -p now"
