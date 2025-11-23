@@ -106,21 +106,21 @@ THEN try running Kanata like so: ~sudo kanata --cfg your-config.kbd~
   )
 
   (defalias
-    a (tap-hold $tap-time $hold-time a lsft)
-    s (tap-hold $tap-time $hold-time s lmet)
-    d (tap-hold $tap-time $hold-time d lalt)
-    f (tap-hold $tap-time $hold-time f lctl)
-    j (tap-hold $tap-time $hold-time j rctl)
-    k (tap-hold $tap-time $hold-time k ralt)
-    l (tap-hold $tap-time $hold-time l rmet)
-    ; (tap-hold $tap-time $hold-time ; rsft)
+    aG (tap-hold $tap-time $hold-time a lmet)
+    sA (tap-hold $tap-time $hold-time s lalt)
+    dS (tap-hold $tap-time $hold-time d lsft)
+    fC (tap-hold $tap-time $hold-time f lctl)
+    jC (tap-hold $tap-time $hold-time j rctl)
+    kS (tap-hold $tap-time $hold-time k rsft)
+    lA (tap-hold $tap-time $hold-time l ralt)
+    ;G (tap-hold $tap-time $hold-time ; rmet)
     fnl (tap-hold 200 200 fn (layer-toggle fn))
   )
 
   (deflayer base
     caps brdn brup _ _ _ _ prev pp next mute vold volu
     XX
-    esc @a @s @d @f @j @k @l @; XX
+    esc @aG @sA @dS @fC @jC @kS @lA @;G XX
     XX XX
     @fnl XX XX bspc ret XX
   )
