@@ -168,6 +168,8 @@ THEN try running Kanata like so: ~sudo kanata --cfg your-config.kbd~
 </plist>
 #+end_src
 
+https://stackoverflow.com/a/23625658
+
 Start the service:
 
 #+begin_src sh /sudo:: :tangle "no"
