@@ -2252,6 +2252,14 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
                  '("\\.json\\'" . 'ts-json-mode-setup)))
 #+end_src
 
+** Kanata
+
+#+begin_src emacs-lisp
+  (use-package kanata-kbd-mode
+    :vc (:url "https://github.com/chmouel/kanata-kbd-mode" :rev :newest)
+    :mode ("\\.kbd\\'" . kanata-kbd-mode))
+#+end_src
+
 ** Markdown
 
 #+begin_src emacs-lisp

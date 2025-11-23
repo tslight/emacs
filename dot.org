@@ -87,7 +87,7 @@ Possibly / Probably reboot again.
 
 THEN try running Kanata like so: ~sudo kanata --cfg your-config.kbd~
 
-#+begin_src lisp :tangle (if (eq system-type 'darwin) "/sudo::/opt/homebrew/etc/kanata.kbd" "no")
+#+begin_src kanata-kbd :tangle (if (eq system-type 'darwin) "/sudo::/opt/homebrew/etc/kanata.kbd" "no")
   (defcfg
     process-unmapped-keys yes
   )
