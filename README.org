@@ -2256,7 +2256,7 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
 
 #+begin_src emacs-lisp
   (use-package kanata-kbd-mode
-    :vc (:url "https://github.com/chmouel/kanata-kbd-mode" :rev :newest)
+    :vc (:url "https://github.com/chmouel/kanata-kbd-mode")
     :mode ("\\.kbd\\'" . kanata-kbd-mode))
 #+end_src
 

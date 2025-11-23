@@ -64,6 +64,7 @@ https://precondition.github.io/home-row-mods
 
 https://www.reddit.com/r/ErgoMechKeyboards/comments/1bquz7q/kanata_or_kmonad/
 https://github.com/jtroo/kanata/discussions/1656
+https://github.com/jtroo/kanata/discussions/1455
 
 ** MACOS
 
