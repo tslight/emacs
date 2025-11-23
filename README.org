@@ -441,8 +441,8 @@ https://www.reddit.com/r/emacs/comments/l42oep/suppress_nativecomp_warnings_buff
 ** Buffers
 
 #+begin_src emacs-lisp
-  (keymap-global-set "C-<tab>" 'next-buffer)
-  (keymap-global-set "C-S-<tab>" 'previous-buffer)
+  (bind-key* "C-<tab>" 'next-buffer)
+  (bind-key* "C-S-<tab>" 'previous-buffer)
   (keymap-global-set "C-x C-b" 'ibuffer)
   (keymap-global-set "C-c f r" 'rename-visited-file)
   (bind-key "k" (lambda () (interactive) (kill-buffer (current-buffer))) ctl-x-map)
