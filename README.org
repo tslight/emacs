@@ -441,8 +441,6 @@ https://www.reddit.com/r/emacs/comments/l42oep/suppress_nativecomp_warnings_buff
 ** Buffers
 
 #+begin_src emacs-lisp
-  (bind-key* "C-<tab>" 'next-buffer)
-  (bind-key* "C-S-<tab>" 'previous-buffer)
   (keymap-global-set "C-x C-b" 'ibuffer)
   (keymap-global-set "C-c f r" 'rename-visited-file)
   (bind-key "k" (lambda () (interactive) (kill-buffer (current-buffer))) ctl-x-map)
@@ -509,7 +507,7 @@ Always do what I mean!
 
 #+begin_src emacs-lisp
   (setq default-frame-alist '((undecorated . t)
-                              (fullscreen . maximized)
+                              (fullscreen . fullscreen)
                               (vertical-scroll-bars . nil)))
   ;; (setq frame-resize-pixelwise t) ;; jwm resize fix
 #+end_src
@@ -1484,7 +1482,6 @@ Don't bother using this on Windows as I can rather be bothered to install
   (setq display-line-numbers-type 'relative)
   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
   (add-hook 'sh-script-hook 'display-line-numbers-mode)
-  (add-hook 'org-mode-hook 'display-line-numbers-mode)
 #+end_src
 
 ** Occur
@@ -1903,7 +1900,7 @@ Yet still have some saner defaults and some extra functionality.
           ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 #+end_src
 
-** Ace Window
+** COMMENT Ace Window
 
 #+begin_src emacs-lisp
   (use-package ace-window :ensure
@@ -1928,7 +1925,7 @@ Yet still have some saner defaults and some extra functionality.
     :hook (dired-mode . dired-async-mode))
 #+end_src
 
-** Blacken
+** COMMENT Blacken
 
 #+begin_src emacs-lisp
   (use-package blacken :ensure :hook (python-mode . blacken-mode))
@@ -2283,13 +2280,13 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
   (use-package restclient :ensure)
 #+end_src
 
-** Terraform
+** COMMENT Terraform
 
 #+begin_src emacs-lisp
   (use-package terraform-mode :ensure)
 #+end_src
 
-** Web Mode
+** COMMENT Web Mode
 
 #+begin_src emacs-lisp
   (use-package web-mode :ensure
@@ -2332,7 +2329,7 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
     (yaml-mode . display-line-numbers-mode))
 #+end_src
 
-** Yasnippet
+** COMMENT Yasnippet
 
 #+begin_src emacs-lisp
   (use-package yasnippet :ensure :hook (prog-mode . yas-minor-mode))
