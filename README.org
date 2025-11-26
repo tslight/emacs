@@ -2249,7 +2249,7 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
                  '("\\.json\\'" . 'ts-json-mode-setup)))
 #+end_src
 
-** Kanata
+** COMMENT Kanata
 
 #+begin_src emacs-lisp
   (use-package kanata-kbd-mode
