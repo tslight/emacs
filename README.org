@@ -441,6 +441,8 @@ https://www.reddit.com/r/emacs/comments/l42oep/suppress_nativecomp_warnings_buff
 ** Buffers
 
 #+begin_src emacs-lisp
+  (keymap-global-set "C-<" 'beginning-of-buffer) ; makes more sense for spcdt kbd
+  (keymap-global-set "C->" 'end-of-buffer) ; makes more sense for spcdt kbd
   (keymap-global-set "C-x C-b" 'ibuffer)
   (keymap-global-set "C-c f r" 'rename-visited-file)
   (bind-key "k" (lambda () (interactive) (kill-buffer (current-buffer))) ctl-x-map)
@@ -449,6 +451,7 @@ https://www.reddit.com/r/emacs/comments/l42oep/suppress_nativecomp_warnings_buff
 ** Editing
 
 #+begin_src emacs-lisp
+  (keymap-global-set "C-%" 'query-replace-regexp) ; makes more sense for spcdt kbd
   (keymap-global-set "C-z" 'zap-up-to-char) ; suspend is still bound to C-x C-z
   (keymap-global-set "M-z" 'zap-to-char)
 #+end_src
@@ -500,6 +503,23 @@ Always do what I mean!
   (keymap-set special-mode-map "p" #'widget-backward)
   (keymap-set special-mode-map "f" #'widget-forward)
   (keymap-set special-mode-map "b" #'widget-backward)
+#+end_src
+
+** Misc
+
+All of these and the few ~M-~ -> ~C-~ remaps above make a lot more sense when
+using the Space Cadet modifier layout in which the ~ctrl~ key is more
+accessible than the ~alt/meta~ key. Also, I'm not sure why one would ever want
+the shell commands to not be asynchronous...
+
+#+begin_src emacs-lisp
+  (keymap-global-set "C-!" 'async-shell-command)
+  (keymap-global-set "C-&" 'async-shell-command)
+  (keymap-global-set "C-|" 'shell-command-on-region)
+  (keymap-global-set "M-!" 'shell)
+  (keymap-global-set "M-&" 'eshell)
+  (keymap-global-set "C-$" 'ispell-word)
+  (keymap-global-set "M-$" 'ispell-complete-word)
 #+end_src
 
 * Theme/UI
