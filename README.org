@@ -126,8 +126,8 @@ Place point after complilation error
   (setq completion-auto-select nil) ; means focus doesn't go to the buffer
   (setq completions-format 'one-column)
   (setq completions-header-format nil) ; remove the rest of the header msg
-  (setq completions-max-height 20)
-  (setq completion-styles '(initials flex partial-completion substring basic))
+  (setq completions-max-height 22)
+  (setq completion-styles '(initials flex partial-completion))
   (keymap-set completion-in-region-mode-map "C-p" #'minibuffer-previous-completion)
   (keymap-set completion-in-region-mode-map "C-n" #'minibuffer-next-completion)
 #+end_src
@@ -1432,11 +1432,7 @@ Don't bother using this on Windows as I can rather be bothered to install
   (use-package icomplete
     :custom
     (fido-vertical-mode t)
-    :config
-    (defun ts-icomplete-styles ()
-      (setq-local completion-styles '(initials flex partial-completion substring basic)))
-    :hook
-    (icomplete-minibuffer-setup . ts-icomplete-styles)
+    (icomplete-compute-delay 0)
     :bind (:map icomplete-fido-mode-map
                 ("C-<tab>" . icomplete-force-complete-and-exit)
                 ("M-j" . exit-minibuffer)))
