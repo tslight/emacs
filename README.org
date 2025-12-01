@@ -1962,6 +1962,13 @@ Yet still have some saner defaults and some extra functionality.
     :config (global-blamer-mode 1))
 #+end_src
 
+** Copilot
+
+#+begin_src emacs-lisp
+  (use-package copilot :ensure)
+  (use-package copilot-chat :ensure)
+#+end_src
+
 ** Corfu
 
 #+begin_src emacs-lisp
