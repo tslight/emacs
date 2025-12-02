@@ -1433,6 +1433,11 @@ Don't bother using this on Windows as I can rather be bothered to install
     :custom
     (fido-vertical-mode t)
     (icomplete-compute-delay 0)
+    :config
+    (defun ts-icomplete-styles ()
+      (setq-local completion-styles '(initials flex)))
+    :hook
+    (icomplete-minibuffer-setup . ts-icomplete-styles)
     :bind (:map icomplete-fido-mode-map
                 ("C-<tab>" . icomplete-force-complete-and-exit)
                 ("M-j" . exit-minibuffer)))
