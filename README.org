@@ -1433,6 +1433,11 @@ Don't bother using this on Windows as I can rather be bothered to install
     :custom
     (fido-vertical-mode t)
     (icomplete-compute-delay 0)
+    :config
+    (defun ts-icomplete-styles ()
+      (setq-local completion-styles '(initials flex)))
+    :hook
+    (icomplete-minibuffer-setup . ts-icomplete-styles)
     :bind (:map icomplete-fido-mode-map
                 ("C-<tab>" . icomplete-force-complete-and-exit)
                 ("M-j" . exit-minibuffer)))
@@ -1916,7 +1921,7 @@ Yet still have some saner defaults and some extra functionality.
           ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 #+end_src
 
-** COMMENT Ace Window
+** Ace Window
 
 #+begin_src emacs-lisp
   (use-package ace-window :ensure
@@ -2303,13 +2308,13 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
   (use-package restclient :ensure)
 #+end_src
 
-** COMMENT Terraform
+** Terraform
 
 #+begin_src emacs-lisp
   (use-package terraform-mode :ensure)
 #+end_src
 
-** COMMENT Web Mode
+** Web Mode
 
 #+begin_src emacs-lisp
   (use-package web-mode :ensure
@@ -2352,11 +2357,10 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
     (yaml-mode . display-line-numbers-mode))
 #+end_src
 
-** COMMENT Yasnippet
+** Yasnippet
 
 #+begin_src emacs-lisp
   (use-package yasnippet :ensure :hook (prog-mode . yas-minor-mode))
-  (use-package yasnippet-classic-snippets :ensure)
   (use-package yasnippet-snippets :ensure)
 #+end_src
 
