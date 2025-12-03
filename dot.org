@@ -518,16 +518,11 @@ Stop the service:
   export LESS_TERMCAP_ue=$'\e[0m'
   export LESS_TERMCAP_us=$'\e[1;4;31m'
 
-  PATH="/snap/bin:${PATH}"
   PATH="${HOME}/bin:${PATH}"
   PATH="${HOME}/.local/bin:${PATH}"
-  [ -d /usr/local/Caskroom/miniconda/base/bin ] && \
-      PATH="/usr/local/Caskroom/miniconda/base/bin:$PATH"
-  PIPPATH="$(python3 -m site --user-base)"
-  PATH="$PIPPATH/bin:${PATH}"
+
   [ -d "$HOME/go" ] && export GOPATH="$HOME/go"
   [ -d "/usr/local/go" ] && export GOROOT="/usr/local/go"
-  command -v brew &> /dev/null && export GOROOT="$(brew --prefix golang)/libexec"
   [ -n "$GOROOT" ] && PATH="$GOROOT/bin:${PATH}"
   [ -n "$GOPATH" ] && PATH="$GOPATH/bin:${PATH}"
   export PATH
@@ -536,23 +531,9 @@ Stop the service:
   MANPATH="${HOME}/opt/share/man:${MANPATH}"
   export MANPATH
 
-  export EMPLOYER="oe"
-  export DEVPATH="$HOME/$EMPLOYER"
-
-  # https://wiki.archlinux.org/index.php/SSH_keys#Keychain
-  # command -v keychain &>/dev/null && eval $(keychain --eval --quiet id_rsa)
-
   umask 022
 
   [ -f "$HOME"/.bashrc ] && source "$HOME"/.bashrc
-
-  # startx on tty1 and logout when it xsession exits
-  [[ -z $DISPLAY && $XDG_VTNR -eq 1 && ! "$TERM" =~ ^screen.*$ && -z "$TMUX" ]] && \
-      { exec ttyinit; }
-
-  # this makes X410 applications work
-  # grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null && \
-      #     export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}'):0.0
 #+END_SRC
 
 *** BASHRC
