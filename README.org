@@ -556,6 +556,8 @@ the shell commands to not be asynchronous...
 #+end_src
 
 #+begin_src emacs-lisp
+  (setq display-time-format "%H:%M %a %d/%m")
+  (setq display-time-default-load-average 'nil)
   (display-time)
   (display-battery-mode)
 #+end_src
