@@ -128,8 +128,6 @@ Place point after complilation error
   (setq completions-header-format nil) ; remove the rest of the header msg
   (setq completions-max-height 22)
   (setq completion-styles '(initials flex partial-completion))
-  (keymap-set completion-in-region-mode-map "C-p" #'minibuffer-previous-completion)
-  (keymap-set completion-in-region-mode-map "C-n" #'minibuffer-next-completion)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -232,8 +230,6 @@ bindings with Evil so commenting for now to force my muscle memory to adjust...
 
 #+begin_src emacs-lisp
   (setq minibuffer-eldef-shorten-default t) ; help at point
-  (keymap-set minibuffer-local-map "C-p" #'minibuffer-previous-completion)
-  (keymap-set minibuffer-local-map "C-n" #'minibuffer-next-completion)
 #+end_src
 
 ** More extensive apropos
@@ -516,10 +512,7 @@ the shell commands to not be asynchronous...
   (keymap-global-set "C-!" 'async-shell-command)
   (keymap-global-set "C-&" 'async-shell-command)
   (keymap-global-set "C-|" 'shell-command-on-region)
-  (keymap-global-set "M-!" 'shell)
-  (keymap-global-set "M-&" 'eshell)
   (keymap-global-set "C-$" 'ispell-word)
-  (keymap-global-set "M-$" 'ispell-complete-word)
 #+end_src
 
 * Theme/UI
@@ -1439,6 +1432,8 @@ Don't bother using this on Windows as I can rather be bothered to install
     :hook
     (icomplete-minibuffer-setup . ts-icomplete-styles)
     :bind (:map icomplete-fido-mode-map
+                ("<tab>" . icomplete-forward-completions)
+                ("<backtab>" . icomplete-backward-completions)
                 ("C-<tab>" . icomplete-force-complete-and-exit)
                 ("M-j" . exit-minibuffer)))
 #+end_src
