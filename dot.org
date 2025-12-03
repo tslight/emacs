@@ -1561,7 +1561,7 @@ Stop the service:
   set -g status-interval 60
   set -g status-left "[#S] "
   set -g status-left-length 50
-  set -g status-right "%H:%M %a %d/%m/%y"
+  set -g status-right "#(cat /sys/class/power_supply/BAT0/capacity)% %H:%M %a %d/%m/%y"
   set -g status-right-length 50
   set -g window-status-current-format "#I: #W.#P*"
 
@@ -1570,25 +1570,9 @@ Stop the service:
   bind -n MouseDown2Status copy-mode
 
   ## KEYS
-  # bind -n C-tab next
-  # bind -n C-S-tab prev
   bind C-l switch-client -l
   bind C-c new-session
-  # bind C-x kill-session
-  bind v split-window -h
-  bind h split-window -v
   bind C-r source-file ~/.tmux.conf \; display-message "~/.tmux.conf reloaded"
-  bind e neww -n emacs 'emacsclient -nw -c -a ""'
-  bind C-e neww -n emacs 'emacs -nw'
-  bind C-h neww -n htop htop
-  bind r neww -n fm ranger
-  bind C-r neww -n sfm 'sudo ranger'
-  bind M-r neww -n dl rtorrent
-  bind C-s neww -n su 'sudo -s'
-  bind t splitw -h -p 42 top
-  # bind u copy-mode
-  # bind -n C-Space copy-mode
-  # bind -n M-Space display-panes
   bind -n M-Up select-pane -U
   bind -n M-Down select-pane -D
   bind -n M-Left select-pane -L

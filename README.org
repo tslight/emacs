@@ -543,7 +543,7 @@ the shell commands to not be asynchronous...
     (ts-after-make-frame (selected-frame)))
 #+end_src
 
-** Turn off UI elements
+** Turn on/off UI elements
 
 #+begin_src emacs-lisp
   (if (not (eq system-type 'darwin))
@@ -553,6 +553,11 @@ the shell commands to not be asynchronous...
   (if (fboundp 'tooltip-mode) (tooltip-mode -1))
   (if (fboundp 'set-horizontal-scroll-bar-mode)
       (set-horizontal-scroll-bar-mode nil))
+#+end_src
+
+#+begin_src emacs-lisp
+  (display-time)
+  (display-battery-mode)
 #+end_src
 
 * Buffer Functions
