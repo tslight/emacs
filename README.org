@@ -455,7 +455,7 @@ https://www.reddit.com/r/emacs/comments/l42oep/suppress_nativecomp_warnings_buff
 Remap some default to saner options
 
 #+begin_src emacs-lisp
-  (keymap-global-set "M-;" 'comment-line)         ; comment-dwim by default
+  (keymap-global-set "C-;" 'comment-line)         ; comment-dwim by default
   (keymap-global-set "C-M-;" 'comment-dwim)       ; unbound by default
   (keymap-global-set "C-x C-;" 'comment-box)      ; comment-line by default
 #+end_src
@@ -1261,6 +1261,15 @@ https://microsoft.github.io/language-server-protocol/
   (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
   (add-hook 'lisp-interaction-mode-hook 'eldoc-mode)
   (add-hook 'lisp-mode-hook 'eldoc-mode)
+#+end_src
+
+** Emojify
+
+#+begin_src emacs-lisp
+  (use-package emojify
+    :config
+    (setq emojify-display-style 'unicode)
+    (setq emojify-emoji-styles '(unicode))) ; override binding in any mode
 #+end_src
 
 ** Electric
