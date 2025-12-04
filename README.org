@@ -1517,10 +1517,12 @@ Windows.
 ** Line Numbers
 
 #+begin_src emacs-lisp
-  (setq display-line-numbers 'relative)
-  (setq display-line-numbers-type 'relative)
-  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-  (add-hook 'sh-script-hook 'display-line-numbers-mode)
+  (use-package display-line-numbers
+    :config
+    (setq display-line-numbers 'relative)
+    :hook
+    (prog-mode . display-line-numbers-mode)
+    (sh-script-mode . display-line-numbers-mode))
 #+end_src
 
 ** Occur
@@ -1836,6 +1838,46 @@ Windows.
     (setq tramp-default-method "ssh")
     (setf tramp-persistency-file-name (concat temporary-file-directory "tramp-" (user-login-name)))
     (message "Lazy loaded tramp :-)"))
+#+end_src
+
+** Treesitter
+
+https://www.masteringemacs.org/article/how-to-get-started-tree-sitter
+
+#+begin_src emacs-lisp
+  (setq major-mode-remap-alist
+   '((yaml-mode . yaml-ts-mode)
+     (bash-mode . bash-ts-mode)
+     (js2-mode . js-ts-mode)
+     (go-mode . go-ts-mode)
+     (typescript-mode . typescript-ts-mode)
+     (json-mode . json-ts-mode)
+     (css-mode . css-ts-mode)
+     (python-mode . python-ts-mode)))
+
+  (setq treesit-language-source-alist
+     '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+       (cmake "https://github.com/uyha/tree-sitter-cmake")
+       (css "https://github.com/tree-sitter/tree-sitter-css")
+       (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+       (go "https://github.com/tree-sitter/tree-sitter-go")
+       (html "https://github.com/tree-sitter/tree-sitter-html")
+       (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+       (json "https://github.com/tree-sitter/tree-sitter-json")
+       (make "https://github.com/alemuller/tree-sitter-make")
+       (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+       (python "https://github.com/tree-sitter/tree-sitter-python")
+       (toml "https://github.com/tree-sitter/tree-sitter-toml")
+       (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+       (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+       (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+#+end_src
+
+Bulk install all the grammars as a one of task, so don't tangle!
+
+#+begin_src emacs-lisp :tangle no
+  (mapc #'treesit-install-language-grammar
+        (mapcar #'car treesit-language-source-alist))
 #+end_src
 
 ** Version Control
