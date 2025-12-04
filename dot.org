@@ -1414,9 +1414,6 @@ Stop the service:
       fi
   fi
 
-  PIPPATH="$(python3 -m site --user-base)"
-  [ -d "$PIPPATH/bin" ] && path=($PIPPATH/bin $path)
-
   export PATH
 
   umask 022
