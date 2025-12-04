@@ -455,9 +455,9 @@ https://www.reddit.com/r/emacs/comments/l42oep/suppress_nativecomp_warnings_buff
 Remap some default to saner options
 
 #+begin_src emacs-lisp
-  (keymap-global-set "C-;" 'comment-line)         ; comment-dwim by default
-  (keymap-global-set "C-M-;" 'comment-dwim)       ; unbound by default
-  (keymap-global-set "C-x C-;" 'comment-box)      ; comment-line by default
+  (bind-key* "C-;" 'comment-line)
+  (bind-key* "M-;" 'comment-dwim)
+  (bind-key* "C-M-;" 'comment-box)
 #+end_src
 
 Always do what I mean!
@@ -513,6 +513,7 @@ the shell commands to not be asynchronous...
   (keymap-global-set "C-&" 'async-shell-command)
   (keymap-global-set "C-|" 'shell-command-on-region)
   (keymap-global-set "C-$" 'ispell-word)
+  (keymap-global-set "C-x M-c" 'save-buffers-kill-emacs) ; to kill daemon
 #+end_src
 
 * Theme/UI
@@ -1265,6 +1266,8 @@ https://microsoft.github.io/language-server-protocol/
 
 ** Emojify
 
+Under ~C-x 8 e i~
+
 #+begin_src emacs-lisp
   (use-package emojify
     :config
@@ -1352,14 +1355,18 @@ https://microsoft.github.io/language-server-protocol/
 
 ** Flyspell
 
-Don't bother using this on Windows as I can rather be bothered to install
-[[http://aspell.net/win32/][Aspell]] for Windows.
+Don't bother using this on Windows as I can't be bothered to install [[http://aspell.net/win32/][Aspell]] for
+Windows.
 
 #+begin_src emacs-lisp :tangle (if (eq system-type 'windows-nt) "no" init-file)
-  (unless (eq system-type 'windows-nt)
-    (add-hook 'text-mode-hook 'flyspell-mode)
-    (add-hook 'org-mode-hook 'flyspell-mode)
-    (add-hook 'prog-mode-hook 'flyspell-prog-mode))
+  (use-package flyspell-mode
+    :hook
+    (org-mode . flyspell-mode)
+    (prog-mode . flyspell-mode)
+    (text-mode . flyspell-mode)
+    :bind (:map flyspell-mode-map
+                ("C-#" . flyspell-auto-correct-previous-word)
+                ("M-#" . flyspell-auto-correct-region)))
 #+end_src
 
 ** COMMENT Gnus
@@ -2296,6 +2303,12 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
     :mode ("\\.kbd\\'" . kanata-kbd-mode))
 #+end_src
 
+** KDL
+
+#+begin_src emacs-lisp
+  (use-package kdl-mode :ensure t)
+#+end_src
+
 ** Markdown
 
 #+begin_src emacs-lisp
@@ -2305,6 +2318,14 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
            ("\\.md\\'" . gfm-mode)
            ("\\.markdown\\'" . gfm-mode))
     :init (setq markdown-command "multimarkdown"))
+#+end_src
+
+** Nix
+
+Needs ~rnix-lsp~ or ~nixd~ for ~eglot~
+
+#+begin_src emacs-lisp
+  (use-package nix-mode :ensure t)
 #+end_src
 
 ** Org
