@@ -1727,40 +1727,9 @@ Stop the service:
 
           // You can change how the focus ring looks.
           focus-ring {
-                  // Uncomment this line to disable the focus ring.
-                  // off
-
-                  // How many logical pixels the ring extends out from the windows.
                   width 2
-
-                  // Colors can be set in a variety of ways:
-                  // - CSS named colors: "red"
-                  // - RGB hex: "#rgb", "#rgba", "#rrggbb", "#rrggbbaa"
-                  // - CSS-like notation: "rgb(255, 127, 0)", rgba(), hsl() and a few others.
-
-                  // Color of the ring on the active monitor.
                   active-color "#B28"
-
-                  // Color of the ring on inactive monitors.
-                  //
-                  // The focus ring only draws around the active window, so the only place
-                  // where you can see its inactive-color is on other monitors.
                   inactive-color "#627"
-
-                  // You can also use gradients. They take precedence over solid colors.
-                  // Gradients are rendered the same as CSS linear-gradient(angle, from, to).
-                  // The angle is the same as in linear-gradient, and is optional,
-                  // defaulting to 180 (top-to-bottom gradient).
-                  // You can use any CSS linear-gradient tool on the web to set these up.
-                  // Changing the color space is also supported, check the wiki for more info.
-                  //
-                  // active-gradient from="#80c8ff" to="#c7ff7f" angle=45
-
-                  // You can also color the gradient relative to the entire view
-                  // of the workspace, rather than relative to just the window itself.
-                  // To do that, set relative-to="workspace-view".
-                  //
-                  // inactive-gradient from="#505050" to="#808080" angle=45 relative-to="workspace-view"
           }
 
           border { off; }
@@ -1784,6 +1753,7 @@ Stop the service:
 
   // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
   spawn-sh-at-startup "wlsunset -l 51.50 -L -0.12"
+  spawn-sh-at-startup "swayidle -w timeout 300 'swaylock -c 000000' before-sleep 'swaylock -c 000000'"
 
   hotkey-overlay { skip-at-startup; }
 
@@ -1862,7 +1832,7 @@ Stop the service:
           Mod+T hotkey-overlay-title="Open Terminal" { spawn "kitty"; }
           Mod+W hotkey-overlay-title="Open Web Browser" { spawn "librewolf"; }
           Mod+Space hotkey-overlay-title="Launch Programs" { spawn "fuzzel"; }
-          Mod+Ctrl+Q hotkey-overlay-title="Lock Screen" { spawn "swaylock"; }
+          Mod+Ctrl+Q hotkey-overlay-title="Lock Screen" { spawn "swaylock" "-c" "000000"; }
           // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
           // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.
           Mod+E hotkey-overlay-title="Open Editor" { spawn-sh "emacsclient -c -a ''"; }
