@@ -1561,7 +1561,7 @@ Stop the service:
   set -g status-interval 60
   set -g status-left "[#S] "
   set -g status-left-length 50
-  set -g status-right "#(cat /sys/class/power_supply/BAT0/capacity)% %H:%M %a %d/%m/%y"
+  set -g status-right "#(cat /sys/class/power_supply/BAT0/capacity)% %H:%M %a %d/%m"
   set -g status-right-length 50
   set -g window-status-current-format "#I: #W.#P*"
 
