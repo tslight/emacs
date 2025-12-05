@@ -56,134 +56,6 @@ These blocks/this file is suitable for tangling on any Unix-like system.
   TAGS
   tags
 #+END_SRC
-* COMMENT KANATA
-
-https://precondition.github.io/home-row-mods
-
-[[./hrm.jpg]]
-
-https://www.reddit.com/r/ErgoMechKeyboards/comments/1bquz7q/kanata_or_kmonad/
-https://github.com/jtroo/kanata/discussions/1656
-https://github.com/jtroo/kanata/discussions/1455
-
-** MACOS
-
-Install the full Karabiner Elements, and carefully follow all of the prompts
-within Karabiner to make changes in the MacOS System Settings, which included,
-if I remember correctly, the following:
-
-#+begin_src text :tangle "no"
-  Login Items & Extensions > Karabiner-Elements Non-Privileged Agents (enable)
-  Login Items & Extensions > Karabiner-Elements Privileged Daemons (enable)
-  Login Items & Extensions > Driver Extensions > .Karabiner-VirtualHIDDevice-Manager (enable)
-#+end_src
-
-And not sure if all of these are required, but somewhere along the way I enabled these:
-Privacy & Security > Input Monitoring, enable for:
-
-#+begin_src text :tangle "no"
-  kanata
-  Karabiner-Core-Service
-  kitty
-#+end_src
-
-Then, importantly, QUIT Karabiner the app, AND, importantly, find and quit the
-Karabiner running in the MacOS menu bar (at the top of the screen). IF you
-don't do this, then Kanata will complain that something else is using the
-keyboard, and won't work.
-
-Possibly / Probably reboot again.
-
-THEN try running Kanata like so: ~sudo kanata --cfg your-config.kbd~
-
-#+begin_src kanata-kbd :tangle (if (eq system-type 'darwin) "/sudo::/opt/homebrew/etc/kanata.kbd" "no")
-  (defcfg
-    process-unmapped-keys yes
-  )
-
-  (defsrc
-    esc f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12
-    bspc
-    caps a s d f j k l ; ret
-    lsft rsft
-    fn lctl lalt lmet rmet ralt
-  )
-
-  (defvar
-    tap-time 200
-    hold-time 200
-  )
-
-  ;; https://precondition.github.io/home-row-mods#gasc
-  (defalias
-    aG (tap-hold $tap-time $hold-time a lmet)
-    sA (tap-hold $tap-time $hold-time s lalt)
-    dS (tap-hold $tap-time $hold-time d lsft)
-    fC (tap-hold $tap-time $hold-time f lctl)
-    jC (tap-hold $tap-time $hold-time j rctl)
-    kS (tap-hold $tap-time $hold-time k rsft)
-    lA (tap-hold $tap-time $hold-time l ralt)
-    ;G (tap-hold $tap-time $hold-time ; rmet)
-    fnl (tap-hold 200 200 fn (layer-toggle fn))
-  )
-
-  (deflayer base
-    caps brdn brup _ _ _ _ prev pp next mute vold volu
-    XX
-    esc @aG @sA @dS @fC @jC @kS @lA @;G XX
-    XX XX
-    @fnl XX XX bspc ret XX
-  )
-
-  (deflayer fn
-    caps f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12
-    _
-    esc _ _ _ _ _ _ _ _ _
-    _ _
-    fn _ _ _ _ _
-  )
-#+end_src
-
-#+begin_src xml :tangle (if (eq system-type 'darwin) "/sudo::/Library/LaunchDaemons/com.example.kanata.plist" "no")
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>Label</key>
-    <string>com.example.kanata</string>
-    <key>ProgramArguments</key>
-    <array>
-        <string>/opt/homebrew/bin/kanata</string>
-        <string>-c</string>
-        <string>/opt/homebrew/etc/kanata.kbd</string>
-    </array>
-    <key>RunAtLoad</key>
-    <true/>
-    <key>KeepAlive</key>
-    <true/>
-    <key>StandardOutPath</key>
-    <string>/Library/Logs/Kanata/kanata.out.log</string>
-    <key>StandardErrorPath</key>
-    <string>/Library/Logs/Kanata/kanata.err.log</string>
-</dict>
-</plist>
-#+end_src
-
-https://stackoverflow.com/a/23625658
-
-Start the service:
-
-#+begin_src sh /sudo:: :tangle "no"
-  sudo launchctl load /Library/LaunchDaemons/com.example.kanata.plist
-  sudo launchctl start com.example.kanata
-#+end_src
-
-Stop the service:
-
-#+begin_src sh /sudo:: :tangle "no"
-  sudo launchctl stop com.example.kanata
-  sudo launchctl unload /Library/LaunchDaemons/com.example.kanata.plist
-#+end_src
 * KARABINER
 
 #+BEGIN_SRC javascript :tangle (if (eq system-type 'darwin) "~/.config/karabiner/karabiner.json" "no")
@@ -1750,7 +1622,7 @@ Stop the service:
 
   // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
   spawn-sh-at-startup "wlsunset -l 51.50 -L -0.12"
-  spawn-sh-at-startup "swayidle -w timeout 300 'swaylock -c 000000' before-sleep 'swaylock -c 000000'"
+  spawn-sh-at-startup "swayidle -w timeout 120 'niri msg action power-off-monitors' timeout 300 'swaylock -c 000000' before-sleep 'swaylock -c 000000'"
 
   hotkey-overlay { skip-at-startup; }
 
@@ -2120,8 +1992,10 @@ Stop the service:
     "network": {
       "format-wifi": "{signalStrength}%",
       "format-ethernet": "🔌",
-      "tooltip-format": "{ifname}\n{essid}\n{ipaddr}/{cidr}\nVia: {gwaddr}\nUpload: {bandwidthUpBytes}\nDownload: {bandwidthDownBytes}",
+      "format-linked": "⛓️‍",
+      "format-disabled": "💥",
       "format-disconnected": "💥",
+      "tooltip-format": "{ifname}\n{essid}\n{ipaddr}/{cidr}\nVia: {gwaddr}\nUpload: {bandwidthUpBytes}\nDownload: {bandwidthDownBytes}",
     },
     "cpu": {
       "format": "{usage}%",
@@ -2160,7 +2034,7 @@ Stop the service:
       "format-full": "",
       "format-good": "🔋",
       "format-warning": "🪫",
-      "format-critical": "{capacity}%\n{time}\n🪫",
+      "format-critical": "{capacity}%🪫",
     },
     "idle_inhibitor": {
       "format": "{icon}",

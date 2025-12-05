@@ -1264,17 +1264,6 @@ https://microsoft.github.io/language-server-protocol/
   (add-hook 'lisp-mode-hook 'eldoc-mode)
 #+end_src
 
-** Emojify
-
-Under ~C-x 8 e i~
-
-#+begin_src emacs-lisp
-  (use-package emojify
-    :config
-    (setq emojify-display-style 'unicode)
-    (setq emojify-emoji-styles '(unicode))) ; override binding in any mode
-#+end_src
-
 ** Electric
 
 #+begin_src emacs-lisp
