@@ -513,7 +513,9 @@ the shell commands to not be asynchronous...
   (keymap-global-set "C-&" 'async-shell-command)
   (keymap-global-set "C-|" 'shell-command-on-region)
   (keymap-global-set "C-$" 'ispell-word)
+  (keymap-global-set "M-m" 'woman) ; to kill daemon
   (keymap-global-set "C-x M-c" 'save-buffers-kill-emacs) ; to kill daemon
+
 #+end_src
 
 * Theme/UI
