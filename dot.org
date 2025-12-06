@@ -1984,7 +1984,6 @@ These blocks/this file is suitable for tangling on any Unix-like system.
       "backlight",
       "pulseaudio",
       "battery",
-      "power-profiles-daemon",
       "temperature",
       "idle_inhibitor",
       "tray",
@@ -2047,17 +2046,6 @@ These blocks/this file is suitable for tangling on any Unix-like system.
       "format-discharging": "🪫",
       "format-discharging-warning": "🪫❗",
       "format-discharging-critical": "{capacity}%‼️",
-    },
-    "power-profiles-daemon": {
-      "format": "{icon}",
-      "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
-      "tooltip": true,
-      "format-icons": {
-        "default": "D",
-        "performance": "P",
-        "balanced": "B",
-        "power-saver": "S"
-      },
     },
     "idle_inhibitor": {
       "format": "{icon}",
