@@ -747,11 +747,7 @@ These blocks/this file is suitable for tangling on any Unix-like system.
           alias lsblk='diskutil list'
           alias rb='sudo reboot'
           alias srch='sudo /usr/libexec/locate.updatedb && locate -i'
-          command -v brew >/dev/null 2>&1 && alias update='brew update && brew upgrade --greedy && softwareupdate -i --all'
-          command -v osx-cpu-temp >/dev/null 2>&1 && alias temp='osx-cpu-temp -c -g -f'
           alias zzz='pmset sleepnow'
-          alias kanataStart="sudo launchctl load /Library/LaunchDaemons/com.example.kanata.plist && sudo launchctl start com.example.kanata"
-          alias kanataStop="sudo launchctl stop com.example.kanata && sudo launchctl unload /Library/LaunchDaemons/com.example.kanata.plist"
           ;;
       freebsd*)
           alias bye="sudo shutdown -p now"
@@ -760,12 +756,10 @@ These blocks/this file is suitable for tangling on any Unix-like system.
           alias ll='ls -laGh'
           alias grep='grep --color=always'
           alias lsblk='geom disk list'
-          alias update='sudo pkg update && sudo pkg upgrade'
           ;;
       linux*)
           alias bye="systemctl poweroff"
-          alias powertune='sudo powertop --auto-tune'
-          alias enabled_services='systemctl list-unit-files --state=enabled'
+          alias enabled_services='systemctl list-unit-files --state=enabled --type=service'
           alias ipa="ip -brief -color -pretty address | grep -v lo | grep UP"
           alias ls='ls --color=always'
           alias l='ls -F'
@@ -776,35 +770,6 @@ These blocks/this file is suitable for tangling on any Unix-like system.
           alias srch='sudo updatedb && locate -i'
           alias zzz='systemctl suspend'
           alias ZZZ='systemctl hibernate'
-          if command -v lsb_release &> /dev/null; then
-              case "$(lsb_release -is)" in
-                  Debian)
-                      alias update="sudo apt -t $(lsb_release -cs)-backports update -y && sudo apt -t $(lsb_release -cs)-backports dist-upgrade -y"
-                      alias install="sudo apt -t $(lsb_release -cs)-backports -y"
-                      ;;
-                  Ubuntu)
-                      alias update="sudo apt update -y && sudo apt dist-upgrade -y"
-                      alias install="sudo apt install -y"
-                      ;;
-                  Debian|Ubuntu)
-                      alias clean="sudo apt autoremove -y && sudo apt autoclean -y && sudo apt clean -y"
-                      alias purge="sudo apt purge -y"
-                      alias bat="batcat"
-                      ;;
-                  CentOS|Fedora)
-                      alias clean="sudo dnf autoremove"
-                      alias update="sudo dnf upgrade"
-                      alias install="sudo dnf install"
-                      alias remove="sudo dnf remove"
-                      ;;
-                  Arch*|Manjaro*)
-                      alias clean="sudo pacman -Rcns $(pacman -Qtdq)"
-                      alias update="sudo pacman --sync --refresh --sysupgrade"
-                      alias install="sudo pacman --sync --needed"
-                      alias remove="sudo pacman --remove --nosave --recursive --cascade"
-                      ;;
-              esac
-          fi
           ;;
       netbsd*)
           alias battery='envstat -d acpibat0'
@@ -814,8 +779,6 @@ These blocks/this file is suitable for tangling on any Unix-like system.
           alias la='ls -aF'
           alias ll='ls -Fhl'
           alias lla='ls -aFhl'
-          alias pkg='pkgin'
-          alias spkg='sudo pkgin'
           alias rb='shutdown -r now'
           alias zzz='sudo sysctl -w hw.acpi.sleep.state=3'
           ;;
@@ -828,83 +791,43 @@ These blocks/this file is suitable for tangling on any Unix-like system.
           alias ll='ls -Fhl'
           alias lla='ls -aFhl'
           alias lock='lock -np' # no timeout & use user's password
-          alias pkg_search='pkg_info -Q'
           alias sensors='sysctl hw.sensors'
           alias srch='doas /usr/libexec/locate.updatedb && locate -i'
           alias temp='sysctl hw.sensors | egrep -i "fan|temp"'
           ;;
   esac
 
-  alias add="awk '{s+=\$1} END {print s}'" # adds columns of numbers via stdin
   alias cp='cp -i'
   alias d='docker'
-  alias d2d='for f in *; do mv "$f" "${f// - /-}"; done' # convert ' - ' to '-'
   alias df='df -h'
   alias dh='dirs -v'
   alias du='du -h'
-  alias fuck='sudo $(history -p \!\!)'
+  alias e='emacs -nw'
+  alias ec='emacsclient -c -a "" -nw'
+  alias g='git'
   alias h='history'
-  alias ha='history 0'
   alias j='jobs -l'
+  alias k='kubectl'
   alias lc='grep -cv "^$"' # line count ignoring empty lines
-  alias m='make'
-  alias mc='make clean'
-  alias mi='make install clean'
+  alias m="make"
   alias mkdir='mkdir -p'
   alias mv='mv -i'
+  alias nixclean='sudo nix-collect-garbage --delete-older-than 10d'
   alias p='pwd'
-  alias path="echo "$PATH" | tr -s : \\\n"
   alias pg='pgrep -ail'
   alias ping4='ping -c 4'
-  alias pingg='ping -c 4 8.8.8.8'
-  alias pip='pip3'
-  alias python='python3'
-  alias py='python3'
+  alias pingg='ping -c 4 google.com'
   alias rm='rm -i'
-  alias s2us='for f in *; do mv "$f" "${f// /_}"; done' # convert ' ' to '_'
-  alias sshaa='eval $(ssh-agent) && ssh-add'
-  alias uc='grep -Ev "^#|^\s+#|^\t+#|^$"' # uncomment
+  alias se='sudoedit'
+  # https://github.com/areina/stumpwm.d/blob/master/applications.lisp
+  tmux_create_or_attach () {
+      [ -z "$TMUX" ] && \
+          { tmux -q has-session && tmux attach -d || tmux -u; } || \
+              { tmux new-session -d \; choose-tree -Zs; }
+  }
+  alias t='tmux_create_or_attach'
   alias up='uptime'
-
-  command -v bat >/dev/null 2>&1 && alias cat='bat'
-  command -v colordiff >/dev/null 2>&1 && alias diff='colordiff'
-  command -v emacs &>/dev/null && alias e='emacs -nw'
-  command -v emacsclient &>/dev/null && alias ec='emacsclient -c -a "" -nw'
-  command -v exa &>/dev/null && \
-      { \
-        alias l='exa'; \
-        alias la='exa --all'; \
-        alias ll='exa --long --group --git'; \
-      }
-  command -v git &>/dev/null && alias g='git'
-  command -v sudo &>/dev/null && alias se='sudoedit'
-
-  if command -v tmux &>/dev/null; then
-      # https://github.com/areina/stumpwm.d/blob/master/applications.lisp
-      tmux_create_or_attach () {
-          [ -z "$TMUX" ] && \
-              { tmux -q has-session && tmux attach -d || tmux -u; } || \
-                  { tmux new-session -d \; choose-tree -Zs; }
-      }
-      alias t='tmux_create_or_attach'
-  fi
-
-  if command -v vim &>/dev/null; then
-      alias vi="vim"
-  elif command -v nvim &> /dev/null; then
-      alias vi="nvim"
-  elif command -v elvis &> /dev/null; then
-      alias vi="elvis"
-  fi
-
-  if command -v kubectl &>/dev/null; then
-      alias k="kubectl"
-      alias kl="kubectl logs"
-      alias kx="kubectl exec --stdin --tty"
-      complete -F __start_kubectl k
-      complete -F __start_kubectl kl
-      complete -F __start_kubectl kx
-  fi
+  alias vi='nvim'
 #+END_SRC
 ** BASH
 *** BASH PROFILE
