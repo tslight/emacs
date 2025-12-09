@@ -51,6 +51,7 @@ on it, so turn it on first.
 #+begin_src emacs-lisp
   (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
   (setq auto-save-timeout 5)
+  (setq auto-save-visited-mode t)
 #+end_src
 
 ** Backups
@@ -1353,7 +1354,7 @@ Windows.
   (use-package flyspell-mode
     :hook
     (org-mode . flyspell-mode)
-    (prog-mode . flyspell-mode)
+    (prog-mode . flyspell-prog-mode)
     (text-mode . flyspell-mode)
     :bind (:map flyspell-mode-map
                 ("C-#" . flyspell-auto-correct-previous-word)
@@ -1884,18 +1885,6 @@ Bulk install all the grammars as a one of task, so don't tangle!
     :bind ("C-x v d" . vc-dir-root))
 #+end_src
 
-** Vundo
-
-Like ~undo-tree~ but doesn't hijack, modify or potentially corrupt the default,
-idiosyncratic, but very powerful built-in undo logic.
-
-However, sometimes it's easy to get lost all the undo/redo forks Emacs makes
-available, so a visual indication is fantastic.
-
-#+begin_src emacs-lisp
-  (use-package vundo :ensure :bind ("C-c u" . vundo))
-#+end_src
-
 ** Whitespace
 
 #+begin_src emacs-lisp
@@ -2320,6 +2309,15 @@ Don't tangle this block if ~system-type~ is ~windows-nt~.
     (before-save . gofmt-before-save))
 #+end_src
 
+** GPTel
+
+#+begin_src emacs-lisp
+  (use-package gptel :ensure
+    :config
+    (gptel-make-gh-copilot "copilot")
+    (setq gptel-backend (gptel-get-backend "copilot")))
+#+end_src
+
 ** Hungry delete
 
 #+begin_src emacs-lisp
@@ -2389,6 +2387,18 @@ Needs ~rnix-lsp~ or ~nixd~ for ~eglot~
 
 #+begin_src emacs-lisp
   (use-package terraform-mode :ensure)
+#+end_src
+
+** Vundo
+
+Like ~undo-tree~ but doesn't hijack, modify or potentially corrupt the default,
+idiosyncratic, but very powerful built-in undo logic.
+
+However, sometimes it's easy to get lost all the undo/redo forks Emacs makes
+available, so a visual indication is fantastic.
+
+#+begin_src emacs-lisp
+  (use-package vundo :ensure :bind ("C-c u" . vundo))
 #+end_src
 
 ** Web Mode
