@@ -19,20 +19,7 @@ These blocks/this file is suitable for tangling on any Unix-like system.
   [push]
   default = current
   [alias]
-  a = add
-  b = branch
-  c = commit
-  cl = clone
-  cm = commit -m
-  co = checkout
   l = log --graph --decorate --pretty=oneline --abbrev-commit
-  m = merge
-  P = pull
-  p = push
-  rb = rebase
-  rv = revert
-  r = remote
-  s = status
   [core]
   autocrlf = false
   whitespace = trailing-space,space-before-tab
@@ -723,96 +710,37 @@ These blocks/this file is suitable for tangling on any Unix-like system.
   terminal_select_modifiers ctrl
   hide_window_decorations yes
   clipboard_control write-clipboard write-primary no-append
-  # term xterm-kitty
-  term xterm-256color
   macos_option_as_alt yes
-  map ctrl+Tab        next_tab
-  map kitty_mod+Tab   previous_tab
+  map ctrl+Tab next_tab
+  map kitty_mod+Tab previous_tab
   map ctrl+Escape goto_tab -1
-  map ctrl+equal      change_font_size all +2.0
-  map ctrl+minus      change_font_size all -2.0
-  map kitty_mod+equal change_font_size all 0
+  map ctrl+equal change_font_size all +2.0
+  map ctrl+minus change_font_size all -2.0
+  map ctrl+0 change_font_size all 0
 #+END_SRC
 * SHELLS
 ** ALIASES
 #+BEGIN_SRC sh :tangle ~/.aliases
-  case "$OSTYPE" in
-      darwin*)
-          alias bye="sudo shutdown -h now"
-          alias cpu="sysctl -n machdep.cpu.brand_string"
-          alias enabled_services='sudo launchctl list'
-          alias grep='grep --color=always'
-          alias l='ls -Gh'
-          alias ll='ls -laGh'
-          alias lsblk='diskutil list'
-          alias rb='sudo reboot'
-          alias srch='sudo /usr/libexec/locate.updatedb && locate -i'
-          alias zzz='pmset sleepnow'
-          ;;
-      freebsd*)
-          alias bye="sudo shutdown -p now"
-          alias rb='sudo reboot'
-          alias l='ls -Gh'
-          alias ll='ls -laGh'
-          alias grep='grep --color=always'
-          alias lsblk='geom disk list'
-          ;;
-      linux*)
-          alias bye="systemctl poweroff"
-          alias enabled_services='systemctl list-unit-files --state=enabled --type=service'
-          alias ipa="ip -brief -color -pretty address | grep -v lo | grep UP"
-          alias ls='ls --color=always'
-          alias l='ls -F'
-          alias la='ls -aF'
-          alias ll='ls -Fhl'
-          alias lla='ls -aFhl'
-          alias rb='systemctl reboot'
-          alias srch='sudo updatedb && locate -i'
-          alias zzz='systemctl suspend'
-          alias ZZZ='systemctl hibernate'
-          ;;
-      netbsd*)
-          alias battery='envstat -d acpibat0'
-          alias bye='shutdown -p now'
-          alias l='ls -F'
-          alias l='ls -F'
-          alias la='ls -aF'
-          alias ll='ls -Fhl'
-          alias lla='ls -aFhl'
-          alias rb='shutdown -r now'
-          alias zzz='sudo sysctl -w hw.acpi.sleep.state=3'
-          ;;
-      openbsd*)
-          alias battery='sysctl -a | grep bat'
-          alias bye='shutdown -p now'
-          alias killall='zap -f'
-          alias l='ls -F'
-          alias la='ls -aF'
-          alias ll='ls -Fhl'
-          alias lla='ls -aFhl'
-          alias lock='lock -np' # no timeout & use user's password
-          alias sensors='sysctl hw.sensors'
-          alias srch='doas /usr/libexec/locate.updatedb && locate -i'
-          alias temp='sysctl hw.sensors | egrep -i "fan|temp"'
-          ;;
-  esac
-
   alias cp='cp -i'
   alias d='docker'
   alias df='df -h'
-  alias dh='dirs -v'
   alias du='du -h'
   alias e='emacs -nw'
   alias ec='emacsclient -c -a "" -nw'
   alias g='git'
+  alias grep='grep --color=always'
   alias h='history'
   alias j='jobs -l'
   alias k='kubectl'
-  alias lc='grep -cv "^$"' # line count ignoring empty lines
+  alias lc='tokei' # line count ignoring empty lines
+  alias l='lsd'
+  alias la='lsd -a'
+  alias ll='lsd -l'
+  alias lla='lsd -la'
+  alias lt='lsd --tree'
   alias m="make"
   alias mkdir='mkdir -p'
   alias mv='mv -i'
-  alias nixclean='sudo nix-collect-garbage --delete-older-than 10d'
   alias p='pwd'
   alias pg='pgrep -ail'
   alias ping4='ping -c 4'
@@ -826,176 +754,9 @@ These blocks/this file is suitable for tangling on any Unix-like system.
               { tmux new-session -d \; choose-tree -Zs; }
   }
   alias t='tmux_create_or_attach'
+  alias tree='lsd --tree'
   alias up='uptime'
   alias vi='nvim'
-#+END_SRC
-** BASH
-*** BASH PROFILE
-#+BEGIN_SRC sh :tangle ~/.bash_profile
-  #shellcheck disable=SC2155,SC1090,SC2093
-  [ -f "$HOME"/etc/profile ] && source "$HOME"/etc/profile
-  [ -f "$HOME"/.profile ] && source "$HOME"/.profile
-
-  export BLOCK_SIZE=human-readable
-  export EDITOR="emacsclient -c -nw"
-  export ALTERNATE_EDITOR=""
-  export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-  export PAGER="$(type -P less || type -P more)"
-  export GTK_THEME=Emacs
-
-  # Colorfull manpages (works with less as a pager)
-  # https://www.tecmint.com/view-colored-man-pages-in-linux/
-  export LESS_TERMCAP_mb=$'\e[1;32m'
-  export LESS_TERMCAP_md=$'\e[1;32m'
-  export LESS_TERMCAP_me=$'\e[0m'
-  export LESS_TERMCAP_se=$'\e[0m'
-  export LESS_TERMCAP_so=$'\e[01;33m'
-  export LESS_TERMCAP_ue=$'\e[0m'
-  export LESS_TERMCAP_us=$'\e[1;4;31m'
-
-  PATH="${HOME}/bin:${PATH}"
-  PATH="${HOME}/.local/bin:${PATH}"
-
-  [ -d "$HOME/go" ] && export GOPATH="$HOME/go"
-  [ -d "/usr/local/go" ] && export GOROOT="/usr/local/go"
-  [ -n "$GOROOT" ] && PATH="$GOROOT/bin:${PATH}"
-  [ -n "$GOPATH" ] && PATH="$GOPATH/bin:${PATH}"
-  export PATH
-
-  MANPATH="${HOME}/.local/share/man:${MANPATH}"
-  MANPATH="${HOME}/opt/share/man:${MANPATH}"
-  export MANPATH
-
-  umask 022
-
-  [ -f "$HOME"/.bashrc ] && source "$HOME"/.bashrc
-#+END_SRC
-
-*** BASHRC
-#+BEGIN_SRC sh :tangle ~/.bashrc
-  export HISTCONTROL=ignoreboth:erasedups
-  export HISTFILESIZE=999999
-  export HISTSIZE=999999
-  export HISTIGNORE="h:history:[bf]g:exit:^ll$:^lla$:^ls$"
-  export HISTTIMEFORMAT="%h %d %H:%M:%S "
-
-  [ -z "$PS1" ] && return # If not running interactively, don't do anything
-  [ -f /etc/bash.bashrc ] && source /etc/bash.bashrc
-  [ -f /usr/share/bash-completion/bash_completion ] && \
-      source /usr/share/bash-completion/bash_completion
-
-  # https://bugzilla.redhat.com/show_bug.cgi?id=878428
-  [ -f  /usr/share/git-core/contrib/completion/git-prompt.sh ] && \
-      . /usr/share/git-core/contrib/completion/git-prompt.sh
-  # https://stackoverflow.com/a/17508424
-  [ -f  /usr/share/git/completion/git-prompt.sh ] && \
-      . /usr/share/git/completion/git-prompt.sh
-
-  export RED="\\[\\e[1;31m\\]"
-  export GRN="\\[\\e[1;32m\\]"
-  export YEL="\\[\\e[1;33m\\]"
-  export MAG="\\[\\e[1;35m\\]"
-  export CYN="\\[\\e[1;36m\\]"
-  export OFF="\\[\\e[0m\\]"
-
-  export GIT_PS1_SHOWDIRTYSTATE=yes
-  export GIT_PS1_SHOWSTASHSTATE=yes
-  export GIT_PS1_SHOWUNTRACKEDFILES=true
-  export GIT_PS1_SHOWUPSTREAM=yes
-
-  if [ "$(id -u)" -eq 0 ]; then
-      export PS1="${RED}\\u${YEL}@${RED}\\h${YEL}:${MAG}\\W \\n${YEL}\$? \$ ${OFF}"
-  else
-      export PS1="${GRN}\\u${YEL}@${GRN}\\h${YEL}:${MAG}\\W \\n${YEL}\$? \$ ${OFF}"
-  fi
-
-  if [[ "${BASH_VERSINFO[0]}" -ge 4 ]]; then
-      shopt -s autocd       # cd without cd. who knew?
-      shopt -s checkjobs    # don't exit if we still have jobs running
-      shopt -s dirspell     # correct directory spelling
-      shopt -s globstar     # pattern match ** in filename context
-  fi
-
-  shopt -s cdspell      # correct minor cd spelling errors
-  shopt -s checkwinsize # update lines and columns when resizing
-  shopt -s cmdhist      # save multi line cmds as one entry
-  shopt -s dotglob      # show dotfiles when expanding
-  shopt -s extglob      # enable extended pattern matching
-  shopt -s histappend   # don't overwrite history file on exit
-  shopt -s nocaseglob   # match filename case insensitively
-  complete -cf sudo     # completion after sudo
-  complete -cf man      # same, but for man
-
-  [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-  stty -ixon # disable ctrl-s/q flow control
-
-  [ -f "$HOME"/.aliases ] && source "$HOME"/.aliases
-  [ -f "$HOME"/.functions ] && source "$HOME"/.functions
-
-  if command -v kubectl &>/dev/null; then
-      source <(kubectl completion bash)
-  fi
-#+END_SRC
-*** INPUTRC
-#+BEGIN_SRC sh :tangle ~/.inputrc
-  $include /etc/inputrc
-
-  set bell-style none
-  set show-all-if-ambiguous on
-  set show-all-if-unmodified on
-  set completion-ignore-case on
-
-  #menu-complete-display-prefix on
-  # TAB: menu-complete
-  # "\e[Z": menu-complete-backward
-
-  "\en": history-search-forward
-  "\ep": history-search-backward
-  "\em": "\C-a\eb\ed\C-y\e#man \C-y\C-m\C-p\C-p\C-a\C-d\C-e"
-  "\eh": "\C-a\eb\ed\C-y\e#man \C-y\C-m\C-p\C-p\C-a\C-d\C-e"
-
-  set keyseq-timeout 1200
-  set colored-stats on
-  set colored-completion-prefix on
-#+END_SRC
-
-** FUNCTIONS
-#+BEGIN_SRC sh :tangle ~/.functions
-  if echo "$0" | grep -q bash; then
-      if [ -d "$HOME"/bin/lib/bash ]; then
-          for f in "$HOME"/bin/lib/bash/*; do
-              source "$f"
-          done
-      fi
-  fi
-
-  cheat () {
-      curl cheat.sh/${1:-cheat};
-  }
-
-  dusort () {
-      # d1 = depth 1, sort -hr = human-readable & reverse
-      du -hd1 "$1" | sort -hr
-  }
-
-  mkcd () {
-      mkdir -p "$1" && cd "$1"
-  }
-
-  peek () {
-      tmux split-window -h -p 48 "$PAGER" "$@" || exit
-  }
-
-  weather() {
-      # https://twitter.com/igor_chubin # Try wttr moon
-      curl "https://wttr.in/${1:-London}"
-  }
-
-  moon() {
-      # https://twitter.com/igor_chubin # Try wttr moon
-      curl "https://wttr.in/${1:-moon}"
-  }
 #+END_SRC
 ** ZSH
 *** ZSHENV
@@ -1010,8 +771,6 @@ These blocks/this file is suitable for tangling on any Unix-like system.
   export BLOCK_SIZE=human-readable
   export DIRSTACKSIZE=12
   export KEYTIMEOUT=1
-  export EMPLOYER="oe-developers"
-  export DEVPATH="$HOME/$EMPLOYER"
 
   WORDCHARS=${WORDCHARS/\-} # adds - to word delimiter
   WORDCHARS=${WORDCHARS/\.} # adds . to word delimiter
@@ -1023,14 +782,12 @@ These blocks/this file is suitable for tangling on any Unix-like system.
 
   [ -d "$HOME/go" ] && export GOPATH="$HOME/go"
   command -v brew &> /dev/null && export GOROOT="$(brew --prefix golang)/libexec"
-  [ -d "/usr/local/go" ] && export GOROOT="/usr/local/go"
 
   typeset -U CDPATH cdpath
   # https://superuser.com/a/1054825
   cdpath=(
       $HOME
       $HOME/src
-      "$HOME/$EMPLOYER"
       $cdpath
   )
 
@@ -1042,20 +799,6 @@ These blocks/this file is suitable for tangling on any Unix-like system.
       $GOROOT/bin
       $path
   )
-
-  if [[ "$(uname)" == "Darwin" ]]; then
-      if [[ "$(arch)" == "i386" ]]; then
-          alias ibrew='arch -x86_64 /usr/local/homebrew/bin/brew'
-          if [[ -d /usr/local/homebrew/bin ]]; then
-              path=(/usr/local/homebrew/bin $path)
-          fi
-          if [[ -d /usr/local/homebrew/Caskroom/miniconda/base/bin ]]; then
-              path=(/usr/local/homebrew/Caskroom/miniconda/base/bin $path)
-          fi
-      elif [[ "$(arch)" == "arm64" &&  -d  /opt/homebrew/Caskroom/miniconda/base/bin ]]; then
-          path=(/opt/homebrew/Caskroom/miniconda/base/bin $path)
-      fi
-  fi
 
   export PATH
 
@@ -1104,11 +847,6 @@ These blocks/this file is suitable for tangling on any Unix-like system.
   # I turn it off because it breaks mine..
   ttyctl -f                     # avoid having to manually reset the terminal
 
-  # bindkey -v # vi style bindings
-  exit_zsh() { exit }
-  zle -N exit_zsh
-  # bindkey '^D' exit_zsh
-
   bindkey '^[[Z' reverse-menu-complete # shift-tab cycles backwards
   bindkey \^U backward-kill-line # ctrl-u (whole-line by default)
 
@@ -1127,10 +865,6 @@ These blocks/this file is suitable for tangling on any Unix-like system.
   bindkey "^[[B" down-line-or-beginning-search
 
   [[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ ' # emacs tramp workaround
-
-  # Directory shortcuts
-  hash -d src=$HOME/src
-  hash -d wrk="$HOME/$EMPLOYER"
 
   command -v kubectl &>/dev/null && source <(kubectl completion zsh)
 
@@ -1165,14 +899,6 @@ These blocks/this file is suitable for tangling on any Unix-like system.
 * TMUX
 
 #+BEGIN_SRC conf :tangle ~/.tmux.conf
-  ## RE-BIND PREFIX
-  # set -g prefix C-j
-  # unbind-key C-b
-  # bind C-j send-prefix
-
-  set -g allow-passthrough on
-  set -ga update-environment TERM
-  set -ga update-environment TERM_PROGRAM
   ## MISC
   set -g base-index 1
   set -g pane-base-index 1
@@ -1181,9 +907,12 @@ These blocks/this file is suitable for tangling on any Unix-like system.
   set -g set-titles on
   set -g set-titles-string "#T: [#S] #I: #W: #P"
   set -g display-panes-time 4000 # I'm slow and indecisive!
-  # set -g default-terminal "screen-256color"
   set -g escape-time 0 # default is 500ms which feels like forever..
-  #set -g mode-keys vi
+
+  # For images in Yazi
+  set -g allow-passthrough on
+  set -ga update-environment TERM
+  set -ga update-environment TERM_PROGRAM
 
   ## STATUS BAR
   set-option -g status-interval 5
@@ -1201,7 +930,7 @@ These blocks/this file is suitable for tangling on any Unix-like system.
   set -g status-interval 60
   set -g status-left "[#S] "
   set -g status-left-length 50
-  set -g status-right "#(cat /sys/class/power_supply/BAT0/capacity)% %H:%M %a %d/%m"
+  set -g status-right "%H:%M %a %d/%m"
   set -g status-right-length 50
   set -g window-status-current-format "#I: #W.#P*"
 
@@ -1210,39 +939,7 @@ These blocks/this file is suitable for tangling on any Unix-like system.
   bind -n MouseDown2Status copy-mode
 
   ## KEYS
-  bind C-l switch-client -l
-  bind C-c new-session
   bind C-r source-file ~/.tmux.conf \; display-message "~/.tmux.conf reloaded"
-  bind -n M-Up select-pane -U
-  bind -n M-Down select-pane -D
-  bind -n M-Left select-pane -L
-  bind -n M-Right select-pane -R
-  bind -n C-Up resize-pane -U 5
-  bind -n C-Down resize-pane -D 5
-  bind -n C-Left resize-pane -L 5
-  bind -n C-Right resize-pane -R 5
-  # copy to system clipboard using xsel
-  bind -T copy-mode C-w send -X copy-pipe "xsel -i -b"
-  bind -T copy-mode w send -X copy-pipe "xsel -i -b"
-  bind -T copy-mode MouseDragEnd1Pane send -X copy-pipe-and-cancel "xsel -i -b"
-  bind -T copy-mode Space send -X begin-selection
-  bind -T copy-mode k send -X copy-end-of-line "xsel -i -b"
-  # copy mode motion
-  bind -T copy-mode b send -X cursor-left
-  bind -T copy-mode f send -X cursor-right
-  bind -T copy-mode n send -X cursor-down
-  bind -T copy-mode p send -X cursor-up
-  bind -T copy-mode a send -X start-of-line
-  bind -T copy-mode e send -X end-of-line
-  bind -T copy-mode [ send -X previous-paragraph
-  bind -T copy-mode ] send -X next-paragraph
-  bind -T copy-mode C-< send -X top-line
-  bind -T copy-mode C-> send -X bottom-line
-  bind -T copy-mode < send -X history-top
-  bind -T copy-mode > send -X history-bottom
-  # search pane
-  bind -T copy-mode r command-prompt -i -I "#{pane_search_string}" -p "(search up)" "send -X search-backward-incremental \"%%%\""
-  bind -T copy-mode s command-prompt -i -I "#{pane_search_string}" -p "(search down)" "send -X search-forward-incremental \"%%%\""
 #+END_SRC
 * WAYLAND
 *** FUZZEL
@@ -1276,136 +973,136 @@ These blocks/this file is suitable for tangling on any Unix-like system.
   // Find the full list of options on the wiki:
   // https://yalter.github.io/niri/Configuration:-Input
   input {
-          keyboard {
-                  xkb {
-                          layout "gb"
-                          // options "grp:win_space_toggle,compose:ralt,ctrl:nocaps"
-                  }
+    keyboard {
+      xkb {
+        layout "gb"
+        // options "grp:win_space_toggle,compose:ralt,ctrl:nocaps"
+      }
 
-                  // Enable numlock on startup, omitting this setting disables it.
-                  numlock
-          }
+      // Enable numlock on startup, omitting this setting disables it.
+      numlock
+    }
 
-          touchpad {
-                  // off
-                  tap
-                  // dwt
-                  // dwtp
-                  // drag false
-                  // drag-lock
-                  natural-scroll
-                  // accel-speed 0.2
-                  // accel-profile "flat"
-                  // scroll-method "two-finger"
-                  // disabled-on-external-mouse
-          }
+    touchpad {
+      // off
+      tap
+      // dwt
+      // dwtp
+      // drag false
+      // drag-lock
+      natural-scroll
+      // accel-speed 0.2
+      // accel-profile "flat"
+      // scroll-method "two-finger"
+      // disabled-on-external-mouse
+    }
 
-          mouse {
-                  // off
-                  // natural-scroll
-                  // accel-speed 0.2
-                  // accel-profile "flat"
-                  // scroll-method "no-scroll"
-          }
+    mouse {
+      // off
+      // natural-scroll
+      // accel-speed 0.2
+      // accel-profile "flat"
+      // scroll-method "no-scroll"
+    }
 
-          trackpoint {
-                  // off
-                  // natural-scroll
-                  // accel-speed 0.2
-                  // accel-profile "flat"
-                  // scroll-method "on-button-down"
-                  // scroll-button 273
-                  // scroll-button-lock
-                  // middle-emulation
-          }
+    trackpoint {
+      // off
+      // natural-scroll
+      // accel-speed 0.2
+      // accel-profile "flat"
+      // scroll-method "on-button-down"
+      // scroll-button 273
+      // scroll-button-lock
+      // middle-emulation
+    }
 
-          // Uncomment this to make the mouse warp to the center of newly focused windows.
-          // warp-mouse-to-focus
+    // Uncomment this to make the mouse warp to the center of newly focused windows.
+    // warp-mouse-to-focus
 
-          // Focus windows and outputs automatically when moving the mouse into them.
-          // Setting max-scroll-amount="0%" makes it work only on windows already fully on screen.
-          // focus-follows-mouse max-scroll-amount="0%"
+    // Focus windows and outputs automatically when moving the mouse into them.
+    // Setting max-scroll-amount="0%" makes it work only on windows already fully on screen.
+    // focus-follows-mouse max-scroll-amount="0%"
   }
 
   // Find more information on the wiki:
   // https://yalter.github.io/niri/Configuration:-Outputs
   output "eDP-1" {
-          background-color "#000"
-          backdrop-color "#203"
+    background-color "#000"
+    backdrop-color "#203"
   }
   output "DP-1" {
-          focus-at-startup
-          background-color "#000"
-          backdrop-color "#203"
+    focus-at-startup
+    background-color "#000"
+    backdrop-color "#203"
   }
 
   // https://yalter.github.io/niri/Configuration:-Layout
   layout {
-          // Set gaps around windows in logical pixels.
-          gaps 0
-          background-color "#000"
+    // Set gaps around windows in logical pixels.
+    gaps 0
+    background-color "#000"
 
-          // When to center a column when changing focus, options are:
-          // - "never", default behavior, focusing an off-screen column will keep at the left
-          //   or right edge of the screen.
-          // - "always", the focused column will always be centered.
-          // - "on-overflow", focusing a column will center it if it doesn't fit
-          //   together with the previously focused column.
-          center-focused-column "never"
+    // When to center a column when changing focus, options are:
+    // - "never", default behavior, focusing an off-screen column will keep at the left
+    //   or right edge of the screen.
+    // - "always", the focused column will always be centered.
+    // - "on-overflow", focusing a column will center it if it doesn't fit
+    //   together with the previously focused column.
+    center-focused-column "never"
 
-          // You can customize the widths that "switch-preset-column-width" (Mod+R) toggles between.
-          preset-column-widths {
-                  // Proportion sets the width as a fraction of the output width, taking gaps into account.
-                  // For example, you can perfectly fit four windows sized "proportion 0.25" on an output.
-                  // The default preset widths are 1/3, 1/2 and 2/3 of the output.
-                  proportion 0.33333
-                  proportion 0.5
-                  proportion 0.66667
-                  proportion 0.99999
-                  // Fixed sets the width in logical pixels exactly.
-                  // fixed 1920
-          }
+    // You can customize the widths that "switch-preset-column-width" (Mod+R) toggles between.
+    preset-column-widths {
+      // Proportion sets the width as a fraction of the output width, taking gaps into account.
+      // For example, you can perfectly fit four windows sized "proportion 0.25" on an output.
+      // The default preset widths are 1/3, 1/2 and 2/3 of the output.
+      proportion 0.33333
+      proportion 0.5
+      proportion 0.66667
+      proportion 0.99999
+      // Fixed sets the width in logical pixels exactly.
+      // fixed 1920
+    }
 
-          // You can also customize the heights that "switch-preset-window-height" (Mod+Shift+R) toggles between.
-          // preset-window-heights { }
+    // You can also customize the heights that "switch-preset-window-height" (Mod+Shift+R) toggles between.
+    // preset-window-heights { }
 
-          // You can change the default width of the new windows.
-          default-column-width { proportion 0.99999; }
-          // If you leave the brackets empty, the windows themselves will decide their initial width.
-          // default-column-width {}
+    // You can change the default width of the new windows.
+    default-column-width { proportion 0.99999; }
+    // If you leave the brackets empty, the windows themselves will decide their initial width.
+    // default-column-width {}
 
-          // By default focus ring and border are rendered as a solid background rectangle
-          // behind windows. That is, they will show up through semitransparent windows.
-          // This is because windows using client-side decorations can have an arbitrary shape.
-          //
-          // If you don't like that, you should uncomment `prefer-no-csd` below.
-          // Niri will draw focus ring and border *around* windows that agree to omit their
-          // client-side decorations.
-          //
-          // Alternatively, you can override it with a window rule called
-          // `draw-border-with-background`.
+    // By default focus ring and border are rendered as a solid background rectangle
+    // behind windows. That is, they will show up through semitransparent windows.
+    // This is because windows using client-side decorations can have an arbitrary shape.
+    //
+    // If you don't like that, you should uncomment `prefer-no-csd` below.
+    // Niri will draw focus ring and border *around* windows that agree to omit their
+    // client-side decorations.
+    //
+    // Alternatively, you can override it with a window rule called
+    // `draw-border-with-background`.
 
-          // You can change how the focus ring looks.
-          focus-ring {
-                  width 2
-                  active-color "#B28"
-                  inactive-color "#627"
-          }
+    // You can change how the focus ring looks.
+    focus-ring {
+      width 2
+      active-color "#B28"
+      inactive-color "#627"
+    }
 
-          border { off; }
-          shadow { off; }
+    border { off; }
+    shadow { off; }
 
-          // Struts shrink the area occupied by windows, similarly to layer-shell panels.
-          // You can think of them as a kind of outer gaps. They are set in logical pixels.
-          // Left and right struts will cause the next window to the side to always be visible.
-          // Top and bottom struts will simply add outer gaps in addition to the area occupied by
-          // layer-shell panels and regular gaps.
-          struts {
-                  // left 64
-                  // right 64
-                  // top 64
-                  // bottom 64
-          }
+    // Struts shrink the area occupied by windows, similarly to layer-shell panels.
+    // You can think of them as a kind of outer gaps. They are set in logical pixels.
+    // Left and right struts will cause the next window to the side to always be visible.
+    // Top and bottom struts will simply add outer gaps in addition to the area occupied by
+    // layer-shell panels and regular gaps.
+    struts {
+      // left 64
+      // right 64
+      // top 64
+      // bottom 64
+    }
   }
 
   // Note that running niri as a session supports xdg-desktop-autostart,
@@ -1438,324 +1135,324 @@ These blocks/this file is suitable for tangling on any Unix-like system.
   // Work around WezTerm's initial configure bug
   // by setting an empty default-column-width.
   window-rule {
-          // This regular expression is intentionally made as specific as possible,
-          // since this is the default config, and we want no false positives.
-          // You can get away with just app-id="wezterm" if you want.
-          match app-id=r#"^org\.wezfurlong\.wezterm$"#
-          default-column-width {}
+    // This regular expression is intentionally made as specific as possible,
+    // since this is the default config, and we want no false positives.
+    // You can get away with just app-id="wezterm" if you want.
+    match app-id=r#"^org\.wezfurlong\.wezterm$"#
+    default-column-width {}
   }
 
   // Open the Firefox picture-in-picture player as floating by default.
   window-rule {
-          // This app-id regular expression will work for both:
-          // - host Firefox (app-id is "firefox")
-          // - Flatpak Firefox (app-id is "org.mozilla.firefox")
-          match app-id=r#"firefox$"# title="^Picture-in-Picture$"
-          open-floating true
+    // This app-id regular expression will work for both:
+    // - host Firefox (app-id is "firefox")
+    // - Flatpak Firefox (app-id is "org.mozilla.firefox")
+    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    open-floating true
   }
 
   // Example: block out two password managers from screen capture.
   // (This example rule is commented out with a "/-" in front.)
   /-window-rule {
-          match app-id=r#"^org\.keepassxc\.KeePassXC$"#
-          match app-id=r#"^org\.gnome\.World\.Secrets$"#
+    match app-id=r#"^org\.keepassxc\.KeePassXC$"#
+    match app-id=r#"^org\.gnome\.World\.Secrets$"#
 
-          block-out-from "screen-capture"
+    block-out-from "screen-capture"
 
-          // Use this instead if you want them visible on third-party screenshot tools.
-          // block-out-from "screencast"
+    // Use this instead if you want them visible on third-party screenshot tools.
+    // block-out-from "screencast"
   }
 
   // Example: enable rounded corners for all windows.
   // (This example rule is commented out with a "/-" in front.)
   /-window-rule {
-          geometry-corner-radius 12
-          clip-to-geometry true
+    geometry-corner-radius 12
+    clip-to-geometry true
   }
 
   binds {
-          // Keys consist of modifiers separated by + signs, followed by an XKB key name
-          // in the end. To find an XKB name for a particular key, you may use a program
-          // like wev.
-          //
-          // "Mod" is a special modifier equal to Super when running on a TTY, and to Alt
-          // when running as a winit window.
-          //
-          // Most actions that you can bind here can also be invoked programmatically with
-          // `niri msg action do-something`.
+    // Keys consist of modifiers separated by + signs, followed by an XKB key name
+    // in the end. To find an XKB name for a particular key, you may use a program
+    // like wev.
+    //
+    // "Mod" is a special modifier equal to Super when running on a TTY, and to Alt
+    // when running as a winit window.
+    //
+    // Most actions that you can bind here can also be invoked programmatically with
+    // `niri msg action do-something`.
 
-          // Mod-Shift-/, which is usually the same as Mod-?,
-          // shows a list of important hotkeys.
-          Mod+Slash { show-hotkey-overlay; }
+    // Mod-Shift-/, which is usually the same as Mod-?,
+    // shows a list of important hotkeys.
+    Mod+Slash { show-hotkey-overlay; }
 
-          // Suggested binds for running programs: terminal, app launcher, screen locker.
-          Mod+T hotkey-overlay-title="Open Terminal" { spawn "kitty"; }
-          Mod+W hotkey-overlay-title="Open Web Browser" { spawn "librewolf"; }
-          Mod+Space hotkey-overlay-title="Launch Programs" { spawn "fuzzel"; }
-          Mod+Ctrl+Q hotkey-overlay-title="Lock Screen" { spawn "swaylock" "-c" "000000"; }
-          // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
-          // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.
-          Mod+E hotkey-overlay-title="Open Editor" { spawn-sh "emacsclient -c -a ''"; }
+    // Suggested binds for running programs: terminal, app launcher, screen locker.
+    Mod+T hotkey-overlay-title="Open Terminal" { spawn "nirirun" "kitty"; }
+    Mod+W hotkey-overlay-title="Open Web Browser" { spawn "nirirun" "librewolf"; }
+    Mod+Space hotkey-overlay-title="Launch Programs" { spawn "fuzzel"; }
+    Mod+Ctrl+Q hotkey-overlay-title="Lock Screen" { spawn "swaylock" "-c" "000000"; }
+    // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
+    // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.
+    Mod+E hotkey-overlay-title="Open Editor" { spawn-sh "nirirun -c 'emacs' emacsclient -c -a ''"; }
 
-          // Example volume keys mappings for PipeWire & WirePlumber.
-          // The allow-when-locked=true property makes them work even when the session is locked.
-          // Using spawn-sh allows to pass multiple arguments together with the command.
-          // "-l 1.0" limits the volume to 100%.
-          XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
-          XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
-          XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+"; }
-          XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
-          F1                   allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
-          F2                   allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
-          F3                   allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+"; }
-          F4                   allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+    // Example volume keys mappings for PipeWire & WirePlumber.
+    // The allow-when-locked=true property makes them work even when the session is locked.
+    // Using spawn-sh allows to pass multiple arguments together with the command.
+    // "-l 1.0" limits the volume to 100%.
+    XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
+    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+"; }
+    XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+    F1                   allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    F2                   allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
+    F3                   allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+"; }
+    F4                   allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
 
-          // Example media keys mapping using playerctl.
-          // This will work with any MPRIS-enabled media player.
-          XF86AudioPlay        allow-when-locked=true { spawn-sh "playerctl play-pause"; }
-          XF86AudioStop        allow-when-locked=true { spawn-sh "playerctl stop"; }
-          XF86AudioPrev        allow-when-locked=true { spawn-sh "playerctl previous"; }
-          XF86AudioNext        allow-when-locked=true { spawn-sh "playerctl next"; }
-          F9                   allow-when-locked=true { spawn-sh "playerctl play-pause"; }
-          F10                  allow-when-locked=true { spawn-sh "playerctl stop"; }
-          F11                  allow-when-locked=true { spawn-sh "playerctl previous"; }
-          F12                  allow-when-locked=true { spawn-sh "playerctl next"; }
+    // Example media keys mapping using playerctl.
+    // This will work with any MPRIS-enabled media player.
+    XF86AudioPlay        allow-when-locked=true { spawn-sh "playerctl play-pause"; }
+    XF86AudioStop        allow-when-locked=true { spawn-sh "playerctl stop"; }
+    XF86AudioPrev        allow-when-locked=true { spawn-sh "playerctl previous"; }
+    XF86AudioNext        allow-when-locked=true { spawn-sh "playerctl next"; }
+    F9                   allow-when-locked=true { spawn-sh "playerctl play-pause"; }
+    F10                  allow-when-locked=true { spawn-sh "playerctl stop"; }
+    F11                  allow-when-locked=true { spawn-sh "playerctl previous"; }
+    F12                  allow-when-locked=true { spawn-sh "playerctl next"; }
 
-          // Example brightness key mappings for brightnessctl.
-          // You can use regular spawn with multiple arguments too (to avoid going through "sh"),
-          // but you need to manually put each argument in separate "" quotes.
-          XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
-          XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
-          F5                    allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
-          F6                    allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
+    // Example brightness key mappings for brightnessctl.
+    // You can use regular spawn with multiple arguments too (to avoid going through "sh"),
+    // but you need to manually put each argument in separate "" quotes.
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
+    F5                    allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
+    F6                    allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
 
-          // Open/close the Overview: a zoomed-out view of workspaces and windows.
-          // You can also move the mouse into the top-left hot corner,
-          // or do a four-finger swipe up on a touchpad.
-          Mod+O repeat=false { toggle-overview; }
+    // Open/close the Overview: a zoomed-out view of workspaces and windows.
+    // You can also move the mouse into the top-left hot corner,
+    // or do a four-finger swipe up on a touchpad.
+    Mod+O repeat=false { toggle-overview; }
 
-          Mod+Q repeat=false { close-window; }
+    Mod+Q repeat=false { close-window; }
 
-          Mod+Left  { focus-column-left; }
-          Mod+Down  { focus-window-down; }
-          Mod+Up    { focus-window-up; }
-          Mod+Right { focus-column-right; }
-          Mod+H     { focus-column-left; }
-          Mod+J     { focus-window-down; }
-          Mod+K     { focus-window-up; }
-          Mod+L     { focus-column-right; }
+    Mod+Left  { focus-column-left; }
+    Mod+Down  { focus-window-down; }
+    Mod+Up    { focus-window-up; }
+    Mod+Right { focus-column-right; }
+    Mod+H     { focus-column-left; }
+    Mod+J     { focus-window-down; }
+    Mod+K     { focus-window-up; }
+    Mod+L     { focus-column-right; }
 
-          Mod+Ctrl+Left  { move-column-left; }
-          Mod+Ctrl+Down  { move-window-down; }
-          Mod+Ctrl+Up    { move-window-up; }
-          Mod+Ctrl+Right { move-column-right; }
-          Mod+Ctrl+H     { move-column-left; }
-          Mod+Ctrl+J     { move-window-down; }
-          Mod+Ctrl+K     { move-window-up; }
-          Mod+Ctrl+L     { move-column-right; }
+    Mod+Ctrl+Left  { move-column-left; }
+    Mod+Ctrl+Down  { move-window-down; }
+    Mod+Ctrl+Up    { move-window-up; }
+    Mod+Ctrl+Right { move-column-right; }
+    Mod+Ctrl+H     { move-column-left; }
+    Mod+Ctrl+J     { move-window-down; }
+    Mod+Ctrl+K     { move-window-up; }
+    Mod+Ctrl+L     { move-column-right; }
 
-          // Alternative commands that move across workspaces when reaching
-          // the first or last window in a column.
-          // Mod+J     { focus-window-or-workspace-down; }
-          // Mod+K     { focus-window-or-workspace-up; }
-          // Mod+Ctrl+J     { move-window-down-or-to-workspace-down; }
-          // Mod+Ctrl+K     { move-window-up-or-to-workspace-up; }
+    // Alternative commands that move across workspaces when reaching
+    // the first or last window in a column.
+    // Mod+J     { focus-window-or-workspace-down; }
+    // Mod+K     { focus-window-or-workspace-up; }
+    // Mod+Ctrl+J     { move-window-down-or-to-workspace-down; }
+    // Mod+Ctrl+K     { move-window-up-or-to-workspace-up; }
 
-          Mod+Home { focus-column-first; }
-          Mod+End  { focus-column-last; }
-          Mod+Ctrl+Home { move-column-to-first; }
-          Mod+Ctrl+End  { move-column-to-last; }
+    Mod+Home { focus-column-first; }
+    Mod+End  { focus-column-last; }
+    Mod+Ctrl+Home { move-column-to-first; }
+    Mod+Ctrl+End  { move-column-to-last; }
 
-          Mod+Shift+Left  { focus-monitor-left; }
-          Mod+Shift+Down  { focus-monitor-down; }
-          Mod+Shift+Up    { focus-monitor-up; }
-          Mod+Shift+Right { focus-monitor-right; }
-          Mod+Shift+H     { focus-monitor-left; }
-          Mod+Shift+J     { focus-monitor-down; }
-          Mod+Shift+K     { focus-monitor-up; }
-          Mod+Shift+L     { focus-monitor-right; }
+    Mod+Shift+Left  { focus-monitor-left; }
+    Mod+Shift+Down  { focus-monitor-down; }
+    Mod+Shift+Up    { focus-monitor-up; }
+    Mod+Shift+Right { focus-monitor-right; }
+    Mod+Shift+H     { focus-monitor-left; }
+    Mod+Shift+J     { focus-monitor-down; }
+    Mod+Shift+K     { focus-monitor-up; }
+    Mod+Shift+L     { focus-monitor-right; }
 
-          Mod+Alt+Ctrl+Left  { move-column-to-monitor-left; }
-          Mod+Alt+Ctrl+Down  { move-column-to-monitor-down; }
-          Mod+Alt+Ctrl+Up    { move-column-to-monitor-up; }
-          Mod+Alt+Ctrl+Right { move-column-to-monitor-right; }
-          Mod+Alt+Ctrl+H     { move-column-to-monitor-left; }
-          Mod+Alt+Ctrl+J     { move-column-to-monitor-down; }
-          Mod+Alt+Ctrl+K     { move-column-to-monitor-up; }
-          Mod+Alt+Ctrl+L     { move-column-to-monitor-right; }
+    Mod+Alt+Ctrl+Left  { move-column-to-monitor-left; }
+    Mod+Alt+Ctrl+Down  { move-column-to-monitor-down; }
+    Mod+Alt+Ctrl+Up    { move-column-to-monitor-up; }
+    Mod+Alt+Ctrl+Right { move-column-to-monitor-right; }
+    Mod+Alt+Ctrl+H     { move-column-to-monitor-left; }
+    Mod+Alt+Ctrl+J     { move-column-to-monitor-down; }
+    Mod+Alt+Ctrl+K     { move-column-to-monitor-up; }
+    Mod+Alt+Ctrl+L     { move-column-to-monitor-right; }
 
-          // Alternatively, there are commands to move just a single window:
-          // Mod+Shift+Ctrl+Left  { move-window-to-monitor-left; }
-          // ...
+    // Alternatively, there are commands to move just a single window:
+    // Mod+Shift+Ctrl+Left  { move-window-to-monitor-left; }
+    // ...
 
-          // And you can also move a whole workspace to another monitor:
-          // Mod+Shift+Ctrl+Left  { move-workspace-to-monitor-left; }
-          // ...
+    // And you can also move a whole workspace to another monitor:
+    // Mod+Shift+Ctrl+Left  { move-workspace-to-monitor-left; }
+    // ...
 
-          Mod+Page_Down      { focus-workspace-down; }
-          Mod+Page_Up        { focus-workspace-up; }
-          Mod+U              { focus-workspace-down; }
-          Mod+I              { focus-workspace-up; }
-          Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
-          Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
-          Mod+Ctrl+U         { move-column-to-workspace-down; }
-          Mod+Ctrl+I         { move-column-to-workspace-up; }
+    Mod+Page_Down      { focus-workspace-down; }
+    Mod+Page_Up        { focus-workspace-up; }
+    Mod+U              { focus-workspace-down; }
+    Mod+I              { focus-workspace-up; }
+    Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
+    Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
+    Mod+Ctrl+U         { move-column-to-workspace-down; }
+    Mod+Ctrl+I         { move-column-to-workspace-up; }
 
-          // Alternatively, there are commands to move just a single window:
-          // Mod+Ctrl+Page_Down { move-window-to-workspace-down; }
-          // ...
+    // Alternatively, there are commands to move just a single window:
+    // Mod+Ctrl+Page_Down { move-window-to-workspace-down; }
+    // ...
 
-          Mod+Shift+Page_Down { move-workspace-down; }
-          Mod+Shift+Page_Up   { move-workspace-up; }
-          Mod+Shift+U         { move-workspace-down; }
-          Mod+Shift+I         { move-workspace-up; }
+    Mod+Shift+Page_Down { move-workspace-down; }
+    Mod+Shift+Page_Up   { move-workspace-up; }
+    Mod+Shift+U         { move-workspace-down; }
+    Mod+Shift+I         { move-workspace-up; }
 
-          // You can bind mouse wheel scroll ticks using the following syntax.
-          // These binds will change direction based on the natural-scroll setting.
-          //
-          // To avoid scrolling through workspaces really fast, you can use
-          // the cooldown-ms property. The bind will be rate-limited to this value.
-          // You can set a cooldown on any bind, but it's most useful for the wheel.
-          Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
-          Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
-          Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
-          Mod+Ctrl+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
+    // You can bind mouse wheel scroll ticks using the following syntax.
+    // These binds will change direction based on the natural-scroll setting.
+    //
+    // To avoid scrolling through workspaces really fast, you can use
+    // the cooldown-ms property. The bind will be rate-limited to this value.
+    // You can set a cooldown on any bind, but it's most useful for the wheel.
+    Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
+    Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
+    Mod+Ctrl+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
 
-          Mod+WheelScrollRight      { focus-column-right; }
-          Mod+WheelScrollLeft       { focus-column-left; }
-          Mod+Ctrl+WheelScrollRight { move-column-right; }
-          Mod+Ctrl+WheelScrollLeft  { move-column-left; }
+    Mod+WheelScrollRight      { focus-column-right; }
+    Mod+WheelScrollLeft       { focus-column-left; }
+    Mod+Ctrl+WheelScrollRight { move-column-right; }
+    Mod+Ctrl+WheelScrollLeft  { move-column-left; }
 
-          // Usually scrolling up and down with Shift in applications results in
-          // horizontal scrolling; these binds replicate that.
-          Mod+Shift+WheelScrollDown      { focus-column-right; }
-          Mod+Shift+WheelScrollUp        { focus-column-left; }
-          Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
-          Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
+    // Usually scrolling up and down with Shift in applications results in
+    // horizontal scrolling; these binds replicate that.
+    Mod+Shift+WheelScrollDown      { focus-column-right; }
+    Mod+Shift+WheelScrollUp        { focus-column-left; }
+    Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
+    Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
 
-          // Similarly, you can bind touchpad scroll "ticks".
-          // Touchpad scrolling is continuous, so for these binds it is split into
-          // discrete intervals.
-          // These binds are also affected by touchpad's natural-scroll, so these
-          // example binds are "inverted", since we have natural-scroll enabled for
-          // touchpads by default.
-          // Mod+TouchpadScrollDown { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.02+"; }
-          // Mod+TouchpadScrollUp   { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.02-"; }
+    // Similarly, you can bind touchpad scroll "ticks".
+    // Touchpad scrolling is continuous, so for these binds it is split into
+    // discrete intervals.
+    // These binds are also affected by touchpad's natural-scroll, so these
+    // example binds are "inverted", since we have natural-scroll enabled for
+    // touchpads by default.
+    // Mod+TouchpadScrollDown { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.02+"; }
+    // Mod+TouchpadScrollUp   { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.02-"; }
 
-          // You can refer to workspaces by index. However, keep in mind that
-          // niri is a dynamic workspace system, so these commands are kind of
-          // "best effort". Trying to refer to a workspace index bigger than
-          // the current workspace count will instead refer to the bottommost
-          // (empty) workspace.
-          //
-          // For example, with 2 workspaces + 1 empty, indices 3, 4, 5 and so on
-          // will all refer to the 3rd workspace.
-          Mod+1 { focus-workspace 1; }
-          Mod+2 { focus-workspace 2; }
-          Mod+3 { focus-workspace 3; }
-          Mod+4 { focus-workspace 4; }
-          Mod+5 { focus-workspace 5; }
-          Mod+6 { focus-workspace 6; }
-          Mod+7 { focus-workspace 7; }
-          Mod+8 { focus-workspace 8; }
-          Mod+9 { focus-workspace 9; }
-          Mod+Ctrl+1 { move-column-to-workspace 1; }
-          Mod+Ctrl+2 { move-column-to-workspace 2; }
-          Mod+Ctrl+3 { move-column-to-workspace 3; }
-          Mod+Ctrl+4 { move-column-to-workspace 4; }
-          Mod+Ctrl+5 { move-column-to-workspace 5; }
-          Mod+Ctrl+6 { move-column-to-workspace 6; }
-          Mod+Ctrl+7 { move-column-to-workspace 7; }
-          Mod+Ctrl+8 { move-column-to-workspace 8; }
-          Mod+Ctrl+9 { move-column-to-workspace 9; }
+    // You can refer to workspaces by index. However, keep in mind that
+    // niri is a dynamic workspace system, so these commands are kind of
+    // "best effort". Trying to refer to a workspace index bigger than
+    // the current workspace count will instead refer to the bottommost
+    // (empty) workspace.
+    //
+    // For example, with 2 workspaces + 1 empty, indices 3, 4, 5 and so on
+    // will all refer to the 3rd workspace.
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+Ctrl+1 { move-column-to-workspace 1; }
+    Mod+Ctrl+2 { move-column-to-workspace 2; }
+    Mod+Ctrl+3 { move-column-to-workspace 3; }
+    Mod+Ctrl+4 { move-column-to-workspace 4; }
+    Mod+Ctrl+5 { move-column-to-workspace 5; }
+    Mod+Ctrl+6 { move-column-to-workspace 6; }
+    Mod+Ctrl+7 { move-column-to-workspace 7; }
+    Mod+Ctrl+8 { move-column-to-workspace 8; }
+    Mod+Ctrl+9 { move-column-to-workspace 9; }
 
-          // Alternatively, there are commands to move just a single window:
-          // Mod+Ctrl+1 { move-window-to-workspace 1; }
+    // Alternatively, there are commands to move just a single window:
+    // Mod+Ctrl+1 { move-window-to-workspace 1; }
 
-          // Switches focus between the current and the previous workspace.
-          Mod+Tab { focus-workspace-previous; }
+    // Switches focus between the current and the previous workspace.
+    Mod+Tab { focus-workspace-previous; }
 
-          // The following binds move the focused window in and out of a column.
-          // If the window is alone, they will consume it into the nearby column to the side.
-          // If the window is already in a column, they will expel it out.
-          Mod+BracketLeft  { consume-or-expel-window-left; }
-          Mod+BracketRight { consume-or-expel-window-right; }
+    // The following binds move the focused window in and out of a column.
+    // If the window is alone, they will consume it into the nearby column to the side.
+    // If the window is already in a column, they will expel it out.
+    Mod+BracketLeft  { consume-or-expel-window-left; }
+    Mod+BracketRight { consume-or-expel-window-right; }
 
-          // Consume one window from the right to the bottom of the focused column.
-          Mod+Comma  { consume-window-into-column; }
-          // Expel the bottom window from the focused column to the right.
-          Mod+Period { expel-window-from-column; }
+    // Consume one window from the right to the bottom of the focused column.
+    Mod+Comma  { consume-window-into-column; }
+    // Expel the bottom window from the focused column to the right.
+    Mod+Period { expel-window-from-column; }
 
-          Mod+R { switch-preset-column-width; }
-          // Cycling through the presets in reverse order is also possible.
-          // Mod+R { switch-preset-column-width-back; }
-          Mod+Shift+R { switch-preset-window-height; }
-          Mod+Ctrl+R { reset-window-height; }
-          Mod+M { maximize-column; }
-          Mod+F { fullscreen-window; }
+    Mod+R { switch-preset-column-width; }
+    // Cycling through the presets in reverse order is also possible.
+    // Mod+R { switch-preset-column-width-back; }
+    Mod+Shift+R { switch-preset-window-height; }
+    Mod+Ctrl+R { reset-window-height; }
+    Mod+M { maximize-column; }
+    Mod+F { fullscreen-window; }
 
-          // Expand the focused column to space not taken up by other fully visible columns.
-          // Makes the column "fill the rest of the space".
-          Mod+Ctrl+F { expand-column-to-available-width; }
+    // Expand the focused column to space not taken up by other fully visible columns.
+    // Makes the column "fill the rest of the space".
+    Mod+Ctrl+F { expand-column-to-available-width; }
 
-          Mod+C { center-column; }
+    Mod+C { center-column; }
 
-          // Center all fully visible columns on screen.
-          Mod+Ctrl+C { center-visible-columns; }
+    // Center all fully visible columns on screen.
+    Mod+Ctrl+C { center-visible-columns; }
 
-          // Finer width adjustments.
-          // This command can also:
-          // * set width in pixels: "1000"
-          // * adjust width in pixels: "-5" or "+5"
-          // * set width as a percentage of screen width: "25%"
-          // * adjust width as a percentage of screen width: "-10%" or "+10%"
-          // Pixel sizes use logical, or scaled, pixels. I.e. on an output with scale 2.0,
-          // set-column-width "100" will make the column occupy 200 physical screen pixels.
-          Mod+Minus { set-column-width "-10%"; }
-          Mod+Equal { set-column-width "+10%"; }
+    // Finer width adjustments.
+    // This command can also:
+    // * set width in pixels: "1000"
+    // * adjust width in pixels: "-5" or "+5"
+    // * set width as a percentage of screen width: "25%"
+    // * adjust width as a percentage of screen width: "-10%" or "+10%"
+    // Pixel sizes use logical, or scaled, pixels. I.e. on an output with scale 2.0,
+    // set-column-width "100" will make the column occupy 200 physical screen pixels.
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
 
-          // Finer height adjustments when in column with other windows.
-          Mod+Shift+Minus { set-window-height "-10%"; }
-          Mod+Shift+Equal { set-window-height "+10%"; }
+    // Finer height adjustments when in column with other windows.
+    Mod+Shift+Minus { set-window-height "-10%"; }
+    Mod+Shift+Equal { set-window-height "+10%"; }
 
-          // Move the focused window between the floating and the tiling layout.
-          Mod+V       { toggle-window-floating; }
-          Mod+Shift+V { switch-focus-between-floating-and-tiling; }
+    // Move the focused window between the floating and the tiling layout.
+    Mod+V       { toggle-window-floating; }
+    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
 
-          // Toggle tabbed column display mode.
-          // Windows in this column will appear as vertical tabs,
-          // rather than stacked on top of each other.
-          Mod+Ctrl+t { toggle-column-tabbed-display; }
+    // Toggle tabbed column display mode.
+    // Windows in this column will appear as vertical tabs,
+    // rather than stacked on top of each other.
+    Mod+Ctrl+t { toggle-column-tabbed-display; }
 
-          // Actions to switch layouts.
-          // Note: if you uncomment these, make sure you do NOT have
-          // a matching layout switch hotkey configured in xkb options above.
-          // Having both at once on the same hotkey will break the switching,
-          // since it will switch twice upon pressing the hotkey (once by xkb, once by niri).
-          // Mod+Space       { switch-layout "next"; }
-          // Mod+Shift+Space { switch-layout "prev"; }
+    // Actions to switch layouts.
+    // Note: if you uncomment these, make sure you do NOT have
+    // a matching layout switch hotkey configured in xkb options above.
+    // Having both at once on the same hotkey will break the switching,
+    // since it will switch twice upon pressing the hotkey (once by xkb, once by niri).
+    // Mod+Space       { switch-layout "next"; }
+    // Mod+Shift+Space { switch-layout "prev"; }
 
-          Mod+P { screenshot; }
-          Mod+Ctrl+P { screenshot-screen; }
-          Mod+Alt+P { screenshot-window; }
+    Mod+P { screenshot; }
+    Mod+Ctrl+P { screenshot-screen; }
+    Mod+Alt+P { screenshot-window; }
 
-          // Applications such as remote-desktop clients and software KVM switches may
-          // request that niri stops processing the keyboard shortcuts defined here
-          // so they may, for example, forward the key presses as-is to a remote machine.
-          // It's a good idea to bind an escape hatch to toggle the inhibitor,
-          // so a buggy application can't hold your session hostage.
-          //
-          // The allow-inhibiting=false property can be applied to other binds as well,
-          // which ensures niri always processes them, even when an inhibitor is active.
-          Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+    // Applications such as remote-desktop clients and software KVM switches may
+    // request that niri stops processing the keyboard shortcuts defined here
+    // so they may, for example, forward the key presses as-is to a remote machine.
+    // It's a good idea to bind an escape hatch to toggle the inhibitor,
+    // so a buggy application can't hold your session hostage.
+    //
+    // The allow-inhibiting=false property can be applied to other binds as well,
+    // which ensures niri always processes them, even when an inhibitor is active.
+    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
 
-          // The quit action will show a confirmation dialog to avoid accidental exits.
-          Mod+Ctrl+BackSpace { quit; }
+    // The quit action will show a confirmation dialog to avoid accidental exits.
+    Mod+Ctrl+BackSpace { quit; }
 
-          // Powers off the monitors. To turn them back on, do any input like
-          // moving the mouse or pressing any other key.
-          XF86Display { power-off-monitors; }
-          F7 { power-off-monitors; }
+    // Powers off the monitors. To turn them back on, do any input like
+    // moving the mouse or pressing any other key.
+    XF86Display { power-off-monitors; }
+    F7 { power-off-monitors; }
   }
 #+end_src
 
@@ -2030,7 +1727,16 @@ These blocks/this file is suitable for tangling on any Unix-like system.
     </object>
   </interface>
 #+end_src
+* YAZI
+#+begin_src toml :tangle ~/.config/yazi/yazi.toml
+  # A TOML linter such as https://taplo.tamasfe.dev/ can use this schema to validate your config.
+  # If you encounter any issues, please make an issue at https://github.com/yazi-rs/schemas.
+  "$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
 
+  [mgr]
+  show_hidden = true
+  ratio = [ 1, 2, 5 ]
+#+end_src
 * COMMENT Local Variables                                  :NOEXPORT:ARCHIVE:
 # Local Variables:
 # eval: (add-hook 'after-save-hook 'org-babel-tangle nil t)
