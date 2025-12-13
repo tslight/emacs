@@ -122,15 +122,13 @@
   (define-prefix-command 'my-leader-map)
   (keymap-set evil-motion-state-map "SPC" 'my-leader-map)
   (keymap-set evil-normal-state-map "SPC" 'my-leader-map)
-
   (evil-define-key nil my-leader-map
     "f"  'find-file
     "b"  'switch-to-buffer
     "w"  'save-buffer
-    "o"  'recentf
+    "r"  'recentf
     ;; etc.
     )
-
   (evil-mode)
   :hook
   (after-init . evil-mode)
