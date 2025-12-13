@@ -2,7 +2,7 @@
 (use-package emacs
   :config
   (load-theme 'modus-vivendi)
-  (set-frame-font "Monospace 11" nil t)
+  (set-frame-font "Monospace 12" nil t)
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
   (tool-bar-mode -1)
